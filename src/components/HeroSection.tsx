@@ -27,7 +27,7 @@ function HeroSection() {
           bgClip="text"
           my={2}
         >
-          Linkt
+          Linkyt
         </Heading>
         <Heading size="xl">Elevate Your Web Experience</Heading>
 
