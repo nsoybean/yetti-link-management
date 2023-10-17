@@ -1,13 +1,31 @@
 import React from 'react'
 import { CardTile } from './CardTile'
-import { Wrap, Grid, GridItem } from '@chakra-ui/react'
-import { IPage } from '../types/saves'
+import { Grid, GridItem, Skeleton } from '@chakra-ui/react'
+import { IBookmark } from '../types/saves'
 
 interface PagesProps {
-  pages: IPage[]
+  pages: IBookmark[] | undefined
+  isLoading: boolean
 }
 
-export const CardTiles: React.FC<PagesProps> = ({ pages }: PagesProps) => {
+export const CardTiles: React.FC<PagesProps> = ({
+  pages,
+  isLoading,
+}: PagesProps) => {
+  const generateSkeletonTiles = () => {
+    const tiles = []
+    for (let i = 0; i < 9; i++) {
+      tiles.push(
+        <GridItem colSpan={1} key={i}>
+          <Skeleton sx={{ borderRadius: '8px' }} height='300px' width='300px' />
+        </GridItem>,
+      )
+    }
+    return tiles
+  }
+
+  const boilerCards = generateSkeletonTiles()
+
   return (
     <>
       <Grid
@@ -15,16 +33,19 @@ export const CardTiles: React.FC<PagesProps> = ({ pages }: PagesProps) => {
         templateColumns={{
           base: 'repeat(1, 1fr)',
           sm: 'repeat(1, 1fr)',
-          md: 'repeat(2, 1fr)',
+          md: 'repeat(3, 1fr)',
           lg: 'repeat(3, 1fr)',
-          '2xl': 'repeat(4, 1fr)',
+          '2xl': 'repeat(3, 1fr)',
         }}
+        alignItems={'stretch'}
       >
-        {pages.map((page: IPage) => (
-          <GridItem colSpan={1} key={page.id}>
-            <CardTile page={page} />
-          </GridItem>
-        ))}
+        {!isLoading && pages
+          ? pages.map((page) => (
+              <GridItem colSpan={1} key={page.id}>
+                <CardTile page={page} />
+              </GridItem>
+            ))
+          : boilerCards}
       </Grid>
     </>
   )
