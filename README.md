@@ -12,4 +12,5 @@ Runs the app in the development mode.<br /> Open
 ## Preview
 ![alt text](./src/Assets/preview.png "Title")
 
-Elevate your bookmarking game! Seamlessly save and organize your favorite web content while adding personal notes for easy reference. Say goodbye to messy bookmarks and hello to effortless web navigation.
+Elevate your bookmarking game! <br>
+Effortlessly organize, tag, and enrich your saved articles.
