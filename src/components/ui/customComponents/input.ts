@@ -37,7 +37,7 @@ const variantCustom = definePartsStyle((props) => {
       _hover: {
         bg: 'gray.200',
         _dark: {
-          bg: 'whiteAlpha.100',
+          bg: 'whiteAlpha.200',
         },
       },
       _readOnly: {
@@ -47,7 +47,7 @@ const variantCustom = definePartsStyle((props) => {
       _focusVisible: {
         bg: 'gray.200',
         _dark: {
-          bg: 'whiteAlpha.100',
+          bg: 'whiteAlpha.200',
         },
       },
     },

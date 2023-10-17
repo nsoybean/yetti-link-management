@@ -19,6 +19,9 @@ const variants = {
       border: '1px solid #E2E8F0',
       boxShadow: 'sm',
       borderRadius: '8px',
+      _dark: {
+        border: '1px solid #84888c',
+      },
     },
     body: {
       padding: '0px',
