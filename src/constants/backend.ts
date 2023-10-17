@@ -24,7 +24,7 @@ class BackendPath implements BackendPathI {
     } else if (this.environment === "staging") {
       return "https://stg-linkt.onrender.com";
     } else {
-      return "https://charming-buckle-fawn.cyclic.app";
+      return "https://stg-linkt.onrender.com"; // direct both to stg for now due to change in cyclic.sh plans. Prod:https://charming-buckle-fawn.cyclic.app
     }
   }
 }
