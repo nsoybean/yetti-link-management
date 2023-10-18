@@ -5,19 +5,19 @@ export const highlights: IHighlightType[] = [
     icon: "💻",
     title: "Open-source",
     description:
-      "Linkt is open source, giving you full control to customize and adapt it to your unique needs.",
+      "Linkyt is open source, giving you full control to customize and adapt it to your unique needs.",
   },
   {
     icon: "🎉",
     title: "Beta Bliss",
     description:
-      "Enjoy the core features of Linkt for free, forever, with the option to unlock premium features as we grow",
+      "Enjoy the core features of Linkyt for free, forever, with the option to unlock premium features as we grow",
   },
   {
     icon: "🌱",
     title: "Rapid experimenting",
     description:
-      "Be Part of the Experiment. We actively seek and value your feedback to continually enhance Linkt and provide you with the best bookmarking experience!",
+      "Be Part of the Experiment. We actively seek and value your feedback to continually enhance Linkyt and provide you with the best bookmarking experience!",
   },
   {
     icon: "🎯",
