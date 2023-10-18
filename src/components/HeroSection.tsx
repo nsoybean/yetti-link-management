@@ -25,7 +25,8 @@ function HeroSection() {
           size="3xl"
           bgGradient="linear(to-l, #7928CA, #FF0080)"
           bgClip="text"
-          my={2}
+          my={1}
+          py={2}
         >
           Linkyt
         </Heading>
