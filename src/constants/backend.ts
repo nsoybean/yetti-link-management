@@ -10,10 +10,10 @@ class BackendPath implements BackendPathI {
   getEnvironment() {
     if (window.location.host.includes("localhost")) {
       this.environment = "development";
-    } else if (window.location.host === "stg-linkyt.vercel.app") {
-      this.environment = "staging";
-    } else {
+    } else if (window.location.host === "linkyt.vercel.app") {
       this.environment = "production";
+    } else {
+      this.environment = "staging";
     }
   }
 
@@ -21,10 +21,10 @@ class BackendPath implements BackendPathI {
     this.getEnvironment();
     if (this.environment === "development") {
       return "http://localhost:3005";
-    } else if (this.environment === "staging") {
-      return "https://stg-linkt.onrender.com";
+    } else if (this.environment === "production") {
+      return "https://charming-buckle-fawn.cyclic.app";
     } else {
-      return "https://stg-linkt.onrender.com"; // direct both to stg for now due to change in cyclic.sh plans. Prod:https://charming-buckle-fawn.cyclic.app
+      return "https://stg-linkt.onrender.com";
     }
   }
 }
