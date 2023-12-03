@@ -2,27 +2,27 @@ import { IHighlightType } from "../types";
 
 export const highlights: IHighlightType[] = [
   {
+    icon: "📝",
+    title: "Intuitive Notetaking with Rich Text Editor",
+    description:
+      "Embrace a seamless notetaking experience with our Notion-style rich text editor. Elevate your article-saving routine by effortlessly adding custom notes directly within Linkyt.",
+  },
+  {
+    icon: "🏷️",
+    title: "Effortless Organization and Tagging",
+    description:
+      "Easily categorize and tag your saved articles, ensuring swift retrieval and a clutter-free environment.",
+  },
+  {
     icon: "💻",
-    title: "Open-source",
+    title: "Cross-Device Synchronization",
     description:
-      "Linkyt is open source, giving you full control to customize and adapt it to your unique needs.",
+      "Stay productive and engaged, knowing your content and notes are accessible anytime, anywhere. Elevate your web experience with Linkyt – where organization meets accessibility.",
   },
   {
-    icon: "🎉",
-    title: "Beta Bliss",
+    icon: "📈",
+    title: "Personalized Enrichment Dashboard (coming soon)",
     description:
-      "Enjoy the core features of Linkyt for free, forever, with the option to unlock premium features as we grow",
-  },
-  {
-    icon: "🌱",
-    title: "Rapid experimenting",
-    description:
-      "Be Part of the Experiment. We actively seek and value your feedback to continually enhance Linkyt and provide you with the best bookmarking experience!",
-  },
-  {
-    icon: "🎯",
-    title: "More features coming...",
-    description:
-      "We have exciting roadmap ahead. Vote for ideas here, or submit your own!",
+      "Gain insights into your reading habits, track your article notes, and visualize your content journey. Tailor your web experience with a dashboard that reflects your learning and discovery patterns.",
   },
 ];
