@@ -41,7 +41,7 @@ export const LandingPageNavbar = () => {
           <NavigationMenuItem className="align-center flex flex-row justify-start font-bold">
             <a href={user ? "/saves" : "/"} className="ml-2 hidden sm:flex">
               <LogoIcon />
-              <span className="ml-2 flex text-xl font-bold">Leaf</span>
+              <span className="ml-2 flex pt-[2px] text-xl font-bold">Leaf</span>
             </a>
           </NavigationMenuItem>
 
