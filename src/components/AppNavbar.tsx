@@ -16,7 +16,7 @@ import { Button } from "./ui/button";
 import { ArchiveIcon, BookmarkIcon, Menu } from "lucide-react";
 // import { ModeToggle } from "./ModeToggle";
 import useAuth from "@/hooks/useAuth";
-import appIcon from "@/assets/appIcon.png";
+import appIcon from "/appIcon.png";
 import { UserDropdownMenu } from "./UserDropdownMenu";
 import { SaveArticleInput } from "./SaveArticleInput";
 import { RouteProps } from "@/typings/navigation/articleMenu";

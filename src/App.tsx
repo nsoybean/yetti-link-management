@@ -49,7 +49,8 @@ export default function App({ children }: { children: ReactNode }) {
   }, [location]);
 
   return (
-    <div className="dark:bg-boxdark-2 flex min-h-screen flex-col items-center justify-start dark:text-white">
+    // <div className="dark:bg-boxdark-2 flex min-h-screen flex-col items-center justify-start dark:text-white">
+    <div className="dark:bg-boxdark-2 min-h-screen dark:text-white">
       {isAdminDashboard ? (
         <>{children}</>
       ) : (
