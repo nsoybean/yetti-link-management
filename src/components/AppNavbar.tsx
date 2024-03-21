@@ -24,7 +24,7 @@ import { Link2Icon } from "@radix-ui/react-icons";
 import { getUrlPath } from "@/lib/url";
 import { useNavigate } from "react-router-dom";
 
-const LogoIcon = () => <img className="h-8 w-8" src={appIcon} alt="tagr.ai" />;
+const LogoIcon = () => <img className="h-8 w-8" src={appIcon} alt="leaf.ai" />;
 
 export const mobileMenu: RouteProps[] = [
   { name: "Saves", href: "/saves", icon: Link2Icon },

@@ -28,7 +28,7 @@ const routeList: RouteProps[] = [
   //     label: "Features",
   //   },
 ];
-const LogoIcon = () => <img className="h-8 w-8" src={appIcon} alt="tagr.ai" />;
+const LogoIcon = () => <img className="h-8 w-8" src={appIcon} alt="leaf.ai" />;
 
 export const LandingPageNavbar = () => {
   const { data: user } = useAuth();
@@ -41,7 +41,7 @@ export const LandingPageNavbar = () => {
           <NavigationMenuItem className="align-center flex flex-row justify-start font-bold">
             <a href={user ? "/saves" : "/"} className="ml-2 hidden sm:flex">
               <LogoIcon />
-              <span className="ml-2 flex text-xl font-bold">Tagr</span>
+              <span className="ml-2 flex text-xl font-bold">Leaf</span>
             </a>
           </NavigationMenuItem>
 
