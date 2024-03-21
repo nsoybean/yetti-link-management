@@ -108,7 +108,7 @@ const Saves = () => {
   // empty
   if (!isLoading && articles?.total_records === 0) {
     return (
-      <div className="container mx-auto flex justify-center py-16">
+      <div className="container mx-auto flex justify-center px-8 py-16">
         <div className="flex flex-col items-center justify-center gap-10">
           {/* svg */}
           <svg viewBox="0 0 485.834 483.5">
@@ -232,7 +232,7 @@ const Saves = () => {
   return (
     <main className="mx-auto">
       {/* article grid */}
-      <div className="mb-12 grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+      <div className="mb-12 grid grid-cols-1 gap-4 px-8 md:grid-cols-2 lg:grid-cols-3">
         {/* loading */}
         {isLoading && <ArticleSkeleton numCards={6} />}
 

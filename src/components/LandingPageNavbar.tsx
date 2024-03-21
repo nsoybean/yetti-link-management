@@ -16,7 +16,8 @@ import { buttonVariants } from "./ui/button";
 import { Menu } from "lucide-react";
 import { ModeToggle } from "./ModeToggle";
 import useAuth from "@/hooks/useAuth";
-import appIcon from "@/assets/appIcon.png";
+import appIcon from "/appIcon.png";
+
 interface RouteProps {
   href: string;
   label: string;
