@@ -6,6 +6,18 @@ import { authToken, clearAuthToken } from "./auth";
 const api = axios.create({
   baseURL: API_URL,
 });
+
+// add mock delay to api client
+if (window.location.hostname === "localhost") {
+  api.interceptors.response.use((response) => {
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        resolve(response);
+      }, 1000); // 1s mock delay
+    });
+  });
+}
+
 api.interceptors.request.use((request) => {
   if (authToken) {
     request.headers["Authorization"] = `Bearer ${authToken}`;
@@ -35,7 +47,7 @@ api.interceptors.response.use(undefined, (error) => {
  * error has been formatted as implemented by HttpError on the server.
  */
 export function handleApiError(
-  error: AxiosError<{ message?: string; data?: unknown }>
+  error: AxiosError<{ message?: string; data?: unknown }>,
 ): void {
   if (axios.isAxiosError(error)) {
     if (error?.response) {
@@ -51,7 +63,7 @@ export function handleApiError(
       throw new WaspHttpError(
         responseStatusCode,
         responseJson?.message ?? error.message,
-        responseJson
+        responseJson,
       );
     }
   } else {

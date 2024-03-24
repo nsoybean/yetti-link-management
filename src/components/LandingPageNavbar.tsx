@@ -17,6 +17,7 @@ import { Menu } from "lucide-react";
 import { ModeToggle } from "./ModeToggle";
 import useAuth from "@/hooks/useAuth";
 import appIcon from "/appIcon.png";
+import yettiIcon from "/cuteCreativeYeti.jpeg";
 
 interface RouteProps {
   href: string;
@@ -29,7 +30,10 @@ const routeList: RouteProps[] = [
   //     label: "Features",
   //   },
 ];
-const LogoIcon = () => <img className="h-8 w-8" src={appIcon} alt="leaf.ai" />;
+const LogoIcon = () => <img className="h-8 w-8" src={appIcon} alt="Yetti.ai" />;
+const YettiIcon = () => (
+  <img className="h-8 w-8 rounded-full" src={yettiIcon} alt="Yetti.ai" />
+);
 
 export const LandingPageNavbar = () => {
   const { data: user } = useAuth();
@@ -41,8 +45,10 @@ export const LandingPageNavbar = () => {
           {/* app icon */}
           <NavigationMenuItem className="align-center flex flex-row justify-start font-bold">
             <a href={user ? "/saves" : "/"} className="ml-2 hidden sm:flex">
-              <LogoIcon />
-              <span className="ml-2 flex pt-[2px] text-xl font-bold">Leaf</span>
+              {/* <YettiIcon /> */}
+              <span className="ml-2 flex pt-[2px] text-xl font-bold">
+                Yetti
+              </span>
             </a>
           </NavigationMenuItem>
 
@@ -67,7 +73,7 @@ export const LandingPageNavbar = () => {
                   <SheetHeader className="flex flex-row items-center justify-center gap-3">
                     <NavigationMenuItem className="flex font-bold">
                       <a href={user ? "/saves" : "/"}>
-                        <LogoIcon />
+                        <YettiIcon />
                       </a>
                     </NavigationMenuItem>
                     <SheetTitle className="flex items-center text-xl font-bold">

@@ -47,7 +47,6 @@ const Saves = () => {
   } = useQuery({
     queryKey: ["get-all-articles", currPage],
     queryFn: async () => getAllArticles(currPage),
-    placeholderData: keepPreviousData,
   });
 
   function renderArticles(articles: Article[]) {

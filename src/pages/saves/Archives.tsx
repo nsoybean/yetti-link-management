@@ -44,12 +44,11 @@ const Archives = () => {
   } = useQuery({
     queryKey: ["get-all-archived-articles", currPage],
     queryFn: async () => getAllArchivedArticles(currPage),
-    placeholderData: keepPreviousData,
   });
 
   function renderArticles(articles: Article[]) {
     return articles.map((article, index) => (
-      <Card key={index} className="w-90 flex flex-1 flex-col justify-between">
+      <Card key={index} className="flex flex-1 flex-col justify-between">
         {/* header */}
         <CardHeader className="p-3">
           {/* if img exist */}

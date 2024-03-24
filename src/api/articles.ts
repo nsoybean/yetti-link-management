@@ -21,7 +21,6 @@ export async function getAllArticles(
   limit = 9,
 ): Promise<{ total_records: number; data: Article[] }> {
   let result = await api.get(`bookmark/?page=${page}&limit=${limit}`);
-  // result.data.total_records = 0;
   return result.data;
 }
 
