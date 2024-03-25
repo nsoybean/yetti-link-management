@@ -34,6 +34,7 @@ type Props = {
 export const SaveArticleInput = (props: Props) => {
   const [url, setUrl] = useState("");
   const [isOpen, setIsOpen] = useState(false);
+  const [currToast, setCurrToast] = useState("");
   const queryClient = useQueryClient();
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -53,12 +54,14 @@ export const SaveArticleInput = (props: Props) => {
       if (inputRef?.current) {
         inputRef.current.blur();
       }
+      toast.dismiss(currToast);
       toast.success("Link Added!");
     },
 
     onError: (error) => {
-      setUrl("");
+      toast.dismiss(currToast);
       toast.error(`Error!`);
+      setUrl("");
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ["get-all-articles"] });
@@ -93,6 +96,9 @@ export const SaveArticleInput = (props: Props) => {
 
   async function saveArticle(inputUrl: string) {
     if (inputUrl.trim() !== "") {
+      const toastId = toast.loading("Saving...");
+      setCurrToast(toastId);
+
       mutate({ link: inputUrl.trim() });
     }
   }
@@ -118,7 +124,7 @@ export const SaveArticleInput = (props: Props) => {
         </DialogTrigger>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
-            <DialogTitle>Add a URL</DialogTitle>
+            <DialogTitle>Add a link</DialogTitle>
             <DialogDescription>
               Save it to your list of articles
             </DialogDescription>
@@ -126,6 +132,7 @@ export const SaveArticleInput = (props: Props) => {
           <div className="flex items-center space-x-2">
             <div className="grid flex-1 gap-2">
               <Input
+                placeholder="https://example.com"
                 ref={inputRef}
                 value={url}
                 id="link"

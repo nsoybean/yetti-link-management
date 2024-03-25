@@ -45,7 +45,7 @@ export const LandingPageNavbar = () => {
           {/* app icon */}
           <NavigationMenuItem className="align-center flex flex-row justify-start font-bold">
             <a href={user ? "/saves" : "/"} className="ml-2 hidden sm:flex">
-              {/* <YettiIcon /> */}
+              <LogoIcon />
               <span className="ml-2 flex pt-[2px] text-xl font-bold">
                 Yetti
               </span>

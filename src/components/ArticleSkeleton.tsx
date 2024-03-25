@@ -9,7 +9,7 @@ const ArticleSkeleton = (props: Props) => {
   let cardsSkeleton = [];
   for (let i = 0; i < props.numCards; i++) {
     cardsSkeleton.push(
-      <div className="flex w-[330px] flex-col space-y-3" key={i}>
+      <div className="flex grow flex-col space-y-3" key={i}>
         <Skeleton className="h-[125px] w-full rounded-xl" />
         <div className="space-y-2">
           <Skeleton className="h-4 w-4/5" />

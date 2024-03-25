@@ -72,10 +72,9 @@ export function UserDropdownMenu({ user }: { user: User }) {
             </Avatar>
           </div>
           {/* name */}
-
-          {/* <div>{`(${user.firstName} + ${user.lastName}).trim()`}</div> */}
-          <div className="text-md font-normal"> shaw bin </div>
-          {/* <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut> */}
+          <div className="text-md font-normal">
+            {`${user.firstName} ${user.lastName}`.trim()}
+          </div>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         {/* mode */}

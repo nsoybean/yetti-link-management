@@ -17,7 +17,6 @@ import { ArchiveIcon, BookmarkIcon, Menu } from "lucide-react";
 // import { ModeToggle } from "./ModeToggle";
 import useAuth from "@/hooks/useAuth";
 import appIcon from "/appIcon.png";
-import yettiIcon from "/cuteCreativeYeti.jpeg";
 import { UserDropdownMenu } from "./UserDropdownMenu";
 import { SaveArticleInput } from "./SaveArticleInput";
 import { RouteProps } from "@/typings/navigation/articleMenu";
@@ -26,9 +25,6 @@ import { getUrlPath } from "@/lib/url";
 import { useNavigate } from "react-router-dom";
 
 const LogoIcon = () => <img className="h-8 w-8" src={appIcon} alt="Yetti.ai" />;
-const YetiIcon = () => (
-  <img className="h-8 w-8 rounded-full" src={yettiIcon} alt="Yetti.ai" />
-);
 
 export const mobileMenu: RouteProps[] = [
   { name: "Saves", href: "/saves", icon: Link2Icon },
@@ -50,8 +46,8 @@ export const AppNavbar = () => {
         <NavigationMenuList className="container flex h-14 w-screen flex-row justify-between px-4">
           {/* app icon */}
           <NavigationMenuItem className="font-bold">
-            <a href={user ? "/saves" : "/"} className="ml-2 hidden sm:flex">
-              <YetiIcon />
+            <a href={user ? "/saves" : "/"} className="ml-2 hidden lg:flex">
+              <LogoIcon />
             </a>
           </NavigationMenuItem>
 
@@ -100,7 +96,7 @@ export const AppNavbar = () => {
                     {/* icon */}
                     <NavigationMenuItem className="flex font-bold">
                       <a href={user ? "/saves" : "/"}>
-                        <YetiIcon />
+                        <LogoIcon />
                       </a>
                     </NavigationMenuItem>
                     <SheetTitle className="flex items-center pb-[8px] text-xl font-bold">
