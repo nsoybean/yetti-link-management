@@ -30,7 +30,7 @@ async function render() {
     <React.StrictMode>
       <QueryClientProvider client={queryClient}>
         <ThemeProvider
-          defaultTheme="system"
+          defaultTheme="light"
           storageKey={THEME_PROVIDER_STORAGE_KEY}
         >
           <Toaster />

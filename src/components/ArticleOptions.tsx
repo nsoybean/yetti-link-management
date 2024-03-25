@@ -34,17 +34,19 @@ type Props = {
 
 const ArticleOptions = ({ article }: Props) => {
   const [openDialog, setOpenDialog] = useState<boolean>(false);
-
+  const [currToast, setCurrToast] = useState("");
   const queryClient = useQueryClient();
 
   // delete article
   const { mutate: deleteArticleById } = useMutation({
     mutationFn: deleteArticle,
     onSuccess: (data) => {
+      toast.dismiss(currToast);
       toast.success("Link deleted!");
     },
     onError: (error) => {
-      alert(`Error`);
+      toast.dismiss(currToast);
+      toast.error(`Error!`);
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ["get-all-articles"] });
@@ -54,10 +56,12 @@ const ArticleOptions = ({ article }: Props) => {
   const { mutate: archiveArticleById } = useMutation({
     mutationFn: archiveArticle,
     onSuccess: (data) => {
+      toast.dismiss(currToast);
       toast.success("Link archived!");
     },
     onError: (error) => {
-      alert(`Error`);
+      toast.dismiss(currToast);
+      toast.error(`Error!`);
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ["get-all-articles"] });
@@ -87,6 +91,8 @@ const ArticleOptions = ({ article }: Props) => {
   }
 
   async function menuItemSelect() {
+    const toastId = toast.loading("Deleting...");
+    setCurrToast(toastId);
     deleteArticleById({ id: article.id });
   }
 
@@ -119,11 +125,17 @@ const ArticleOptions = ({ article }: Props) => {
               </DropdownMenuItem>
             )}
             <DropdownMenuItem
-              onClick={() =>
-                article.state === "AVAILABLE"
-                  ? archiveArticleById({ id: article.id })
-                  : unarchiveArticleById({ id: article.id })
-              }
+              onClick={() => {
+                if (article.state === "AVAILABLE") {
+                  const toastId = toast.loading("Archiving...");
+                  setCurrToast(toastId);
+                  archiveArticleById({ id: article.id });
+                } else {
+                  const toastId = toast.loading("Restoring...");
+                  setCurrToast(toastId);
+                  unarchiveArticleById({ id: article.id });
+                }
+              }}
             >
               <CheckboxIcon width={"18"} height={"18"} className="mr-2" />
               {article.state === "AVAILABLE" ? "Archive" : "Restore"}
