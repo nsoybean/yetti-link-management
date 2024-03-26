@@ -52,10 +52,12 @@ export default function App({ children }: { children: ReactNode }) {
     }
   }, [location]);
 
+  if (isLandingPage) {
+    return <div> {children}</div>;
+  }
+
   return (
-    <div
-      className={`${!isLandingPage && "px-4"} dark:bg-boxdark-2 min-h-screen dark:text-white`}
-    >
+    <div className="dark:bg-boxdark-2 min-h-screen dark:text-white">
       {isAdminDashboard ? (
         <>{children}</>
       ) : (
@@ -65,7 +67,7 @@ export default function App({ children }: { children: ReactNode }) {
           <div
             className={`${
               shouldDisplayArticlesSidebarMenu && "flex"
-            }  mx-auto max-w-7xl gap-6 sm:px-6 lg:px-6`}
+            }  mx-auto max-w-7xl gap-6 sm:px-6 lg:px-8`}
           >
             <>
               {shouldDisplayArticlesSidebarMenu && <ArticleMenuBar />}
