@@ -5,16 +5,10 @@ export const Hero = () => {
   const { data: user } = useAuth();
 
   return (
-    <section className="flex h-svh flex-col items-center justify-center gap-4 py-20 md:py-32">
+    <section className="h-100vh flex flex-col items-center justify-center gap-4 px-2 py-20">
       <img className="h-24 w-24 rounded-full" src={yettiIcon} />
       <div className="space-y-6 text-center">
         <main className="text-5xl font-extrabold md:text-6xl">
-          {/* <div className="text-6xl font-extrabold">
-            <span className="bg-gradient-to-r from-pink-500 to-violet-500 bg-clip-text text-transparent">
-              Streamline
-            </span>
-          </div>
-          your web experience */}
           Save. Note. Repeat.
           <span className="block text-primary"></span>
         </main>
@@ -27,6 +21,7 @@ export const Hero = () => {
       <Button>
         <a href={user ? "/saves" : "/login"}>Get started</a>
       </Button>
+      <p className="text-sm text-muted-foreground"> No credit card required.</p>
     </section>
   );
 };

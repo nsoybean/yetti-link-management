@@ -111,7 +111,7 @@ const Archives = () => {
   }
 
   return (
-    <div className="mx-auto">
+    <div className="mx-auto w-full">
       {/* article grid */}
       <div className="mb-12 grid grid-cols-1 gap-4 px-8 md:grid-cols-2 lg:grid-cols-3">
         {/* loading */}
