@@ -5,16 +5,7 @@ import { useMutation } from "@tanstack/react-query";
 import { useQueryClient } from "@tanstack/react-query";
 import { addArticle } from "@/api/articles";
 import toast from "react-hot-toast";
-import { MdOutlineAddLink } from "react-icons/md";
-import {
-  FilePlusIcon,
-  Link2Icon,
-  PlusCircledIcon,
-  PlusIcon,
-} from "@radix-ui/react-icons";
-import ToolTipText from "./TooltipText";
-import { CopyIcon, ForwardIcon, PlusCircleIcon } from "lucide-react";
-import { Label } from "@radix-ui/react-dropdown-menu";
+import { ForwardIcon } from "lucide-react";
 import {
   Dialog,
   DialogHeader,

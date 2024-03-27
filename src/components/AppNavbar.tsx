@@ -20,7 +20,7 @@ import appIcon from "/appIcon.png";
 import { UserDropdownMenu } from "./UserDropdownMenu";
 import { SaveArticleInput } from "./SaveArticleInput";
 import { RouteProps } from "@/typings/navigation/articleMenu";
-import { Link2Icon } from "@radix-ui/react-icons";
+import { Link2Icon, PlusIcon } from "@radix-ui/react-icons";
 import { getUrlPath } from "@/lib/url";
 import { useNavigate } from "react-router-dom";
 
@@ -60,13 +60,18 @@ export const AppNavbar = () => {
                   <Button variant={"outline"}>
                     <div className="flex flex-row items-center justify-center gap-4">
                       <span>Add Link</span>
-                      <div className="flex">
+                      {/* keyboard shortcut - only non-mobile */}
+                      <div className="hidden sm:flex">
                         <kbd className="text-md flex flex-row items-center justify-center rounded-md border px-1 text-start">
                           <span>⌘</span>
                         </kbd>
                         <kbd className="text-md flex flex-row items-center justify-center rounded-md border px-1 text-start">
                           <span>/</span>
                         </kbd>
+                      </div>
+                      {/* mobile */}
+                      <div className="flex items-center justify-center sm:hidden">
+                        <PlusIcon />
                       </div>
                     </div>
                   </Button>

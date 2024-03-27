@@ -16,9 +16,7 @@ const NotFoundPage = (props: Props) => {
 
         {/* text */}
         <div className="flex flex-col items-center justify-center gap-2">
-          <h1 className="text-md scroll-m-20 text-primary">
-            Oops, page not found
-          </h1>
+          <h1 className="text-md scroll-m-20">Oops, page not found</h1>
           <Button onClick={() => navigate(user ? "/saves" : "/")}>
             <ArrowLeftIcon className="h-4 w-4" />
             <span>Back to home</span>

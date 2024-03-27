@@ -116,15 +116,13 @@ const Saves = () => {
 
           {/* text */}
           <div className="flex flex-col items-center justify-center gap-4">
-            <h1 className="text-md scroll-m-20 text-primary">
-              Start by adding a link!
-            </h1>
+            <h1 className="text-md scroll-m-20">Start by adding a link!</h1>
 
             <SaveArticleInput
               trigger={
                 <Button>
-                  <PlusIcon className="h-4 w-4" />
                   <span>Add Link</span>
+                  <PlusIcon className="h-4 w-4" />
                 </Button>
               }
               onEventListener={false}
