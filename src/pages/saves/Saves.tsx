@@ -60,7 +60,7 @@ const Saves = () => {
             <div className="mb-2 h-36 w-full rounded-lg object-cover object-center sm:h-48">
               <img
                 src={article.image}
-                alt={"article image"}
+                alt={"image"}
                 className="h-full w-full rounded-lg object-cover object-center"
               />
             </div>
