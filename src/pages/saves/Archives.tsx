@@ -54,11 +54,13 @@ const Archives = () => {
         <CardHeader className="p-3">
           {/* if img exist */}
           {article.image ? (
-            <img
-              src={article.image}
-              alt={"article image"}
-              className="h-30 mb-2 w-full rounded-lg object-cover object-center sm:h-48"
-            />
+            <div className="mb-2 h-36 w-full rounded-lg object-cover object-center sm:h-48">
+              <img
+                src={article.image}
+                alt={"image"}
+                className="h-full w-full rounded-lg object-cover object-center"
+              />
+            </div>
           ) : (
             // else fallback to link[0] letter
             <div
