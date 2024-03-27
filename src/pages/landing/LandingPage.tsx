@@ -16,37 +16,28 @@ const LandingPage = (props: Props) => {
       {/* <Hero /> */}
 
       {/* HERO */}
-      <section className="h-100vh flex flex-col items-center justify-center gap-4 px-2 py-16">
+      <section className="h-100vh flex flex-col items-center justify-center gap-6 px-2 py-16">
         <img className="h-24 w-24 rounded-full" src={yettiIcon} />
         <div className="space-y-6 text-center">
           <main className="text-4xl font-bold md:text-6xl md:font-extrabold">
-            Save. Note. Repeat.
+            Never Lose a Link Again
             <span className="block text-primary"></span>
           </main>
 
-          <p className="mx-auto text-xl text-muted-foreground md:w-10/12">
-            Save your bookmarks and take notes with ease. Yetti keeps everything
-            organized and accessible.
+          <p className="mx-auto text-lg text-muted-foreground md:w-10/12">
+            Save, tag, and jot down notes effortlessly with Yetti. Keep your
+            bookmarks organized and always within reach.
           </p>
         </div>
-        <Button>
-          <a href={user ? "/saves" : "/login"}>Get started</a>
-        </Button>
-        <p className="text-sm text-muted-foreground">
-          No credit card required.
-        </p>
+        <div className="flex flex-col gap-2">
+          <Button>
+            <a href={user ? "/saves" : "/login"}>Get started</a>
+          </Button>
+          <p className="text-sm text-muted-foreground">
+            No credit card required.
+          </p>
+        </div>
       </section>
-
-      {/* wave */}
-      {/* <section>
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 1440 320"
-          className="-mb-px fill-primary text-primary"
-        >
-          <path d="M0,224L120,197.3C240,171,480,117,720,112C960,107,1200,149,1320,170.7L1440,192L1440,0L1320,0C1200,0,960,0,720,0C480,0,240,0,120,0L0,0Z"></path>
-        </svg>
-      </section> */}
 
       {/* SCREENSHOTS + VALUE PROP */}
       <section className="h-100vh flex flex-col items-center justify-center gap-4 bg-primary/[.06] px-2 py-4">
@@ -54,13 +45,15 @@ const LandingPage = (props: Props) => {
           <div className="flex flex-col items-center gap-4 sm:flex-row">
             {/* text */}
             <div className="mb-4 flex flex-col md:mb-0 md:w-6/12 lg:w-5/12">
-              <h2 className="mb-4 text-xl font-bold">
-                Organize Your Web Experience
-              </h2>
+              <h2 className="mb-4 text-xl font-bold">Simplify Your Web Life</h2>
               <p className="mb-3 text-lg font-light">
-                Say goodbye to cluttered bookmarks and scattered links. Yetti
+                {/* Say goodbye to cluttered bookmarks and scattered links. Yetti
                 streamlines your digital life by allowing you to save links, add
-                tags and notes, and effortlessly organize your web bookmarks.
+                tags and notes, and effortlessly organize your web bookmarks. */}
+                Wave goodbye to chaotic bookmarks and tangled links. Yetti makes
+                it a breeze to save, tag, and arrange your bookmarks, so you can
+                focus on what truly matters. Let Yetti do the heavy lifting for
+                you.
               </p>
               <p className="mb-6 text-muted-foreground">
                 Focus on what matters most, and let Yetti handle the rest.
@@ -80,9 +73,9 @@ const LandingPage = (props: Props) => {
       </section>
 
       {/* FEATURES */}
-      <section className="py-10 sm:py-16">
+      <section className="py-6 sm:py-32">
         <div className="container">
-          <div className="flex flex-col gap-2 pt-6 sm:flex-row">
+          <div className="flex flex-col gap-2 sm:flex-row">
             {/* feat 1: link preview */}
             <div className="my-4 flex flex-col md:w-6/12 lg:w-4/12">
               <div className="flex h-[65px] w-[65px] items-center justify-center rounded-full bg-primary/[.06] text-primary">
@@ -127,8 +120,19 @@ const LandingPage = (props: Props) => {
         </div>
       </section>
 
+      {/* wave */}
+      <section>
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 1440 320"
+          className="-mb-px fill-primary text-primary"
+        >
+          <path d="M0,224L120,197.3C240,171,480,117,720,112C960,107,1200,149,1320,170.7L1440,192L1440,0L1320,0C1200,0,960,0,720,0C480,0,240,0,120,0L0,0Z"></path>
+        </svg>
+      </section>
+
       {/* CTA */}
-      <section className="bg-primary-50 py-20" id="cta">
+      <section className="bg-primary-50 py-4 sm:py-0 sm:pb-20 " id="cta">
         <div className="container">
           <div className="row">
             <div className="col mx-auto text-center md:w-6/12">
