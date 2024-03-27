@@ -16,7 +16,7 @@ const LandingPage = (props: Props) => {
       {/* <Hero /> */}
 
       {/* HERO */}
-      <section className="h-100vh flex flex-col items-center justify-center gap-6 px-2 py-16">
+      <section className="h-100vh flex flex-col items-center justify-center gap-6 px-2 py-24 sm:py-32">
         <img className="h-24 w-24 rounded-full" src={yettiIcon} />
         <div className="space-y-6 text-center">
           <main className="text-4xl font-bold md:text-6xl md:font-extrabold">
@@ -26,12 +26,12 @@ const LandingPage = (props: Props) => {
 
           <p className="mx-auto text-lg text-muted-foreground md:w-10/12">
             Save, tag, and jot down notes effortlessly with Yetti. Keep your
-            bookmarks organized and always within reach.
+            links organized and always within reach.
           </p>
         </div>
         <div className="flex flex-col gap-2">
           <Button>
-            <a href={user ? "/saves" : "/login"}>Get started</a>
+            <a href={user ? "/saves" : "/login"}>Get started ➔</a>
           </Button>
           <p className="text-sm text-muted-foreground">
             No credit card required.
@@ -42,25 +42,23 @@ const LandingPage = (props: Props) => {
       {/* SCREENSHOTS + VALUE PROP */}
       <section className="h-100vh flex flex-col items-center justify-center gap-4 bg-primary/[.06] px-2 py-4">
         <div className="container">
-          <div className="flex flex-col items-center gap-4 sm:flex-row">
+          <div className="flex flex-col-reverse items-center gap-4 sm:flex-row">
             {/* text */}
-            <div className="mb-4 flex flex-col md:mb-0 md:w-6/12 lg:w-5/12">
+            <div className="mb-4 flex flex-col p-2 md:mb-0 md:w-6/12 lg:w-5/12">
               <h2 className="mb-4 text-xl font-bold">Simplify Your Web Life</h2>
               <p className="mb-3 text-lg font-light">
                 {/* Say goodbye to cluttered bookmarks and scattered links. Yetti
                 streamlines your digital life by allowing you to save links, add
                 tags and notes, and effortlessly organize your web bookmarks. */}
                 Wave goodbye to chaotic bookmarks and tangled links. Yetti makes
-                it a breeze to save, tag, and arrange your bookmarks, so you can
-                focus on what truly matters. Let Yetti do the heavy lifting for
-                you.
+                it a breeze to save, search and manage your links.
               </p>
               <p className="mb-6 text-muted-foreground">
                 Focus on what matters most, and let Yetti handle the rest.
               </p>
             </div>
             {/* img */}
-            <div className="flex flex-col md:w-6/12 lg:w-7/12">
+            <div className="flex flex-col rounded-md md:w-6/12 lg:w-7/12">
               <img
                 alt="product"
                 className="ml-auto"
@@ -120,7 +118,7 @@ const LandingPage = (props: Props) => {
         </div>
       </section>
 
-      {/* wave */}
+      {/* WAVE DESIGN */}
       <section>
         <svg
           xmlns="http://www.w3.org/2000/svg"

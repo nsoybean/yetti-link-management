@@ -3,14 +3,10 @@ import {
   DropdownMenuContent,
   DropdownMenuGroup,
   DropdownMenuItem,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
 import {
   DotsVerticalIcon,
-  ArchiveIcon,
-  StarIcon,
-  ReaderIcon,
   BookmarkIcon,
   CopyIcon,
   CheckboxIcon,
@@ -43,14 +39,21 @@ const ArticleOptions = ({ article }: Props) => {
     onSuccess: (data) => {
       toast.dismiss(currToast);
       toast.success("Link deleted!");
+
+      // invalidate query
+      if (article.state === "AVAILABLE") {
+        queryClient.invalidateQueries({ queryKey: ["get-all-articles"] });
+      } else {
+        queryClient.invalidateQueries({
+          queryKey: ["get-all-archived-articles"],
+        });
+      }
     },
     onError: (error) => {
       toast.dismiss(currToast);
       toast.error(`Error!`);
     },
-    onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ["get-all-articles"] });
-    },
+    onSettled: () => {},
   });
 
   const { mutate: archiveArticleById } = useMutation({
@@ -58,14 +61,21 @@ const ArticleOptions = ({ article }: Props) => {
     onSuccess: (data) => {
       toast.dismiss(currToast);
       toast.success("Link archived!");
+
+      // invalidate query
+      if (article.state === "AVAILABLE") {
+        queryClient.invalidateQueries({ queryKey: ["get-all-articles"] });
+      } else {
+        queryClient.invalidateQueries({
+          queryKey: ["get-all-archived-articles"],
+        });
+      }
     },
     onError: (error) => {
       toast.dismiss(currToast);
       toast.error(`Error!`);
     },
-    onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ["get-all-articles"] });
-    },
+    onSettled: () => {},
   });
 
   const { mutate: unarchiveArticleById } = useMutation({
