@@ -10,9 +10,11 @@ import {
   BookmarkIcon,
   CopyIcon,
   CheckboxIcon,
+  Cross1Icon,
+  Cross2Icon,
 } from "@radix-ui/react-icons";
 import { Button } from "./ui/button";
-import { DeleteIcon } from "lucide-react";
+import { DeleteIcon, PlusIcon } from "lucide-react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import {
   archiveArticle,
@@ -21,8 +23,21 @@ import {
 } from "@/api/articles";
 import toast from "react-hot-toast";
 import { Article } from "@/typings/article/Article";
-import Dialog from "./Dialog";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import ConfirmationDialog from "./Dialog";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "./ui/dialog";
+import { Label } from "@radix-ui/react-dropdown-menu";
+import { Input } from "./ui/input";
+import { Badge } from "./ui/badge";
 
 type Props = {
   article: Article;
@@ -30,7 +45,10 @@ type Props = {
 
 const ArticleOptions = ({ article }: Props) => {
   const [openDialog, setOpenDialog] = useState<boolean>(false);
+  const [tagDialogOpen, setTagDialogOpen] = useState<boolean>(false);
   const [currToast, setCurrToast] = useState("");
+  const [tagList, setTagList] = useState<string[]>([]);
+  const [newTag, setNewTag] = useState<string>("");
   const queryClient = useQueryClient();
 
   // delete article
@@ -106,6 +124,22 @@ const ArticleOptions = ({ article }: Props) => {
     deleteArticleById({ id: article.id });
   }
 
+  async function toggleTagDialog() {
+    setTagDialogOpen((prev) => !prev);
+    setTagList([]);
+    setNewTag("");
+  }
+
+  function upsertTagValue(newTag: string) {
+    if (!tagList.includes(newTag)) {
+      setTagList([...tagList, newTag]);
+    }
+  }
+
+  function removeTagByIndex(index: number) {
+    const newTagList = tagList.filter((_, i) => i !== index);
+    setTagList(newTagList);
+  }
   return (
     <>
       {/* setting modal to false, prevent drop down from remaining open */}
@@ -130,7 +164,7 @@ const ArticleOptions = ({ article }: Props) => {
               <CopyIcon width={"18"} height={"18"} className="mr-2" /> Copy
             </DropdownMenuItem>
             {article.state === "AVAILABLE" && (
-              <DropdownMenuItem>
+              <DropdownMenuItem onClick={() => toggleTagDialog()}>
                 <BookmarkIcon width={"18"} height={"18"} className="mr-2" /> Tag
               </DropdownMenuItem>
             )}
@@ -165,13 +199,85 @@ const ArticleOptions = ({ article }: Props) => {
       </DropdownMenu>
 
       {/* alert dialog */}
-      <Dialog
+      <ConfirmationDialog
         openDialog={openDialog}
         setOpenDialog={setOpenDialog}
         cb={menuItemSelect}
         title="Are you sure?"
         description="This action cannot be undone. This will delete the article."
       />
+
+      <Dialog onOpenChange={toggleTagDialog} open={tagDialogOpen}>
+        <DialogTrigger asChild></DialogTrigger>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Add Tags</DialogTitle>
+            <DialogDescription>
+              They help you to find your articles more easily
+            </DialogDescription>
+          </DialogHeader>
+
+          {/* tags */}
+          {/* render tag as badge */}
+          {tagList && tagList.length > 0 ? (
+            <div className="flex flex-wrap gap-2">
+              {tagList.map((tag, index) => (
+                <Badge key={index} className="max-w-24" variant={"secondary"}>
+                  <p className="overflow-hidden truncate"> {tag}</p>
+                  <Cross2Icon
+                    onClick={() => {
+                      removeTagByIndex(index);
+                    }}
+                    className="ml-2 h-4 w-4 flex-shrink-0 hover:cursor-pointer"
+                  />
+                </Badge>
+              ))}
+            </div>
+          ) : (
+            <></>
+          )}
+          <div className="flex items-center space-x-2">
+            <div className="grid flex-1 gap-2">
+              <Label className="sr-only">Link</Label>
+              <Input
+                value={newTag}
+                onChange={(e) => setNewTag(e.target.value)}
+              />
+            </div>
+            <Button
+              type="submit"
+              size="sm"
+              variant={"secondary"}
+              className="px-3"
+              onClick={() => {
+                // alert if more than limit
+                if (tagList.length >= 5) {
+                  toast.error("Maximum 5 tags");
+                  return;
+                }
+                // reset if empty
+                if (newTag.trim() === "") {
+                  setNewTag("");
+                  return;
+                }
+
+                upsertTagValue(newTag);
+                setNewTag(""); // reset
+              }}
+            >
+              <span className="sr-only">Copy</span>
+              <PlusIcon className="h-4 w-4" />
+            </Button>
+          </div>
+          <DialogFooter className="sm:justify-end">
+            <DialogClose asChild>
+              <Button type="button" variant="default">
+                Save
+              </Button>
+            </DialogClose>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </>
   );
 };

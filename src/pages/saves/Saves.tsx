@@ -21,6 +21,7 @@ import ArticleSkeleton from "@/components/ArticleSkeleton";
 import { PlusIcon } from "@radix-ui/react-icons";
 import { SaveArticleInput } from "@/components/SaveArticleInput";
 import yetti from "/cuteCreativeYeti.jpeg";
+import { Badge } from "@/components/ui/badge";
 
 const Saves = () => {
   const [currPage, setCurrPage] = useState(1);
@@ -93,7 +94,15 @@ const Saves = () => {
           </div>
         </CardHeader>
         {/* content */}
-        <CardContent className="grid gap-4"></CardContent>
+        {article?.tags.length > 0 && (
+          <CardContent className="flex w-full flex-row items-center justify-start gap-2 px-3">
+            {article.tags.map((tag, index) => (
+              <Badge className="max-w-24" variant={"secondary"} key={index}>
+                <p className="overflow-hidden truncate"> {tag.name}</p>
+              </Badge>
+            ))}
+          </CardContent>
+        )}
         <CardFooter className="w-full gap-1">
           <Button className="w-full" asChild>
             <a rel="noopener noreferrer" href={article.link} target="_blank">

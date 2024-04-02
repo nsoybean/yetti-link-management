@@ -19,12 +19,9 @@ type Props = {
   cb: () => Promise<void>;
 };
 
-const Dialog = (props: Props) => {
+const ConfirmationDialog = (props: Props) => {
   return (
     <AlertDialog open={props.openDialog} onOpenChange={props.setOpenDialog}>
-      {/* <AlertDialogTrigger asChild>
-        <></>
-      </AlertDialogTrigger> */}
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>{props.title}</AlertDialogTitle>
@@ -41,4 +38,4 @@ const Dialog = (props: Props) => {
   );
 };
 
-export default Dialog;
+export default ConfirmationDialog;
