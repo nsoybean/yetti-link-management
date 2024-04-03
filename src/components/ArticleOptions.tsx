@@ -23,7 +23,7 @@ import {
 } from "@/api/articles";
 import toast from "react-hot-toast";
 import { Article } from "@/typings/article/Article";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import ConfirmationDialog from "./Dialog";
 import {
   Dialog,
@@ -48,8 +48,34 @@ const ArticleOptions = ({ article }: Props) => {
   const [tagDialogOpen, setTagDialogOpen] = useState<boolean>(false);
   const [currToast, setCurrToast] = useState("");
   const [tagList, setTagList] = useState<string[]>([]);
-  const [newTag, setNewTag] = useState<string>("");
+  // const [newTag, setNewTag] = useState<string>("");
   const queryClient = useQueryClient();
+  const tagInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    console.log("🚀 ~ ArticleOptions ~ tagList:", tagList);
+  }, [tagList]);
+
+  useEffect(() => {
+    document.addEventListener("keydown", onKeyPress);
+
+    return () => {
+      document.removeEventListener("keydown", onKeyPress);
+    };
+  }, []);
+
+  const onKeyPress = async (event: KeyboardEvent) => {
+    // Check if the 'enter key' key is pressed and the focus is on the input
+    // if (
+    //   event.key === "Enter" &&
+    //   document.activeElement === tagInputRef.current
+    // ) {
+    //   if (tagInputRef.current) {
+    //     event.preventDefault();
+    //     upsertTagValue(tagInputRef.current.value);
+    //   }
+    // }
+  };
 
   // delete article
   const { mutate: deleteArticleById } = useMutation({
@@ -127,12 +153,39 @@ const ArticleOptions = ({ article }: Props) => {
   async function toggleTagDialog() {
     setTagDialogOpen((prev) => !prev);
     setTagList([]);
-    setNewTag("");
+    if (tagInputRef.current) {
+      tagInputRef.current.value = "";
+    }
   }
 
-  function upsertTagValue(newTag: string) {
-    if (!tagList.includes(newTag)) {
-      setTagList([...tagList, newTag]);
+  function upsertTagValue(tag: string) {
+    const trimmedTag = tag.trim();
+
+    // alert if more than limit
+    if (tagList.length >= 5) {
+      toast.error("Maximum 5 tags");
+      return;
+    }
+
+    // reset if empty space
+    if (trimmedTag === "") {
+      if (tagInputRef.current) {
+        tagInputRef.current.value = "";
+      }
+      return;
+    }
+
+    if (!tagList.includes(trimmedTag)) {
+      // create deep copy of array and set state
+      const newTagList = [...tagList];
+      newTagList.push(trimmedTag);
+      setTagList(newTagList);
+    }
+
+    // reset
+    if (tagInputRef.current) {
+      tagInputRef.current.value = "";
+      tagInputRef.current.focus();
     }
   }
 
@@ -240,8 +293,16 @@ const ArticleOptions = ({ article }: Props) => {
             <div className="grid flex-1 gap-2">
               <Label className="sr-only">Link</Label>
               <Input
-                value={newTag}
-                onChange={(e) => setNewTag(e.target.value)}
+                ref={tagInputRef}
+                // value={() => {
+                //   (function () {
+                //     if (tagInputRef.current) {
+                //       return tagInputRef.current.value;
+                //     }
+                //     return "hi";
+                //   })();
+                // }}
+                // onChange={(e) => setNewTag(e.target.value)}
               />
             </div>
             <Button
@@ -250,19 +311,9 @@ const ArticleOptions = ({ article }: Props) => {
               variant={"secondary"}
               className="px-3"
               onClick={() => {
-                // alert if more than limit
-                if (tagList.length >= 5) {
-                  toast.error("Maximum 5 tags");
-                  return;
+                if (tagInputRef.current) {
+                  upsertTagValue(tagInputRef.current.value);
                 }
-                // reset if empty
-                if (newTag.trim() === "") {
-                  setNewTag("");
-                  return;
-                }
-
-                upsertTagValue(newTag);
-                setNewTag(""); // reset
               }}
             >
               <span className="sr-only">Copy</span>
@@ -271,7 +322,13 @@ const ArticleOptions = ({ article }: Props) => {
           </div>
           <DialogFooter className="sm:justify-end">
             <DialogClose asChild>
-              <Button type="button" variant="default">
+              <Button
+                type="button"
+                variant="default"
+                onClick={() => {
+                  return console.log("saving tag list:", tagList);
+                }}
+              >
                 Save
               </Button>
             </DialogClose>
