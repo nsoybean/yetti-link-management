@@ -69,8 +69,8 @@ const Saves = () => {
             // else fallback to link[0] letter
             <div
               style={{ backgroundColor: article.color || "#87c3ff" }}
-              className={`h-30
-               relative mb-2 flex w-full items-center justify-start overflow-hidden rounded-lg pl-[30px] text-[150px] font-bold  sm:h-48`}
+              className={`relative
+                flex h-36 w-full items-center justify-start overflow-hidden rounded-lg pl-[30px] text-[150px] font-bold  sm:h-48`}
             >
               {article?.title?.charAt(0) || "P"}
             </div>
