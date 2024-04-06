@@ -25,8 +25,8 @@ const LandingPage = (props: Props) => {
           </main>
 
           <p className="mx-auto text-lg text-muted-foreground md:w-10/12">
-            Save, tag, and jot down notes effortlessly with Yetti. Keep your
-            links organized and always within reach.
+            Your link management platform with Yetti. Keep your links organized
+            and always within reach.
           </p>
         </div>
         <div className="flex flex-col gap-2">
@@ -50,8 +50,8 @@ const LandingPage = (props: Props) => {
                 {/* Say goodbye to cluttered bookmarks and scattered links. Yetti
                 streamlines your digital life by allowing you to save links, add
                 tags and notes, and effortlessly organize your web bookmarks. */}
-                Wave goodbye to chaotic bookmarks and tangled links. Yetti makes
-                it a breeze to save, search and manage your links.
+                Say goodbye to chaotic bookmarks and tangled links. Yetti makes
+                it a breeze to save, tag, search and manage your links.
               </p>
               <p className="mb-6 text-muted-foreground">
                 Focus on what matters most, and let Yetti handle the rest.
@@ -83,7 +83,7 @@ const LandingPage = (props: Props) => {
               <h4 className="text-md mt-2 pt-2 font-bold">Link Preview</h4>
               {/* desc */}
               <p className="w-md pt-0.5 font-normal leading-tight">
-                Quick glance at the content of your saved links.
+                Get a quick glance at the content of your saved links.
               </p>
             </div>
 
@@ -110,8 +110,8 @@ const LandingPage = (props: Props) => {
               <h4 className="text-md mt-2 pt-2 font-bold">Smart Tagging</h4>
               {/* desc */}
               <p className="w-md pt-0.5 font-normal leading-tight">
-                Automatically organize your bookmarks with intelligent tagging.
-                Find what you need faster with smart categorization.
+                Automatically organize your links with intelligent tagging. Find
+                what you need faster with smart categorization.
               </p>
             </div>
           </div>
