@@ -18,6 +18,7 @@ import ArticleOptions from "@/components/ArticleOptions";
 import ArticleSkeleton from "@/components/ArticleSkeleton";
 import ArticlePagination from "@/components/ArticlePagination";
 import blankSlateContent from "/blankSlateContent.svg";
+import Articles from "@/components/Articles";
 
 const Archives = () => {
   const [currPage, setCurrPage] = useState(1);
@@ -118,7 +119,7 @@ const Archives = () => {
         {isLoading && <ArticleSkeleton numCards={6} />}
 
         {/* show articles */}
-        {articles && renderArticles(articles.data)}
+        {articles && <Articles articles={articles.data} />}
       </div>
 
       {/* pagination */}

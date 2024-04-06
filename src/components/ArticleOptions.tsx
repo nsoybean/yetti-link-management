@@ -10,7 +10,6 @@ import {
   BookmarkIcon,
   CopyIcon,
   CheckboxIcon,
-  Cross1Icon,
   Cross2Icon,
 } from "@radix-ui/react-icons";
 import { Button } from "./ui/button";
@@ -19,6 +18,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import {
   archiveArticle,
   deleteArticle,
+  tagArticle,
   unarchiveArticle,
 } from "@/api/articles";
 import toast from "react-hot-toast";
@@ -43,18 +43,44 @@ type Props = {
   article: Article;
 };
 
+function didTagsChange(array1: string[], array2: string[]) {
+  // Check if the lengths of both arrays are the same
+  if (array1.length !== array2.length) {
+    return true;
+  }
+
+  // Sort both arrays based on the 'name' property
+  const sortedArray1 = array1.slice().sort((a, b) => a.localeCompare(b));
+  const sortedArray2 = array2.slice().sort((a, b) => a.localeCompare(b));
+
+  // Iterate through both sorted arrays and compare the 'name' property of each object
+  for (let i = 0; i < sortedArray1.length; i++) {
+    if (sortedArray1[i] !== sortedArray2[i]) {
+      return true;
+    }
+  }
+
+  // If all comparisons passed, the arrays are equal
+  return false;
+}
+
 const ArticleOptions = ({ article }: Props) => {
   const [openDialog, setOpenDialog] = useState<boolean>(false);
   const [tagDialogOpen, setTagDialogOpen] = useState<boolean>(false);
   const [currToast, setCurrToast] = useState("");
   const [tagList, setTagList] = useState<string[]>([]);
-  // const [newTag, setNewTag] = useState<string>("");
   const queryClient = useQueryClient();
   const tagInputRef = useRef<HTMLInputElement>(null);
 
+  // copy of original tags
+  const originalTags = article?.tagIds.map((tag) => tag.name);
+
+  // if user open add tags dialog, load current tags into state
   useEffect(() => {
-    console.log("🚀 ~ ArticleOptions ~ tagList:", tagList);
-  }, [tagList]);
+    if (article) {
+      setTagList(article?.tagIds.map((tag) => tag.name));
+    }
+  }, [tagDialogOpen]);
 
   useEffect(() => {
     document.addEventListener("keydown", onKeyPress);
@@ -125,6 +151,7 @@ const ArticleOptions = ({ article }: Props) => {
   const { mutate: unarchiveArticleById } = useMutation({
     mutationFn: unarchiveArticle,
     onSuccess: (data) => {
+      toast.dismiss(currToast);
       toast.success("Link restored!");
     },
     onError: (error) => {
@@ -135,6 +162,28 @@ const ArticleOptions = ({ article }: Props) => {
         queryKey: ["get-all-archived-articles"],
       });
     },
+  });
+
+  const { mutate: tagArticleById } = useMutation({
+    mutationFn: tagArticle,
+    onSuccess: (data) => {
+      toast.dismiss(currToast);
+      toast.success("Tags added!");
+
+      // invalidate query
+      if (article.state === "AVAILABLE") {
+        queryClient.invalidateQueries({ queryKey: ["get-all-articles"] });
+      } else {
+        queryClient.invalidateQueries({
+          queryKey: ["get-all-archived-articles"],
+        });
+      }
+    },
+    onError: (error) => {
+      toast.dismiss(currToast);
+      toast.error(`Error!`);
+    },
+    onSettled: () => {},
   });
 
   async function copyTextToClipboard(link: string) {
@@ -175,7 +224,7 @@ const ArticleOptions = ({ article }: Props) => {
       return;
     }
 
-    if (!tagList.includes(trimmedTag)) {
+    if (!tagList.some((tag) => tag === trimmedTag)) {
       // create deep copy of array and set state
       const newTagList = [...tagList];
       newTagList.push(trimmedTag);
@@ -308,7 +357,7 @@ const ArticleOptions = ({ article }: Props) => {
             <Button
               type="submit"
               size="sm"
-              variant={"secondary"}
+              variant={"default"}
               className="px-3"
               onClick={() => {
                 if (tagInputRef.current) {
@@ -324,9 +373,13 @@ const ArticleOptions = ({ article }: Props) => {
             <DialogClose asChild>
               <Button
                 type="button"
-                variant="default"
+                variant={
+                  didTagsChange(originalTags, tagList) ? "default" : "secondary"
+                }
+                disabled={!didTagsChange(originalTags, tagList)}
                 onClick={() => {
-                  return console.log("saving tag list:", tagList);
+                  console.log("🚀 ~ ArticleOptions ~ tagList:", tagList);
+                  tagArticleById({ id: article.id, tags: tagList });
                 }}
               >
                 Save

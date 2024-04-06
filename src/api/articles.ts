@@ -77,3 +77,16 @@ export async function deleteArticle({ id }: { id: string }): Promise<{
   const result = await api.delete(`bookmark/${id}`);
   return result.data;
 }
+
+export async function tagArticle({
+  id,
+  tags,
+}: {
+  id: string;
+  tags: string[];
+}): Promise<{
+  id: string;
+}> {
+  const result = await api.patch(`bookmark/${id}/tags`, { tags });
+  return result.data;
+}

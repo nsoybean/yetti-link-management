@@ -9,5 +9,10 @@ export interface Article {
   title: string;
   domain: string;
   updatedAt: Date;
-  tags: { id: string; name: string }[];
+  tagIds: Tag[];
+}
+
+export interface Tag {
+  id?: string;
+  name: string;
 }
