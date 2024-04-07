@@ -12,12 +12,21 @@ import ArticleOptions from "./ArticleOptions";
 import ToolTipText from "./TooltipText";
 import { Button } from "./ui/button";
 import { Badge } from "./ui/badge";
+import randomColor from "randomcolor";
 
 type Props = {
   articles: IArticle[];
 };
 
 const Articles = (props: Props) => {
+  function generateColorBaseOnSeed(seed: string) {
+    const color = randomColor({
+      luminosity: "light",
+      seed: seed,
+    });
+    return color;
+  }
+
   return (
     <>
       {props.articles.map((article, index) => (
@@ -36,11 +45,15 @@ const Articles = (props: Props) => {
             ) : (
               // else fallback to link[0] letter
               <div
-                style={{ backgroundColor: article.color || "#87c3ff" }}
+                style={{
+                  // dynamically generate color based on link
+                  backgroundColor:
+                    generateColorBaseOnSeed(article.link) || "#87c3ff",
+                }}
                 className={`relative mb-2
                     flex h-36 w-full items-center justify-start overflow-hidden rounded-lg pl-[30px] text-[150px] font-bold  sm:h-48`}
               >
-                {article?.title?.charAt(0) || "P"}
+                {article?.domain?.charAt(0) || "P"}
               </div>
             )}
             {/* title and desc */}
