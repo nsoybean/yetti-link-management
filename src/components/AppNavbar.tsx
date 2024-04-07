@@ -29,7 +29,7 @@ const LogoIcon = () => <img className="h-8 w-8" src={appIcon} alt="Yetti.ai" />;
 export const mobileMenu: RouteProps[] = [
   { name: "Saves", href: "/saves", icon: Link2Icon },
   { name: "Archives", href: "/archives", icon: ArchiveIcon },
-  { name: "Tags", href: "/tags", icon: BookmarkIcon },
+  // { name: "Tags", href: "/tags", icon: BookmarkIcon },
 ];
 
 export const desktopMenu: RouteProps[] = [];
