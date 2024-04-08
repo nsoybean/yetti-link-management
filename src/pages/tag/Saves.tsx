@@ -5,7 +5,6 @@ import ArticlePagination from "@/components/ArticlePagination";
 import ArticleSkeleton from "@/components/ArticleSkeleton";
 import Articles from "@/components/Articles";
 import { useNavigate } from "react-router-dom";
-import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
 import { ArrowLeftIcon } from "lucide-react";
 
