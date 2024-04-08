@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { parseAuthFromRedirectUrl } from "@/lib/auth";
 import { setAuthToken } from "@/configs/auth";
 import { useQuery } from "@tanstack/react-query";
@@ -19,9 +19,11 @@ import ArticleSkeleton from "@/components/ArticleSkeleton";
 import ArticlePagination from "@/components/ArticlePagination";
 import blankSlateContent from "/blankSlateContent.svg";
 import Articles from "@/components/Articles";
+import { Input } from "@/components/ui/input";
 
-const Archives = () => {
+const Tag = () => {
   const [currPage, setCurrPage] = useState(1);
+  const inputRef = useRef<HTMLInputElement>(null);
 
   const {
     isLoading,
@@ -32,44 +34,36 @@ const Archives = () => {
     queryFn: async () => getAllArchivedArticles(currPage),
   });
 
-  // empty
-  if (!isLoading && articles?.total_records === 0) {
-    return (
-      <div className="container mx-auto flex justify-center px-8 py-16">
-        <div className="flex flex-col items-center justify-center gap-10">
-          <img className="w-[220px] md:w-[320px]" src={blankSlateContent} />
-
-          {/* text */}
-          <div className="flex flex-col items-center justify-center gap-2">
-            <h1 className="text-md scroll-m-20">No archived articles</h1>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
   return (
     <div className="mx-auto w-full">
       {/* article grid */}
-      <div className="mb-12 grid grid-cols-1 gap-4 px-8 md:grid-cols-2 lg:grid-cols-3">
+      <div className="mb-12 gap-4 px-8">
         {/* loading */}
-        {isLoading && <ArticleSkeleton numCards={6} />}
 
+        {/* {isLoading && <ArticleSkeleton numCards={6} />} */}
+        <div className="mb-4 text-2xl font-semibold lg:mb-6"> All tags </div>
+
+        <Input
+          className="p-6"
+          ref={inputRef}
+          placeholder="Search for your tags"
+          autoFocus={true}
+        />
         {/* show articles */}
-        {articles && <Articles articles={articles.data} />}
+        {/* {articles && <Articles articles={articles.data} />} */}
       </div>
 
       {/* pagination */}
-      <div className="bottom-0 mb-10">
+      {/* <div className="bottom-0 mb-10">
         <ArticlePagination
           currentPage={currPage}
           setPage={setCurrPage}
           recordsPerPage={9}
           totalRecords={articles?.total_records || 0}
         />
-      </div>
+      </div> */}
     </div>
   );
 };
 
-export default Archives;
+export default Tag;

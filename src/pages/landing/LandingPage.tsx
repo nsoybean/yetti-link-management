@@ -25,8 +25,8 @@ const LandingPage = (props: Props) => {
           </main>
 
           <p className="mx-auto text-lg text-muted-foreground md:w-10/12">
-            Your link management platform with Yetti. Keep your links organized
-            and always within reach.
+            Link management platform to keep your links organized, always
+            accessible.
           </p>
         </div>
         <div className="flex flex-col gap-2">
@@ -34,7 +34,7 @@ const LandingPage = (props: Props) => {
             <a href={user ? "/saves" : "/login"}>Get started ➔</a>
           </Button>
           <p className="text-sm text-muted-foreground">
-            No credit card required.
+            No credit card required. Instant set up.
           </p>
         </div>
       </section>
@@ -83,7 +83,7 @@ const LandingPage = (props: Props) => {
               <h4 className="text-md mt-2 pt-2 font-bold">Link Preview</h4>
               {/* desc */}
               <p className="w-md pt-0.5 font-normal leading-tight">
-                Get a quick glance at the content of your saved links.
+                Preview image, title and description at a glance.
               </p>
             </div>
 

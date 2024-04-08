@@ -29,8 +29,6 @@ export async function getAllArchivedArticles(
   limit = 9,
 ): Promise<{ total_records: number; data: Article[] }> {
   const result = await api.get(`bookmark/archive?page=${page}&limit=${limit}`);
-  // wait 3s
-  await new Promise((resolve) => setTimeout(resolve, 3000));
   return result.data;
 }
 
