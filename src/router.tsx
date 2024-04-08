@@ -7,6 +7,7 @@ import Archives from "./pages/saves/Archives";
 import NotFoundPage from "./pages/NotFoundPage";
 import AccountPage from "./pages/auth/AccountPage";
 import Tag from "./pages/tag";
+import TagSaves from "./pages/tag/Saves";
 
 // import PricingPage from "./pages/pricing/Pricing";
 // import App from "./App";
@@ -35,6 +36,10 @@ const routes = {
   TagPageRoute: {
     to: "/tags",
     component: <Tag />,
+  },
+  TagSavesPageRoute: {
+    to: "/tags/saves",
+    component: <TagSaves />,
   },
   //   PricingPageRoute: {
   //     to: "/pricing",

@@ -6,12 +6,14 @@ import { Tag as ITag } from "@/typings/tag/Tag";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { search } from "fast-fuzzy";
+import { Separator } from "@/components/ui/separator";
+import { useNavigate } from "react-router-dom";
 
 const Tag = () => {
   const [localList, setLocalList] = useState<ITag[]>([]);
   const [currPage, setCurrPage] = useState(1);
   const inputRef = useRef<HTMLInputElement>(null);
-
+  const navigate = useNavigate();
   const {
     isLoading,
     error,
@@ -44,6 +46,7 @@ const Tag = () => {
         <div className="mb-4 text-2xl font-semibold lg:mb-6">
           All tags
           {tags?.total_records && <span> ({tags.total_records}) </span>}
+          {/* <Separator className="mt-2" /> */}
         </div>
 
         <Input
@@ -74,9 +77,10 @@ const Tag = () => {
           <div className="flex flex-wrap gap-2">
             {tags.data.map((tag: ITag) => (
               <Badge
-                className="mx-1 h-8 max-w-24 px-4 py-2 font-semibold hover:cursor-not-allowed"
+                className="mx-1 h-8 max-w-24 px-4 py-2 font-semibold"
                 variant={"default"}
                 key={tag.id}
+                onClick={() => navigate(`/tags/saves?tag=${tag.name}`)}
               >
                 <p className="overflow-hidden truncate font-semibold">
                   {tag.name}
@@ -94,6 +98,7 @@ const Tag = () => {
                 className="mx-1 h-8 max-w-24 px-4 py-2 font-semibold"
                 variant={"default"}
                 key={tag.id}
+                onClick={() => navigate(`/tags/saves?tag=${tag.name}`)}
               >
                 <p className="overflow-hidden truncate font-semibold">
                   {tag.name}

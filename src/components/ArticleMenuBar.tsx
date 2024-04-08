@@ -12,7 +12,7 @@ type Props = {};
 export const menuLinks: RouteProps[] = [
   { name: "Saves", href: "/saves", icon: Link2Icon },
   { name: "Archives", href: "/archives", icon: ArchiveIcon },
-  // { name: "Tags", href: "/tags", icon: BookmarkIcon },
+  { name: "Tags", href: "/tags", icon: BookmarkIcon },
 ];
 
 const ArticleMenuBar = (props: Props) => {
