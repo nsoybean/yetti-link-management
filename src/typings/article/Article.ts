@@ -1,3 +1,5 @@
+import { Tag } from "../tag/Tag";
+
 export interface Article {
   link: string;
   description: string;
@@ -10,9 +12,4 @@ export interface Article {
   domain: string;
   updatedAt: Date;
   tagIds: Tag[];
-}
-
-export interface Tag {
-  id?: string;
-  name: string;
 }

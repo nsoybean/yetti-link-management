@@ -1,39 +1,39 @@
 import { useEffect, useRef, useState } from "react";
-import { parseAuthFromRedirectUrl } from "@/lib/auth";
-import { setAuthToken } from "@/configs/auth";
 import { useQuery } from "@tanstack/react-query";
-import { getAllArchivedArticles } from "@/api/articles";
-import {
-  Card,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-  CardContent,
-  CardFooter,
-} from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Article } from "@/typings/article/Article";
-import { ArrowRight } from "lucide-react";
-import ArticleOptions from "@/components/ArticleOptions";
-import ArticleSkeleton from "@/components/ArticleSkeleton";
-import ArticlePagination from "@/components/ArticlePagination";
-import blankSlateContent from "/blankSlateContent.svg";
-import Articles from "@/components/Articles";
 import { Input } from "@/components/ui/input";
+import { getAllTags } from "@/api/tags";
+import { Tag as ITag } from "@/typings/tag/Tag";
+import { Badge } from "@/components/ui/badge";
+import { Skeleton } from "@/components/ui/skeleton";
+import { search } from "fast-fuzzy";
 
 const Tag = () => {
+  const [localList, setLocalList] = useState<ITag[]>([]);
   const [currPage, setCurrPage] = useState(1);
   const inputRef = useRef<HTMLInputElement>(null);
 
   const {
     isLoading,
     error,
-    data: articles,
+    data: tags,
   } = useQuery({
-    queryKey: ["get-all-archived-articles", currPage],
-    queryFn: async () => getAllArchivedArticles(currPage),
+    queryKey: ["get-all-tags", currPage],
+    queryFn: async () => getAllTags(currPage),
   });
 
+  function fuzzySearch(inputString: string) {
+    if (tags?.data && inputString.length > 0) {
+      const res = search(inputString, tags.data, {
+        keySelector: (obj) => obj.name,
+      });
+      setLocalList(res);
+      return;
+    }
+
+    // reset if input is empty
+    setLocalList([]);
+    return;
+  }
   return (
     <div className="mx-auto w-full">
       {/* article grid */}
@@ -41,16 +41,67 @@ const Tag = () => {
         {/* loading */}
 
         {/* {isLoading && <ArticleSkeleton numCards={6} />} */}
-        <div className="mb-4 text-2xl font-semibold lg:mb-6"> All tags </div>
+        <div className="mb-4 text-2xl font-semibold lg:mb-6">
+          All tags
+          {tags?.total_records && <span> ({tags.total_records}) </span>}
+        </div>
 
         <Input
-          className="p-6"
+          className="mb-4 p-6 lg:mb-6"
           ref={inputRef}
           placeholder="Search for your tags"
           autoFocus={true}
+          onChange={(e) => {
+            e.preventDefault();
+            fuzzySearch(e.target.value);
+          }}
         />
-        {/* show articles */}
-        {/* {articles && <Articles articles={articles.data} />} */}
+
+        {/* show tags */}
+        {isLoading && (
+          <div className="flex flex-wrap gap-2">
+            {[...Array(10)].map((val, index) => (
+              <Skeleton
+                key={index}
+                className="mx-1 h-[32px] w-[96px] gap-2  rounded-md  px-4 py-2 font-semibold"
+              />
+            ))}
+          </div>
+        )}
+
+        {/* initial */}
+        {tags?.data && tags?.data?.length > 0 && localList.length === 0 && (
+          <div className="flex flex-wrap gap-2">
+            {tags.data.map((tag: ITag) => (
+              <Badge
+                className="mx-1 h-8 max-w-24 px-4 py-2 font-semibold hover:cursor-not-allowed"
+                variant={"default"}
+                key={tag.id}
+              >
+                <p className="overflow-hidden truncate font-semibold">
+                  {tag.name}
+                </p>
+              </Badge>
+            ))}
+          </div>
+        )}
+
+        {/* fuzzy search */}
+        {localList.length >= 0 && (
+          <div className="flex flex-wrap gap-2">
+            {localList.map((tag: ITag) => (
+              <Badge
+                className="mx-1 h-8 max-w-24 px-4 py-2 font-semibold"
+                variant={"default"}
+                key={tag.id}
+              >
+                <p className="overflow-hidden truncate font-semibold">
+                  {tag.name}
+                </p>
+              </Badge>
+            ))}
+          </div>
+        )}
       </div>
 
       {/* pagination */}

@@ -1,9 +1,10 @@
 import api from "@/configs/api";
+import { Tag } from "@/typings/tag/Tag";
 
 export async function getAllTags(
   page = 1,
   limit = 50,
-): Promise<{ total_records: number; data: string[] }> {
-  const result = await api.get(`bookmark/archive?page=${page}&limit=${limit}`);
+): Promise<{ total_records: number; data: Tag[] }> {
+  const result = await api.get(`tag?page=${page}&limit=${limit}`);
   return result.data;
 }
