@@ -34,6 +34,7 @@ export default function App({ children }: { children: ReactNode }) {
       location.pathname === "/saves" ||
       location.pathname === "/archives" ||
       location.pathname === "/tags" ||
+      location.pathname === "/tags/saves" ||
       location.pathname === "/dashboard"
     );
   }, [location]);

@@ -19,8 +19,13 @@ export async function addArticle({ link }: { link: string }): Promise<{
 export async function getAllArticles(
   page = 1,
   limit = 9,
+  query?: string,
 ): Promise<{ total_records: number; data: Article[] }> {
-  let result = await api.get(`bookmark/?page=${page}&limit=${limit}`);
+  let url = `bookmark/?page=${page}&limit=${limit}`;
+  if (query) {
+    url += `&tag=${query}`;
+  }
+  let result = await api.get(url);
   return result.data;
 }
 
