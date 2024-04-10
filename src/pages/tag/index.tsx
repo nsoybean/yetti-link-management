@@ -63,10 +63,10 @@ const Tag = () => {
         {/* show tags */}
         {isLoading && (
           <div className="flex flex-wrap gap-2">
-            {[...Array(10)].map((val, index) => (
+            {[...Array(4)].map((val, index) => (
               <Skeleton
                 key={index}
-                className="mx-1 h-[32px] w-[96px] gap-2  rounded-md  px-4 py-2 font-semibold"
+                className="mx-1 h-8 w-[96px] gap-2 rounded-md px-4 py-2 font-semibold"
               />
             ))}
           </div>

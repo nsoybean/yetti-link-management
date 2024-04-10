@@ -13,12 +13,14 @@ import ToolTipText from "./TooltipText";
 import { Button } from "./ui/button";
 import { Badge } from "./ui/badge";
 import randomColor from "randomcolor";
+import { useNavigate } from "react-router-dom";
 
 type Props = {
   articles: IArticle[];
 };
 
 const Articles = (props: Props) => {
+  const navigate = useNavigate();
   function generateColorBaseOnSeed(seed: string) {
     const color = randomColor({
       luminosity: "light",
@@ -80,7 +82,12 @@ const Articles = (props: Props) => {
           {article?.tagIds?.length > 0 && (
             <CardContent className="flex w-full flex-row flex-wrap items-center justify-start gap-2 px-3">
               {article.tagIds.map((tag, index) => (
-                <Badge className="max-w-24" variant={"secondary"} key={index}>
+                <Badge
+                  className="max-w-24"
+                  variant={"secondary"}
+                  key={index}
+                  onClick={() => navigate(`/tags/saves?tag=${tag.name}`)}
+                >
                   <p className="overflow-hidden truncate font-semibold">
                     {tag.name}
                   </p>
