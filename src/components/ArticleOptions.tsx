@@ -161,6 +161,9 @@ const ArticleOptions = ({ article }: Props) => {
       queryClient.invalidateQueries({
         queryKey: ["get-all-archived-articles"],
       });
+      queryClient.invalidateQueries({
+        queryKey: ["get-all-articles"],
+      });
     },
   });
 
@@ -168,14 +171,22 @@ const ArticleOptions = ({ article }: Props) => {
     mutationFn: tagArticle,
     onSuccess: (data) => {
       toast.dismiss(currToast);
-      toast.success("Tags added!");
+      toast.success("Tags saved!");
 
       // invalidate query
       if (article.state === "AVAILABLE") {
-        queryClient.invalidateQueries({ queryKey: ["get-all-articles"] });
+        queryClient.invalidateQueries({
+          queryKey: ["get-all-articles"],
+        });
+        queryClient.invalidateQueries({
+          queryKey: ["get-all-tags"],
+        });
       } else {
         queryClient.invalidateQueries({
           queryKey: ["get-all-archived-articles"],
+        });
+        queryClient.invalidateQueries({
+          queryKey: ["get-all-tags"],
         });
       }
     },
@@ -378,7 +389,6 @@ const ArticleOptions = ({ article }: Props) => {
                 }
                 disabled={!didTagsChange(originalTags, tagList)}
                 onClick={() => {
-                  console.log("🚀 ~ ArticleOptions ~ tagList:", tagList);
                   tagArticleById({ id: article.id, tags: tagList });
                 }}
               >

@@ -6,7 +6,6 @@ import { Tag as ITag } from "@/typings/tag/Tag";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { search } from "fast-fuzzy";
-import { Separator } from "@/components/ui/separator";
 import { useNavigate } from "react-router-dom";
 
 const Tag = () => {
@@ -47,6 +46,7 @@ const Tag = () => {
           All tags
           {tags?.total_records && <span> ({tags.total_records}) </span>}
           {/* <Separator className="mt-2" /> */}
+          {/* <Separator className="mt-2" /> */}
         </div>
 
         <Input
@@ -77,7 +77,7 @@ const Tag = () => {
           <div className="flex flex-wrap gap-2">
             {tags.data.map((tag: ITag) => (
               <Badge
-                className="mx-1 h-8 max-w-24 px-4 py-2 font-semibold"
+                className="mx-1 h-8 max-w-24 px-4 py-2 font-semibold hover:cursor-pointer"
                 variant={"default"}
                 key={tag.id}
                 onClick={() => navigate(`/tags/saves?tag=${tag.name}`)}
@@ -95,7 +95,7 @@ const Tag = () => {
           <div className="flex flex-wrap gap-2">
             {localList.map((tag: ITag) => (
               <Badge
-                className="mx-1 h-8 max-w-24 px-4 py-2 font-semibold"
+                className="mx-1 h-8 max-w-24 px-4 py-2 font-semibold hover:cursor-pointer"
                 variant={"default"}
                 key={tag.id}
                 onClick={() => navigate(`/tags/saves?tag=${tag.name}`)}
