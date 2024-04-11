@@ -14,12 +14,14 @@ import { Button } from "./ui/button";
 import { Badge } from "./ui/badge";
 import randomColor from "randomcolor";
 import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 type Props = {
   articles: IArticle[];
 };
 
 const Articles = (props: Props) => {
+  const navigate = useNavigate();
   const navigate = useNavigate();
   function generateColorBaseOnSeed(seed: string) {
     const color = randomColor({

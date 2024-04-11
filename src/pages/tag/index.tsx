@@ -6,7 +6,6 @@ import { Tag as ITag } from "@/typings/tag/Tag";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { search } from "fast-fuzzy";
-import { Separator } from "@/components/ui/separator";
 import { useNavigate } from "react-router-dom";
 
 const Tag = () => {
@@ -46,6 +45,7 @@ const Tag = () => {
         <div className="mb-4 text-2xl font-semibold lg:mb-6">
           All tags
           {tags?.total_records && <span> ({tags.total_records}) </span>}
+          {/* <Separator className="mt-2" /> */}
           {/* <Separator className="mt-2" /> */}
         </div>
 
