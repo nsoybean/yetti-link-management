@@ -170,10 +170,7 @@ const AccountPage = (props: Props) => {
           <label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
             Subscription Plan
           </label>
-          <Badge
-            variant={"default"}
-            className="h-8 w-fit text-sm font-normal hover:cursor-not-allowed"
-          >
+          <Badge variant={"default"} className="h-8 w-fit text-sm font-normal">
             Free Tier
           </Badge>
         </div>

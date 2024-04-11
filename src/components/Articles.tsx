@@ -83,7 +83,7 @@ const Articles = (props: Props) => {
             <CardContent className="flex w-full flex-row flex-wrap items-center justify-start gap-2 px-3">
               {article.tagIds.map((tag, index) => (
                 <Badge
-                  className="max-w-24"
+                  className="max-w-24 hover:cursor-pointer"
                   variant={"secondary"}
                   key={index}
                   onClick={() => navigate(`/tags/saves?tag=${tag.name}`)}

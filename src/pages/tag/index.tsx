@@ -77,7 +77,7 @@ const Tag = () => {
           <div className="flex flex-wrap gap-2">
             {tags.data.map((tag: ITag) => (
               <Badge
-                className="mx-1 h-8 max-w-24 px-4 py-2 font-semibold"
+                className="mx-1 h-8 max-w-24 px-4 py-2 font-semibold hover:cursor-pointer"
                 variant={"default"}
                 key={tag.id}
                 onClick={() => navigate(`/tags/saves?tag=${tag.name}`)}
@@ -95,7 +95,7 @@ const Tag = () => {
           <div className="flex flex-wrap gap-2">
             {localList.map((tag: ITag) => (
               <Badge
-                className="mx-1 h-8 max-w-24 px-4 py-2 font-semibold"
+                className="mx-1 h-8 max-w-24 px-4 py-2 font-semibold hover:cursor-pointer"
                 variant={"default"}
                 key={tag.id}
                 onClick={() => navigate(`/tags/saves?tag=${tag.name}`)}
