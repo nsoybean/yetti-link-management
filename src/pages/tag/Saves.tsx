@@ -8,6 +8,7 @@ import { useNavigate } from "react-router-dom";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
 import { ArrowLeftIcon } from "lucide-react";
+import ToolTipText from "@/components/TooltipText";
 
 const TagSaves = () => {
   const [currPage, setCurrPage] = useState(1);
@@ -35,11 +36,23 @@ const TagSaves = () => {
   return (
     <main className="container mx-auto">
       {/* tag header */}
-      <div className="mb-4 gap-4 px-8 text-2xl font-semibold lg:mb-4">
-        {searchQueryTag}
-        {articles && articles?.total_records > 0 && (
-          <span> {`(${articles.total_records})`} </span>
-        )}
+      <div className="mb-4 flex flex-row items-center justify-start gap-4 px-8 lg:mb-4">
+        <ToolTipText
+          className="line-clamp-2 font-thin"
+          text="Back"
+          child={
+            <ArrowLeftIcon
+              className="h-6 w-6 hover:cursor-pointer"
+              onClick={() => navigate("/tags")}
+            />
+          }
+        />
+        <div className="text-2xl font-semibold">
+          {searchQueryTag}
+          {articles && articles?.total_records > 0 && (
+            <span> {`(${articles.total_records})`} </span>
+          )}
+        </div>
       </div>
 
       {/* is loading */}
