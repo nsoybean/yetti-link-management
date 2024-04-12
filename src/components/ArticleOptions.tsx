@@ -38,6 +38,7 @@ import {
 import { Label } from "@radix-ui/react-dropdown-menu";
 import { Input } from "./ui/input";
 import { Badge } from "./ui/badge";
+import { AxiosError } from "axios";
 
 type Props = {
   article: Article;
@@ -191,6 +192,14 @@ const ArticleOptions = ({ article }: Props) => {
       }
     },
     onError: (error) => {
+      if (
+        error instanceof AxiosError &&
+        error.response?.data?.statusCode === 400 // bad request
+      ) {
+        toast.dismiss(currToast);
+        toast.error(`${error.response?.data?.message}`);
+        return;
+      }
       toast.dismiss(currToast);
       toast.error(`Error!`);
     },
@@ -376,7 +385,7 @@ const ArticleOptions = ({ article }: Props) => {
                 }
               }}
             >
-              <span className="sr-only">Copy</span>
+              <span className="sr-only">Add tag</span>
               <PlusIcon className="h-4 w-4" />
             </Button>
           </div>
