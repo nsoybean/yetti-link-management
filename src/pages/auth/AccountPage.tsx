@@ -8,7 +8,6 @@ type Props = {};
 
 const AccountPage = (props: Props) => {
   const { data: user, isLoading } = useAuth();
-  console.log("🚀 ~ AccountPage ~ isLoading:", isLoading);
 
   // skeleton
   // if (isLoading) {

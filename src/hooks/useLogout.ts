@@ -9,8 +9,6 @@ export default function useLogout() {
     removeLocalUserData();
 
     // clear cache
-
-    console.log("🚀 ~ logout ~ clearing cache:");
     queryClient.removeQueries({ queryKey: ["getMe"] });
 
     // redirect

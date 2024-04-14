@@ -73,8 +73,8 @@ const LandingPage = (props: Props) => {
       {/* FEATURES */}
       <section className="py-6 sm:py-32">
         <div className="container">
-          <div className="flex flex-col gap-2 sm:flex-row">
-            {/* feat 1: link preview */}
+          <div className="flex flex-col gap-3 sm:flex-row">
+            {/* feat: link preview */}
             <div className="my-4 flex flex-col md:w-6/12 lg:w-4/12">
               <div className="flex h-[65px] w-[65px] items-center justify-center rounded-full bg-primary/[.06] text-primary">
                 <Link2Icon width={20} height={20} />
@@ -83,25 +83,12 @@ const LandingPage = (props: Props) => {
               <h4 className="text-md mt-2 pt-2 font-bold">Link Preview</h4>
               {/* desc */}
               <p className="w-md pt-0.5 font-normal leading-tight">
-                Preview image, title and description at a glance.
+                Preview image, title and description of saved link directly
+                within Yetti.
               </p>
             </div>
 
-            {/* feat 2: add notes */}
-            <div className="my-4 flex flex-col md:w-6/12 lg:w-4/12">
-              <div className="flex h-[65px] w-[65px] items-center justify-center rounded-full bg-primary/[.06] text-primary">
-                <NotebookTextIcon width={18} height={18} />
-              </div>
-              {/* title */}
-              <h4 className="text-md mt-2 pt-2 font-bold">Rich Text Editor</h4>
-              {/* desc */}
-              <p className="w-md pt-0.5 font-normal leading-tight">
-                Add custom notes within Yetti. Format your notes exactly how you
-                want them.
-              </p>
-            </div>
-
-            {/* feat 3: smart tagging */}
+            {/* feat: smart tagging */}
             <div className="my-4 flex flex-col md:w-6/12 lg:w-4/12">
               <div className="flex h-[65px] w-[65px] items-center justify-center rounded-full bg-primary/[.06] text-primary">
                 <TagIcon width={18} height={18} />
@@ -112,6 +99,20 @@ const LandingPage = (props: Props) => {
               <p className="w-md pt-0.5 font-normal leading-tight">
                 Automatically organize your links with intelligent tagging. Find
                 what you need faster with smart categorization.
+              </p>
+            </div>
+
+            {/* feat: add notes */}
+            <div className="my-4 flex flex-col md:w-6/12 lg:w-4/12">
+              <div className="flex h-[65px] w-[65px] items-center justify-center rounded-full bg-primary/[.06] text-primary">
+                <NotebookTextIcon width={18} height={18} />
+              </div>
+              {/* title */}
+              <h4 className="text-md mt-2 pt-2 font-bold">Rich Text Editor</h4>
+              {/* desc */}
+              <p className="w-md pt-0.5 font-normal leading-tight">
+                Add custom notes within Yetti. Format your notes exactly how you
+                want them.
               </p>
             </div>
           </div>
@@ -130,7 +131,7 @@ const LandingPage = (props: Props) => {
       </section>
 
       {/* CTA */}
-      <section className="bg-primary-50 py-4 sm:py-0 sm:pb-20 " id="cta">
+      <section className="bg-primary-50 mb-12 py-4 sm:mb-24 sm:py-0" id="cta">
         <div className="container">
           <div className="row">
             <div className="col mx-auto text-center md:w-6/12">

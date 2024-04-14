@@ -19,7 +19,6 @@ export function configureQueryClient(config: any) {
 }
 
 export function initializeQueryClient() {
-  console.log("🚀 initializeQueryClient");
   const queryClient = new QueryClient({
     defaultOptions: { queries: { staleTime: 10000 } },
   });

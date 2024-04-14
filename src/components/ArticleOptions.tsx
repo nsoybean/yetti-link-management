@@ -11,6 +11,7 @@ import {
   CopyIcon,
   CheckboxIcon,
   Cross2Icon,
+  Pencil1Icon,
 } from "@radix-ui/react-icons";
 import { Button } from "./ui/button";
 import { DeleteIcon, PlusIcon } from "lucide-react";
@@ -20,6 +21,7 @@ import {
   deleteArticle,
   tagArticle,
   unarchiveArticle,
+  updateArticleMetaById,
 } from "@/api/articles";
 import toast from "react-hot-toast";
 import { Article } from "@/typings/article/Article";
@@ -68,10 +70,14 @@ function didTagsChange(array1: string[], array2: string[]) {
 const ArticleOptions = ({ article }: Props) => {
   const [openDialog, setOpenDialog] = useState<boolean>(false);
   const [tagDialogOpen, setTagDialogOpen] = useState<boolean>(false);
+  const [renameDialogOpen, setRenameDialogOpen] = useState<boolean>(false);
   const [currToast, setCurrToast] = useState("");
   const [tagList, setTagList] = useState<string[]>([]);
   const queryClient = useQueryClient();
   const tagInputRef = useRef<HTMLInputElement>(null);
+  const [articleMetaData, setArticleMetaData] = useState<{
+    title: string;
+  } | null>(null);
 
   // copy of original tags
   const originalTags = article?.tagIds.map((tag) => tag.name);
@@ -127,6 +133,7 @@ const ArticleOptions = ({ article }: Props) => {
     onSettled: () => {},
   });
 
+  // archive article
   const { mutate: archiveArticleById } = useMutation({
     mutationFn: archiveArticle,
     onSuccess: (data) => {
@@ -149,6 +156,7 @@ const ArticleOptions = ({ article }: Props) => {
     onSettled: () => {},
   });
 
+  // unarchive
   const { mutate: unarchiveArticleById } = useMutation({
     mutationFn: unarchiveArticle,
     onSuccess: (data) => {
@@ -168,6 +176,7 @@ const ArticleOptions = ({ article }: Props) => {
     },
   });
 
+  // adding tags
   const { mutate: tagArticleById } = useMutation({
     mutationFn: tagArticle,
     onSuccess: (data) => {
@@ -206,6 +215,29 @@ const ArticleOptions = ({ article }: Props) => {
     onSettled: () => {},
   });
 
+  // updating metadata (title)
+  const { mutate: updateArticle } = useMutation({
+    mutationFn: updateArticleMetaById,
+    onSuccess: (data) => {
+      toast.dismiss(currToast);
+      toast.success("Updated!");
+
+      // invalidate query
+      if (article.state === "AVAILABLE") {
+        queryClient.invalidateQueries({ queryKey: ["get-all-articles"] });
+      } else {
+        queryClient.invalidateQueries({
+          queryKey: ["get-all-archived-articles"],
+        });
+      }
+    },
+    onError: (error) => {
+      toast.dismiss(currToast);
+      toast.error(`Error!`);
+    },
+    onSettled: () => {},
+  });
+
   async function copyTextToClipboard(link: string) {
     if ("clipboard" in navigator) {
       await navigator.clipboard.writeText(link);
@@ -225,6 +257,13 @@ const ArticleOptions = ({ article }: Props) => {
     if (tagInputRef.current) {
       tagInputRef.current.value = "";
     }
+  }
+
+  async function toggleRenameDialog() {
+    setRenameDialogOpen((prev) => !prev);
+    // if (tagInputRef.current) {
+    //   tagInputRef.current.value = "";
+    // }
   }
 
   function upsertTagValue(tag: string) {
@@ -262,6 +301,14 @@ const ArticleOptions = ({ article }: Props) => {
     const newTagList = tagList.filter((_, i) => i !== index);
     setTagList(newTagList);
   }
+
+  function didTitleChange() {
+    if (!setArticleMetaData) {
+      return false;
+    }
+
+    // renameInputRef?.current?.value.trim() == article.title.trim()
+  }
   return (
     <>
       {/* setting modal to false, prevent drop down from remaining open */}
@@ -290,6 +337,12 @@ const ArticleOptions = ({ article }: Props) => {
                 <BookmarkIcon width={"18"} height={"18"} className="mr-2" /> Tag
               </DropdownMenuItem>
             )}
+            <DropdownMenuItem
+              onSelect={(e) => e.preventDefault()}
+              onClick={() => toggleRenameDialog()}
+            >
+              <Pencil1Icon width={"18"} height={"18"} className="mr-2" /> Rename
+            </DropdownMenuItem>
             <DropdownMenuItem
               onClick={() => {
                 if (article.state === "AVAILABLE") {
@@ -329,6 +382,7 @@ const ArticleOptions = ({ article }: Props) => {
         description="This action cannot be undone. This will delete the article."
       />
 
+      {/* add tags dialog */}
       <Dialog onOpenChange={toggleTagDialog} open={tagDialogOpen}>
         <DialogTrigger asChild></DialogTrigger>
         <DialogContent className="sm:max-w-md">
@@ -399,6 +453,52 @@ const ArticleOptions = ({ article }: Props) => {
                 disabled={!didTagsChange(originalTags, tagList)}
                 onClick={() => {
                   tagArticleById({ id: article.id, tags: tagList });
+                }}
+              >
+                Save
+              </Button>
+            </DialogClose>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* rename dialog */}
+      <Dialog onOpenChange={toggleRenameDialog} open={renameDialogOpen}>
+        <DialogTrigger asChild></DialogTrigger>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Rename Link</DialogTitle>
+            {/* <DialogDescription>
+            </DialogDescription> */}
+          </DialogHeader>
+
+          <div className="flex items-center space-x-2">
+            <div className="grid flex-1 gap-2">
+              <Label className="sr-only">Link</Label>
+              <Input
+                defaultValue={article.title}
+                onChange={(e) =>
+                  setArticleMetaData({ title: e.target.value.trim() })
+                }
+              />
+            </div>
+          </div>
+          <DialogFooter className="sm:justify-end">
+            <DialogClose asChild>
+              <Button
+                type="button"
+                variant={"default"}
+                disabled={
+                  !articleMetaData?.title ||
+                  articleMetaData?.title === article?.title
+                }
+                onClick={() => {
+                  if (articleMetaData?.title) {
+                    updateArticle({
+                      id: article.id,
+                      title: articleMetaData?.title,
+                    });
+                  }
                 }}
               >
                 Save

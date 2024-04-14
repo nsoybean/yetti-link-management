@@ -16,14 +16,12 @@ import "./App.css";
 
 startApp();
 async function startApp() {
-  console.log("🚀 startApp...");
   initializeQueryClient();
 
   await render();
 }
 
 async function render() {
-  console.log("🚀 render");
   const queryClient: any = await queryClientInitialized;
 
   ReactDOM.createRoot(document.getElementById("root")!).render(

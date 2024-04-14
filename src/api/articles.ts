@@ -93,3 +93,16 @@ export async function tagArticle({
   const result = await api.patch(`bookmark/${id}/tags`, { tags });
   return result.data;
 }
+
+export async function updateArticleMetaById({
+  id,
+  title,
+}: {
+  id: string;
+  title: string;
+}): Promise<{
+  id: string;
+}> {
+  const result = await api.patch(`bookmark/${id}/metadata`, { title });
+  return result.data;
+}
