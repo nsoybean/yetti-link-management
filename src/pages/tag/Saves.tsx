@@ -33,7 +33,7 @@ const TagSaves = () => {
   });
 
   return (
-    <main className="container mx-auto">
+    <main className="mx-auto w-full">
       {/* tag header */}
       <div className="mb-4 flex flex-row items-center justify-start gap-4 px-8 lg:mb-4">
         <ToolTipText
