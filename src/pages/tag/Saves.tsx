@@ -5,7 +5,6 @@ import ArticlePagination from "@/components/ArticlePagination";
 import ArticleSkeleton from "@/components/ArticleSkeleton";
 import Articles from "@/components/Articles";
 import { useNavigate } from "react-router-dom";
-import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
 import { ArrowLeftIcon } from "lucide-react";
 import ToolTipText from "@/components/TooltipText";
@@ -43,7 +42,7 @@ const TagSaves = () => {
           child={
             <ArrowLeftIcon
               className="h-6 w-6 hover:cursor-pointer"
-              onClick={() => navigate("/tags")}
+              onClick={() => navigate(-1)}
             />
           }
         />
@@ -67,7 +66,7 @@ const TagSaves = () => {
       {articles?.total_records === 0 && (
         <div className="flex flex-col items-center justify-center gap-2">
           <h1 className="text-md scroll-m-20">Oops, no links found </h1>
-          <Button onClick={() => navigate("/tags")}>
+          <Button onClick={() => navigate(-1)}>
             <ArrowLeftIcon className="h-4 w-4" />
             <span> Back </span>
           </Button>
