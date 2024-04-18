@@ -44,7 +44,9 @@ const Tag = () => {
         {/* {isLoading && <ArticleSkeleton numCards={6} />} */}
         <div className="mb-4 text-2xl font-semibold lg:mb-6">
           All tags
-          {tags?.total_records && <span> ({tags.total_records}) </span>}
+          {tags && tags?.total_records > 0 && (
+            <span> {`(${tags.total_records})`} </span>
+          )}
           {/* <Separator className="mt-2" /> */}
           {/* <Separator className="mt-2" /> */}
         </div>

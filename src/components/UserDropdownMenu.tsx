@@ -19,6 +19,8 @@ import { useNavigate } from "react-router-dom";
 export function UserDropdownMenu({ user }: { user: User }) {
   const { setTheme, theme } = useTheme();
   const navigate = useNavigate();
+  const { logout } = useLogout();
+  const queryClient = useQueryClient();
 
   function toggleTheme() {
     if (theme === "dark") {
@@ -32,8 +34,6 @@ export function UserDropdownMenu({ user }: { user: User }) {
     return null;
   }
 
-  const { logout } = useLogout();
-  const queryClient = useQueryClient();
   function getFallbackName(user: User): string {
     let name = "";
     if (user.firstName) {

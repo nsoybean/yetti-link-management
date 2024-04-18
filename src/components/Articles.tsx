@@ -37,7 +37,7 @@ const Articles = (props: Props) => {
           <CardHeader className="p-3">
             {/* if img exist */}
             {article.image ? (
-              <div className="mb-2 h-36 w-full rounded-lg object-cover object-center sm:h-48">
+              <div className="mb-2 h-32 w-full rounded-lg object-cover object-center sm:h-40 lg:h-32">
                 <img
                   src={article.image}
                   alt={"image"}
@@ -52,8 +52,8 @@ const Articles = (props: Props) => {
                   backgroundColor:
                     generateColorBaseOnSeed(article.link) || "#87c3ff",
                 }}
-                className={`relative mb-2
-                    flex h-36 w-full items-center justify-start overflow-hidden rounded-lg pl-[30px] text-[150px] font-bold  sm:h-48`}
+                className={`relative
+                    mb-2 flex h-32 w-full items-center justify-start overflow-hidden rounded-lg pl-[30px]  text-[150px] font-bold sm:h-40 lg:h-32`}
               >
                 {article?.domain?.charAt(0) || "P"}
               </div>

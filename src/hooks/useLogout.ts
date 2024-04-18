@@ -9,7 +9,7 @@ export default function useLogout() {
     removeLocalUserData();
 
     // clear cache
-    queryClient.removeQueries({ queryKey: ["getMe"] });
+    queryClient.invalidateQueries({ queryKey: ["getMe"] });
 
     // redirect
     window.location.href = "/";
