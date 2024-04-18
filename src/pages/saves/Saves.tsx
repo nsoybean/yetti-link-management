@@ -11,6 +11,8 @@ import { SaveArticleInput } from "@/components/SaveArticleInput";
 import yetti from "/cuteCreativeYeti.jpeg";
 import Articles from "@/components/Articles";
 import toast from "react-hot-toast";
+import { DataTable } from "@/components/articleTable/data-table";
+import { ArticleColumns } from "@/components/articleTable/columns";
 
 const Saves = () => {
   const [currPage, setCurrPage] = useState(1);
@@ -84,6 +86,12 @@ const Saves = () => {
           recordsPerPage={9}
           totalRecords={articles?.total_records || 0}
         />
+      </div>
+
+      <div className="container mx-auto">
+        {articles && (
+          <DataTable columns={ArticleColumns} data={articles.data} />
+        )}
       </div>
     </main>
   );
