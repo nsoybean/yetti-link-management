@@ -7,14 +7,13 @@ import {
 } from "./ui/dropdown-menu";
 import {
   DotsVerticalIcon,
-  BookmarkIcon,
   CopyIcon,
-  CheckboxIcon,
   Cross2Icon,
   Pencil1Icon,
+  ArchiveIcon,
 } from "@radix-ui/react-icons";
 import { Button } from "./ui/button";
-import { DeleteIcon, PlusIcon } from "lucide-react";
+import { DeleteIcon, PlusIcon, TagIcon } from "lucide-react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import {
   archiveArticle,
@@ -334,7 +333,7 @@ const ArticleOptions = ({ article }: Props) => {
             </DropdownMenuItem>
             {article.state === "AVAILABLE" && (
               <DropdownMenuItem onClick={() => toggleTagDialog()}>
-                <BookmarkIcon width={"18"} height={"18"} className="mr-2" /> Tag
+                <TagIcon width={"18"} height={"18"} className="mr-2" /> Tag
               </DropdownMenuItem>
             )}
             <DropdownMenuItem
@@ -356,7 +355,7 @@ const ArticleOptions = ({ article }: Props) => {
                 }
               }}
             >
-              <CheckboxIcon width={"18"} height={"18"} className="mr-2" />
+              <ArchiveIcon width={"18"} height={"18"} className="mr-2" />
               {article.state === "AVAILABLE" ? "Archive" : "Restore"}
             </DropdownMenuItem>
 

@@ -1,8 +1,7 @@
-import { LinkIcon } from "lucide-react";
-import { Menubar, MenubarMenu, MenubarTrigger } from "./ui/menubar";
-import { Link2Icon, ArchiveIcon, BookmarkIcon } from "@radix-ui/react-icons";
+import { TagIcon } from "lucide-react";
+import { Menubar, MenubarMenu } from "./ui/menubar";
+import { Link2Icon, ArchiveIcon } from "@radix-ui/react-icons";
 import { useNavigate } from "react-router-dom";
-import { useEffect } from "react";
 import { getUrlPath } from "@/lib/url";
 import { Button } from "./ui/button";
 import { RouteProps } from "@/typings/navigation/articleMenu";
@@ -12,7 +11,7 @@ type Props = {};
 export const menuLinks: RouteProps[] = [
   { name: "Saves", href: "/saves", icon: Link2Icon },
   { name: "Archives", href: "/archives", icon: ArchiveIcon },
-  { name: "Tags", href: "/tags", icon: BookmarkIcon },
+  { name: "Tags", href: "/tags", icon: TagIcon },
 ];
 
 const ArticleMenuBar = (props: Props) => {
