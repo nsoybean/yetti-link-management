@@ -11,8 +11,11 @@ import { SaveArticleInput } from "@/components/SaveArticleInput";
 import yetti from "/cuteCreativeYeti.jpeg";
 import Articles from "@/components/Articles";
 import toast from "react-hot-toast";
-import { DataTable } from "@/components/articleTable/data-table";
-import { ArticleColumns } from "@/components/articleTable/columns";
+import { useViewArticleMode } from "@/hooks/useArticleViewMode";
+import ArticlesList from "@/components/ArticlesList";
+import ArticleSkeletonList from "@/components/ArticleSkeletonList";
+// import { DataTable } from "@/components/articleTable/data-table";
+// import { ArticleColumns } from "@/components/articleTable/columns";
 
 const Saves = () => {
   const [currPage, setCurrPage] = useState(1);
@@ -92,7 +95,7 @@ const Saves = () => {
       {mode === "list" && (
         <div className="mb-12 gap-4 px-8">
           {/* loading */}
-          {/* {isLoading && <ArticleSkeleton numCards={6} />} */}
+          {isLoading && <ArticleSkeletonList numCards={5} />}
 
           {/* show articles */}
           {articles && <ArticlesList articles={articles.data} />}
