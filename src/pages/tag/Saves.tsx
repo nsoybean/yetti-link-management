@@ -9,9 +9,13 @@ import { Button } from "@/components/ui/button";
 import { ArrowLeftIcon } from "lucide-react";
 import ToolTipText from "@/components/TooltipText";
 import router, { routes } from "@/router";
+import ArticleSkeletonList from "@/components/ArticleSkeletonList";
+import ArticlesList from "@/components/ArticlesList";
+import { useViewArticleMode } from "@/hooks/useArticleViewMode";
 
 const TagSaves = () => {
   const [currPage, setCurrPage] = useState(1);
+  const { mode } = useViewArticleMode();
 
   const queryString = window.location.search;
   const urlParams = new URLSearchParams(queryString);
@@ -55,11 +59,25 @@ const TagSaves = () => {
         </div>
       </div>
 
-      {/* is loading */}
-      {isLoading && (
+      {/* article grid (gallery mode) */}
+      {mode === "gallery" && (
         <div className="mb-12 grid grid-cols-1 gap-4 px-8 md:grid-cols-2 lg:grid-cols-3">
           {/* loading */}
-          {<ArticleSkeleton numCards={6} />}
+          {isLoading && <ArticleSkeleton numCards={6} />}
+
+          {/* show articles */}
+          {articles && <Articles articles={articles.data} />}
+        </div>
+      )}
+
+      {/* article list (list mode) */}
+      {mode === "list" && (
+        <div className="mb-12 gap-4 px-8">
+          {/* loading */}
+          {isLoading && <ArticleSkeletonList numCards={5} />}
+
+          {/* show articles */}
+          {articles && <ArticlesList articles={articles.data} />}
         </div>
       )}
 
@@ -71,14 +89,6 @@ const TagSaves = () => {
             <ArrowLeftIcon className="h-4 w-4" />
             <span> Back </span>
           </Button>
-        </div>
-      )}
-
-      {/* articles  */}
-      {articles && articles?.total_records >= 0 && (
-        <div className="mb-12 grid grid-cols-1 gap-4 px-8 md:grid-cols-2 lg:grid-cols-3">
-          {/* show articles */}
-          {articles && <Articles articles={articles.data} />}
         </div>
       )}
 
