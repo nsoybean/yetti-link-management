@@ -11,10 +11,8 @@ import { SaveArticleInput } from "@/components/SaveArticleInput";
 import yetti from "/cuteCreativeYeti.jpeg";
 import Articles from "@/components/Articles";
 import toast from "react-hot-toast";
-import { useViewArticleMode } from "@/hooks/useArticleViewMode";
-import ArticlesList from "@/components/ArticlesList";
-// import { DataTable } from "@/components/articleTable/data-table";
-// import { ArticleColumns } from "@/components/articleTable/columns";
+import { DataTable } from "@/components/articleTable/data-table";
+import { ArticleColumns } from "@/components/articleTable/columns";
 
 const Saves = () => {
   const [currPage, setCurrPage] = useState(1);
