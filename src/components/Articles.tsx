@@ -14,6 +14,7 @@ import { Button } from "./ui/button";
 import { Badge } from "./ui/badge";
 import randomColor from "randomcolor";
 import { useNavigate } from "react-router-dom";
+import { useTheme } from "./theme-provider";
 
 type Props = {
   articles: IArticle[];
@@ -21,9 +22,12 @@ type Props = {
 
 const Articles = (props: Props) => {
   const navigate = useNavigate();
+  const { theme } = useTheme();
+
   function generateColorBaseOnSeed(seed: string) {
+    const randomColorBase = theme === "light" ? "light" : "dark";
     const color = randomColor({
-      luminosity: "light",
+      luminosity: randomColorBase,
       seed: seed,
     });
     return color;
