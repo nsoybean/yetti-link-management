@@ -44,47 +44,13 @@ export const AppNavbar = () => {
     <header className="sticky top-0 z-40 mb-6 w-full border-b-[1px] bg-white dark:border-b-slate-700 dark:bg-background">
       <NavigationMenu className="mx-auto">
         <NavigationMenuList className="container flex h-14 w-screen flex-row justify-between px-4">
-          {/* app icon */}
           <NavigationMenuItem className="font-bold">
+            {/* app icon, visible beyond lg*/}
             <a href={user ? "/saves" : "/"} className="ml-2 hidden lg:flex">
               <LogoIcon />
             </a>
-          </NavigationMenuItem>
 
-          {/* actions */}
-          <div className="flex items-center justify-center gap-3">
-            {/* input link */}
-            {user && (
-              <SaveArticleInput
-                trigger={
-                  <Button variant={"outline"}>
-                    <div className="flex flex-row items-center justify-center gap-4">
-                      <span>Add Link</span>
-                      {/* keyboard shortcut - only non-mobile */}
-                      <div className="hidden sm:flex">
-                        <kbd className="text-md flex flex-row items-center justify-center rounded-md border px-1 text-start">
-                          <span>⌘</span>
-                        </kbd>
-                        <kbd className="text-md flex flex-row items-center justify-center rounded-md border px-1 text-start">
-                          <span>/</span>
-                        </kbd>
-                      </div>
-                      {/* mobile */}
-                      <div className="flex items-center justify-center sm:hidden">
-                        <PlusIcon />
-                      </div>
-                    </div>
-                  </Button>
-                }
-                onEventListener={true}
-              />
-            )}
-            {/* user */}
-            {user && <UserDropdownMenu user={user} />}
-            {/* mode */}
-            {/* <ModeToggle /> */}
-
-            {/* mobile burger menu */}
+            {/* mobile burger menu, hidden beyond lg */}
             <span className="flex lg:hidden">
               <Sheet open={isOpen} onOpenChange={setIsOpen}>
                 <SheetTrigger className="px-2">
@@ -96,7 +62,7 @@ export const AppNavbar = () => {
                   </Menu>
                 </SheetTrigger>
 
-                <SheetContent side={"right"}>
+                <SheetContent side={"left"}>
                   <SheetHeader className="flex flex-row items-center justify-center gap-3">
                     {/* icon */}
                     <NavigationMenuItem className="flex font-bold">
@@ -129,6 +95,38 @@ export const AppNavbar = () => {
                 </SheetContent>
               </Sheet>
             </span>
+          </NavigationMenuItem>
+
+          {/* actions */}
+          <div className="flex items-center justify-center gap-3">
+            {/* input link */}
+            {user && (
+              <SaveArticleInput
+                trigger={
+                  <Button variant={"outline"}>
+                    <div className="flex flex-row items-center justify-center gap-4">
+                      <span>Add Link</span>
+                      {/* keyboard shortcut - only non-mobile */}
+                      <div className="hidden sm:flex">
+                        <kbd className="text-md flex flex-row items-center justify-center rounded-md border px-1 text-start">
+                          <span>⌘</span>
+                        </kbd>
+                        <kbd className="text-md flex flex-row items-center justify-center rounded-md border px-1 text-start">
+                          <span>/</span>
+                        </kbd>
+                      </div>
+                      {/* mobile */}
+                      <div className="flex items-center justify-center sm:hidden">
+                        <PlusIcon />
+                      </div>
+                    </div>
+                  </Button>
+                }
+                onEventListener={true}
+              />
+            )}
+            {/* user */}
+            {user && <UserDropdownMenu user={user} />}
           </div>
         </NavigationMenuList>
       </NavigationMenu>

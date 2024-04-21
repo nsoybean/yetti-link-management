@@ -1,14 +1,17 @@
+import ToolTipText from "@/components/TooltipText";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
 import useAuth from "@/hooks/useAuth";
+import { ArrowLeftIcon } from "lucide-react";
 import React from "react";
+import { useNavigate } from "react-router-dom";
 
 type Props = {};
 
 const AccountPage = (props: Props) => {
   const { data: user, isLoading } = useAuth();
-
+  const navigate = useNavigate();
   // skeleton
   // if (isLoading) {
   //   return (
@@ -28,56 +31,74 @@ const AccountPage = (props: Props) => {
   // }
 
   return (
-    <div className="mx-auto w-5/6 rounded-lg border bg-card text-card-foreground shadow-md">
+    <div className="mx-auto flex w-5/6 flex-col gap-2">
       {/* title */}
-      <div className="flex flex-col space-y-1.5 p-6">
-        <div className="whitespace-nowrap text-2xl font-semibold leading-none tracking-tight">
-          Settings
+      <div className="flex flex-row items-center justify-start gap-2">
+        <ToolTipText
+          className="line-clamp-2 font-thin"
+          text="Back"
+          child={
+            <ArrowLeftIcon
+              className="h-6 w-6 hover:cursor-pointer"
+              onClick={() => navigate(-1)}
+            />
+          }
+        />
+        <div className="flex flex-col space-y-1.5 p-2">
+          <div className="whitespace-nowrap text-2xl font-semibold leading-none tracking-tight">
+            Settings
+          </div>
+          <p className="text-sm text-muted-foreground">
+            Update your account settings
+          </p>
         </div>
-        <p className="text-sm text-muted-foreground">
-          Update your account settings
-        </p>
       </div>
-      {/* details */}
-      <div className="space-y-6 p-6">
-        {/* first name */}
-        <div className="space-y-2">
-          <label className="text-sm font-medium leading-none">First Name</label>
-          <input
-            disabled
-            className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-            id="name"
-            placeholder="Enter your name"
-            value={user?.firstName}
-          />
-        </div>
-        {/* last name */}
-        <div className="space-y-2">
-          <label className="text-sm font-medium leading-none">Last Name</label>
-          <input
-            disabled
-            className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-            id="name"
-            placeholder="Enter your name"
-            value={user?.lastName}
-          />
-        </div>
-        {/* email */}
-        <div className="space-y-2">
-          <label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-            Email
-          </label>
-          <input
-            disabled
-            className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-            id="email"
-            placeholder="Enter your email"
-            type="email"
-            value={user?.email}
-          />
-        </div>
-        {/* username */}
-        {/* <div className="space-y-2">
+
+      <div className="rounded-lg border bg-card text-card-foreground shadow-md">
+        {/* details */}
+        <div className="space-y-6 p-6">
+          {/* first name */}
+          <div className="space-y-2">
+            <label className="text-sm font-medium leading-none">
+              First Name
+            </label>
+            <input
+              disabled
+              className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+              id="name"
+              placeholder="Enter your name"
+              value={user?.firstName}
+            />
+          </div>
+          {/* last name */}
+          <div className="space-y-2">
+            <label className="text-sm font-medium leading-none">
+              Last Name
+            </label>
+            <input
+              disabled
+              className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+              id="name"
+              placeholder="Enter your name"
+              value={user?.lastName}
+            />
+          </div>
+          {/* email */}
+          <div className="space-y-2">
+            <label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+              Email
+            </label>
+            <input
+              disabled
+              className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+              id="email"
+              placeholder="Enter your email"
+              type="email"
+              value={user?.email}
+            />
+          </div>
+          {/* username */}
+          {/* <div className="space-y-2">
           <label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
             Username
           </label>
@@ -88,8 +109,8 @@ const AccountPage = (props: Props) => {
             type="text"
           />
         </div> */}
-        {/* profile pic */}
-        {/* <div className="space-y-2">
+          {/* profile pic */}
+          {/* <div className="space-y-2">
           <label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
             Profile Picture
           </label>
@@ -108,8 +129,8 @@ const AccountPage = (props: Props) => {
           </div>
         </div> */}
 
-        {/* notif setting */}
-        {/* <fieldset>
+          {/* notif setting */}
+          {/* <fieldset>
           <legend className="text-sm font-medium dark:text-gray-400">
             Notification Settings
           </legend>
@@ -164,14 +185,18 @@ const AccountPage = (props: Props) => {
             </div>
           </div>
         </fieldset> */}
-        <Separator />
-        <div className="flex flex-col space-y-2">
-          <label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-            Subscription Plan
-          </label>
-          <Badge variant={"default"} className="h-8 w-fit text-sm font-normal">
-            Free Tier
-          </Badge>
+          <Separator />
+          <div className="flex flex-col space-y-2">
+            <label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+              Subscription Plan
+            </label>
+            <Badge
+              variant={"default"}
+              className="h-8 w-fit text-sm font-normal"
+            >
+              Free Tier
+            </Badge>
+          </div>
         </div>
       </div>
     </div>
