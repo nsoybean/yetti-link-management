@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/sheet";
 
 import { Button } from "./ui/button";
-import { ArchiveIcon, BookmarkIcon, Menu } from "lucide-react";
+import { ArchiveIcon, BookmarkIcon, Menu, TagIcon } from "lucide-react";
 // import { ModeToggle } from "./ModeToggle";
 import useAuth from "@/hooks/useAuth";
 import appIcon from "/appIcon.png";
@@ -29,7 +29,7 @@ const LogoIcon = () => <img className="h-8 w-8" src={appIcon} alt="Yetti.ai" />;
 export const mobileMenu: RouteProps[] = [
   { name: "Saves", href: "/saves", icon: Link2Icon },
   { name: "Archives", href: "/archives", icon: ArchiveIcon },
-  { name: "Tags", href: "/tags", icon: BookmarkIcon },
+  { name: "Tags", href: "/tags", icon: TagIcon },
 ];
 
 export const desktopMenu: RouteProps[] = [];
