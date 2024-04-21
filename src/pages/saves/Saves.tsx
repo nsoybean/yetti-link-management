@@ -18,6 +18,12 @@ const Saves = () => {
   const [currPage, setCurrPage] = useState(1);
 
   useEffect(() => {
+    // temp: remove old storage items
+    localStorage.removeItem("leaf:color-theme");
+    localStorage.removeItem("leaf-ui-theme");
+    localStorage.removeItem("leaf-ui-theme");
+    localStorage.removeItem("leaf:authToken");
+
     // parse token and save in storage after SSO redirect
     const url = window.location.href;
     if (url.includes("access_token")) {
@@ -88,11 +94,11 @@ const Saves = () => {
         />
       </div>
 
-      <div className="container mx-auto">
+      {/* <div className="container mx-auto">
         {articles && (
           <DataTable columns={ArticleColumns} data={articles.data} />
         )}
-      </div>
+      </div> */}
     </main>
   );
 };
