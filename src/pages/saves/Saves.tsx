@@ -111,12 +111,6 @@ const Saves = () => {
           totalRecords={articles?.total_records || 0}
         />
       </div>
-
-      {/* <div className="container mx-auto">
-        {articles && (
-          <DataTable columns={ArticleColumns} data={articles.data} />
-        )}
-      </div> */}
     </main>
   );
 };
