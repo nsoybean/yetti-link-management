@@ -1,20 +1,6 @@
-import { useEffect, useState } from "react";
-import { parseAuthFromRedirectUrl } from "@/lib/auth";
-import { setAuthToken } from "@/configs/auth";
+import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { getAllArchivedArticles } from "@/api/articles";
-import {
-  Card,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-  CardContent,
-  CardFooter,
-} from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Article } from "@/typings/article/Article";
-import { ArrowRight } from "lucide-react";
-import ArticleOptions from "@/components/ArticleOptions";
 import ArticleSkeleton from "@/components/ArticleSkeleton";
 import ArticlePagination from "@/components/ArticlePagination";
 import blankSlateContent from "/blankSlateContent.svg";

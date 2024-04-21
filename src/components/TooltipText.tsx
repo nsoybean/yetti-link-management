@@ -5,7 +5,6 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "./ui/tooltip";
-import { Button } from "./ui/button";
 
 type Props = {
   text: string;
