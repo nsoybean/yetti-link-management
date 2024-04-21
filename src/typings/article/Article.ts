@@ -11,5 +11,6 @@ export interface Article {
   title: string;
   domain: string;
   updatedAt: Date;
+  createdAt: Date;
   tagIds: Tag[];
 }

@@ -11,11 +11,19 @@ import { SaveArticleInput } from "@/components/SaveArticleInput";
 import yetti from "/cuteCreativeYeti.jpeg";
 import Articles from "@/components/Articles";
 import toast from "react-hot-toast";
+import { DataTable } from "@/components/articleTable/data-table";
+import { ArticleColumns } from "@/components/articleTable/columns";
 
 const Saves = () => {
   const [currPage, setCurrPage] = useState(1);
 
   useEffect(() => {
+    // temp: remove old storage items
+    localStorage.removeItem("leaf:color-theme");
+    localStorage.removeItem("leaf-ui-theme");
+    localStorage.removeItem("leaf-ui-theme");
+    localStorage.removeItem("leaf:authToken");
+
     // parse token and save in storage after SSO redirect
     const url = window.location.href;
     if (url.includes("access_token")) {
@@ -85,6 +93,12 @@ const Saves = () => {
           totalRecords={articles?.total_records || 0}
         />
       </div>
+
+      {/* <div className="container mx-auto">
+        {articles && (
+          <DataTable columns={ArticleColumns} data={articles.data} />
+        )}
+      </div> */}
     </main>
   );
 };

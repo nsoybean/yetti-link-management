@@ -8,15 +8,15 @@ const api = axios.create({
 });
 
 // add mock delay to api client
-if (window.location.hostname === "localhost") {
-  api.interceptors.response.use((response) => {
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        resolve(response);
-      }, 1000); // 1s mock delay
-    });
-  });
-}
+// if (window.location.hostname === "localhost") {
+//   api.interceptors.response.use((response) => {
+//     return new Promise((resolve) => {
+//       setTimeout(() => {
+//         resolve(response);
+//       }, 1000); // 1s mock delay
+//     });
+//   });
+// }
 
 api.interceptors.request.use((request) => {
   if (authToken) {

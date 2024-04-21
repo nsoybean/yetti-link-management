@@ -329,7 +329,7 @@ const ArticleOptions = ({ article }: Props) => {
               {/* <DropdownMenuShortcut>⌘ ⌫</DropdownMenuShortcut> */}
             </DropdownMenuItem>
             <DropdownMenuItem onClick={() => copyTextToClipboard(article.link)}>
-              <CopyIcon width={"18"} height={"18"} className="mr-2" /> Copy
+              <CopyIcon width={"18"} height={"18"} className="mr-2" /> Copy link
             </DropdownMenuItem>
             {article.state === "AVAILABLE" && (
               <DropdownMenuItem onClick={() => toggleTagDialog()}>
