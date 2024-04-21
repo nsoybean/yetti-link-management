@@ -14,6 +14,8 @@ import { Button } from "./ui/button";
 import { Badge } from "./ui/badge";
 import randomColor from "randomcolor";
 import { useNavigate } from "react-router-dom";
+import { useTheme } from "./theme-provider";
+import { routes } from "@/router";
 
 type Props = {
   articles: IArticle[];
@@ -21,9 +23,12 @@ type Props = {
 
 const Articles = (props: Props) => {
   const navigate = useNavigate();
+  const { theme } = useTheme();
+
   function generateColorBaseOnSeed(seed: string) {
+    const randomColorBase = theme === "light" ? "light" : "dark";
     const color = randomColor({
-      luminosity: "light",
+      luminosity: randomColorBase,
       seed: seed,
     });
     return color;
@@ -86,7 +91,16 @@ const Articles = (props: Props) => {
                   className="max-w-24 hover:cursor-pointer"
                   variant={"secondary"}
                   key={index}
-                  onClick={() => navigate(`/tags/saves?tag=${tag.name}`)}
+                  onClick={() => {
+                    if (
+                      // ignore if already in query by tag page
+                      routes.TagSavesPageRoute.to === window.location.pathname
+                    ) {
+                      return;
+                    }
+
+                    navigate(`/tags/saves?tag=${tag.name}`);
+                  }}
                 >
                   <p className="overflow-hidden truncate font-semibold">
                     {tag.name}

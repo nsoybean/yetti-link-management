@@ -11,11 +11,15 @@ import { SaveArticleInput } from "@/components/SaveArticleInput";
 import yetti from "/cuteCreativeYeti.jpeg";
 import Articles from "@/components/Articles";
 import toast from "react-hot-toast";
-import { DataTable } from "@/components/articleTable/data-table";
-import { ArticleColumns } from "@/components/articleTable/columns";
+import { useViewArticleMode } from "@/hooks/useArticleViewMode";
+import ArticlesList from "@/components/ArticlesList";
+import ArticleSkeletonList from "@/components/ArticleSkeletonList";
+// import { DataTable } from "@/components/articleTable/data-table";
+// import { ArticleColumns } from "@/components/articleTable/columns";
 
 const Saves = () => {
   const [currPage, setCurrPage] = useState(1);
+  const { mode } = useViewArticleMode();
 
   useEffect(() => {
     // temp: remove old storage items
@@ -76,14 +80,27 @@ const Saves = () => {
 
   return (
     <main className="mx-auto w-full">
-      {/* article grid */}
-      <div className="mb-12 grid grid-cols-1 gap-4 px-8 md:grid-cols-2 lg:grid-cols-3">
-        {/* loading */}
-        {isLoading && <ArticleSkeleton numCards={6} />}
+      {/* article grid (gallery mode) */}
+      {mode === "gallery" && (
+        <div className="mb-12 grid grid-cols-1 gap-4 px-8 md:grid-cols-2 lg:grid-cols-3">
+          {/* loading */}
+          {isLoading && <ArticleSkeleton numCards={6} />}
 
-        {/* show articles */}
-        {articles && <Articles articles={articles.data} />}
-      </div>
+          {/* show articles */}
+          {articles && <Articles articles={articles.data} />}
+        </div>
+      )}
+
+      {/* article list (list mode) */}
+      {mode === "list" && (
+        <div className="mb-12 gap-4 px-8">
+          {/* loading */}
+          {isLoading && <ArticleSkeletonList numCards={5} />}
+
+          {/* show articles */}
+          {articles && <ArticlesList articles={articles.data} />}
+        </div>
+      )}
       {/* pagination */}
       <div className="bottom-0 mb-10">
         <ArticlePagination
