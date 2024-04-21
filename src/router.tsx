@@ -16,7 +16,7 @@ import TagSaves from "./pages/tag/Saves";
 // import NotFoundPage from "./pages/common/NotFound";
 // import AccountPage from "./pages/account/Account";
 // Router
-const routes = {
+export const routes = {
   LandingPageRoute: {
     to: "/",
     component: <LandingPage />,
