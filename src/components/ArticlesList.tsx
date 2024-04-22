@@ -34,13 +34,10 @@ const ArticlesList = (props: Props) => {
           </CardHeader>
 
           {/* content */}
-          <CardContent className="flex flex-row flex-wrap items-end justify-between pb-2 pt-0">
-            {/* content and action */}
-            <div className="flex w-full flex-row items-center justify-between">
-              {/* content */}
-              <div className="flex flex-col gap-2">
-                {/* badge */}
-                {/* <div>
+          <CardContent className="flex w-full flex-row flex-wrap items-end justify-between pb-2 pt-0">
+            <div className="flex flex-col gap-2">
+              {/* badge */}
+              {/* <div>
                   {article?.tagIds?.length > 0 &&
                     article.tagIds.map((tag, index) => (
                       <Badge
@@ -66,26 +63,25 @@ const ArticlesList = (props: Props) => {
                     ))}
                 </div> */}
 
-                {/* date */}
-                <CardDescription className="text-sm text-muted-foreground">
-                  {dayjs(article.createdAt).format("MMMM DD, YYYY h:mm A")}
-                </CardDescription>
-              </div>
+              {/* date */}
+              <CardDescription className="text-sm text-muted-foreground">
+                {dayjs(article.createdAt).format("MMMM DD, YYYY h:mm A")}
+              </CardDescription>
+            </div>
 
-              {/* actions */}
-              <div className="flex flex-row items-center justify-center">
-                <Button className="w-fit" asChild>
-                  <a
-                    rel="noopener noreferrer"
-                    href={article.link}
-                    target="_blank"
-                  >
-                    {/* <span>Visit</span> */}
-                    <OpenInNewWindowIcon className="h-4 w-4" />
-                  </a>
-                </Button>
-                <ArticleOptions article={article} />
-              </div>
+            {/* actions */}
+            <div className="flex h-full flex-row items-center justify-center">
+              <Button className="w-fit" asChild>
+                <a
+                  rel="noopener noreferrer"
+                  href={article.link}
+                  target="_blank"
+                >
+                  {/* <span>Visit</span> */}
+                  <OpenInNewWindowIcon className="h-4 w-4" />
+                </a>
+              </Button>
+              <ArticleOptions article={article} />
             </div>
           </CardContent>
         </Card>
