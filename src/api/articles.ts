@@ -1,5 +1,6 @@
 import api from "@/configs/api";
 import { Article } from "../typings/article/Article";
+import { ISearchArticle } from "@/typings/search/articles";
 
 export async function addArticle({ link }: { link: string }): Promise<{
   id: string;
@@ -104,5 +105,14 @@ export async function updateArticleMetaById({
   id: string;
 }> {
   const result = await api.patch(`bookmark/${id}/metadata`, { title });
+  return result.data;
+}
+
+export async function search({
+  term,
+}: {
+  term: string;
+}): Promise<ISearchArticle[]> {
+  const result = await api.get(`bookmark/search?query=${term}`);
   return result.data;
 }

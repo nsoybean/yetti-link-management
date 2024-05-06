@@ -14,3 +14,9 @@ export interface Article {
   createdAt: Date;
   tagIds: Tag[];
 }
+
+export enum ArticleStateEnum {
+  AVAILABLE = "AVAILABLE",
+  ARCHIVED = "ARCHIVED",
+  DELETED = "DELETED",
+}
