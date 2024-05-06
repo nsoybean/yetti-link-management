@@ -16,6 +16,7 @@ import {
   DialogDescription,
   DialogClose,
 } from "./ui/dialog";
+import { AxiosError } from "axios";
 
 type Props = {
   trigger: any; // dialog trigger
@@ -50,8 +51,13 @@ export const SaveArticleInput = (props: Props) => {
     },
 
     onError: (error) => {
+      let axiosError = error as AxiosError;
       toast.dismiss(currToast);
-      toast.error(`Error!`);
+      if (axiosError.response?.status === 422) {
+        toast.error(`Invalid link`);
+      } else {
+        toast.error(`Error!`);
+      }
       setUrl("");
     },
     onSettled: () => {
