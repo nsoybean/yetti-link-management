@@ -63,8 +63,7 @@ export function SearchCombobox({
     }
 
     if (onSearchChange) {
-      console.log("🚀 ~ handleOnSearchChange ~ e:", e);
-
+      console.log("handleOnSearchChange e:", e);
       onSearchChange(e);
     }
   }, 300);
