@@ -163,7 +163,11 @@ const SearchDialog = (props: Props) => {
         <div className="flex h-fit flex-row items-center border-b px-3 pt-1">
           <MagnifyingGlassIcon className="mr-2 h-5 w-5 shrink-0 opacity-50" />
           <Input
-            placeholder={`Search ${`${user?.firstName} ${user?.lastName}`.trim()}'s Yetti`}
+            placeholder={
+              user
+                ? `Search ${`${user?.firstName || ""} ${user?.lastName || ""}`.trim()}'s Yetti`
+                : "Search Yetti"
+            }
             className="text-md flex h-fit w-full border-0 bg-transparent py-2 placeholder:text-muted-foreground focus-visible:ring-0 focus-visible:ring-transparent focus-visible:ring-offset-0"
             onChange={(e) => handleOnSearchChange(e.target.value)}
           />
