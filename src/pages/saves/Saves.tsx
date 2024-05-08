@@ -43,6 +43,11 @@ const Saves = () => {
     }
   }, []);
 
+  // scroll to top of page every page change
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [currPage]);
+
   const {
     isLoading,
     error,

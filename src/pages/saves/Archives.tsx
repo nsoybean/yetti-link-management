@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { getAllArchivedArticles } from "@/api/articles";
 import ArticleSkeleton from "@/components/ArticleSkeleton";
@@ -12,6 +12,11 @@ import ArticleSkeletonList from "@/components/ArticleSkeletonList";
 const Archives = () => {
   const [currPage, setCurrPage] = useState(1);
   const { mode } = useViewArticleMode();
+
+  // scroll to top of page every page change
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [currPage]);
 
   const {
     isLoading,
