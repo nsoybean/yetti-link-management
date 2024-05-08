@@ -70,14 +70,13 @@ const ArticlesList = (props: Props) => {
             </div>
 
             {/* actions */}
-            <div className="flex h-full flex-row items-center justify-center">
+            <div className="flex h-10 flex-row items-center justify-center gap-1">
               <Button className="w-fit" asChild>
                 <a
                   rel="noopener noreferrer"
                   href={article.link}
                   target="_blank"
                 >
-                  {/* <span>Visit</span> */}
                   <OpenInNewWindowIcon className="h-4 w-4" />
                 </a>
               </Button>
