@@ -7,6 +7,7 @@ import {
   CommandItem,
   CommandList,
   CommandSeparator,
+  CommandShortcut,
 } from "./ui/command";
 import { MagnifyingGlassIcon } from "@radix-ui/react-icons";
 import { ISearchArticle } from "@/typings/search/articles";
@@ -15,6 +16,8 @@ import { useDebouncedCallback } from "use-debounce";
 import { Skeleton } from "./ui/skeleton";
 import { ArticleStateEnum } from "@/typings/article/Article";
 import { search } from "@/api/articles";
+import useAuth from "@/hooks/useAuth";
+import { getFallbackName } from "@/lib/auth";
 
 type Props = {};
 
@@ -24,6 +27,8 @@ const SearchDialog = (props: Props) => {
   const [searchArticleResult, setsearchArticleResult] = useState<
     ISearchArticle[]
   >([]);
+
+  const { data: user } = useAuth();
 
   useEffect(() => {
     const down = (e: KeyboardEvent) => {
@@ -143,11 +148,11 @@ const SearchDialog = (props: Props) => {
 
       {/* search dialog */}
       <CommandDialog open={searchDialogOpen} onOpenChange={setSearchDialogOpen}>
-        <div className="flex flex-row items-center border-b px-3 pt-1">
+        <div className="flex h-fit flex-row items-center border-b px-3 pt-1">
           <MagnifyingGlassIcon className="mr-2 h-5 w-5 shrink-0 opacity-50" />
           <Input
-            placeholder="Type to search..."
-            className="text-md flex h-10 w-full border-0 bg-transparent py-3 placeholder:text-muted-foreground focus-visible:ring-0 focus-visible:ring-transparent focus-visible:ring-offset-0"
+            placeholder={`Search ${`${user?.firstName} ${user?.lastName}`.trim()}'s Yetti`}
+            className="text-md flex h-fit w-full border-0 bg-transparent py-2 placeholder:text-muted-foreground focus-visible:ring-0 focus-visible:ring-transparent focus-visible:ring-offset-0"
             onChange={(e) => handleOnSearchChange(e.target.value)}
           />
         </div>
@@ -174,6 +179,7 @@ const SearchDialog = (props: Props) => {
             searchArticleResult.length > 0 &&
             renderSearchArticleResult(searchArticleResult)}
         </CommandList>
+        <CommandShortcut />
       </CommandDialog>
     </>
   );

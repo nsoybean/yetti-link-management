@@ -17,6 +17,7 @@ import { useNavigate } from "react-router-dom";
 import { LayoutDashboardIcon, ListIcon } from "lucide-react";
 import { useViewArticleMode } from "@/hooks/useArticleViewMode";
 import ToolTipText from "./TooltipText";
+import { getFallbackName } from "@/lib/auth";
 
 export function UserDropdownMenu({ user }: { user: User }) {
   const queryClient = useQueryClient();
@@ -35,18 +36,6 @@ export function UserDropdownMenu({ user }: { user: User }) {
 
   if (!user) {
     return null;
-  }
-
-  function getFallbackName(user: User): string {
-    let name = "";
-    if (user.firstName) {
-      name += user.firstName[0].toUpperCase();
-    }
-    if (user.lastName) {
-      name += user.lastName[0].toUpperCase();
-    }
-
-    return name;
   }
 
   function logUserOut() {

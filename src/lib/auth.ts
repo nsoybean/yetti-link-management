@@ -1,4 +1,4 @@
-import { AuthUser } from "../typings/user/User";
+import { AuthUser, User } from "../typings/user/User";
 
 export function parseAuthFromRedirectUrl(hashUrl: string): AuthUser {
   const parsedToken = parseTokenFromUrl(hashUrl);
@@ -21,4 +21,16 @@ function parseTokenFromUrl(urlHash: string): AuthUser {
     picture: picture ?? "",
   };
   return result;
+}
+
+export function getFallbackName(user: User): string {
+  let name = "";
+  if (user.firstName) {
+    name += user.firstName[0].toUpperCase();
+  }
+  if (user.lastName) {
+    name += user.lastName[0].toUpperCase();
+  }
+
+  return name;
 }
