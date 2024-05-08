@@ -4,4 +4,5 @@ export interface ISearchArticle {
   link: string;
   description: string;
   state: string;
+  createdAt: Date;
 }

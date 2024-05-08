@@ -18,6 +18,7 @@ import { ArticleStateEnum } from "@/typings/article/Article";
 import { search } from "@/api/articles";
 import useAuth from "@/hooks/useAuth";
 import { getFallbackName } from "@/lib/auth";
+import dayjs from "dayjs";
 
 type Props = {};
 
@@ -89,10 +90,15 @@ const SearchDialog = (props: Props) => {
                     window.open(article.link, "_blank", "noopener,noreferrer");
                   }}
                 >
-                  <div className="space-1 flex flex-col">
-                    <div className="line-clamp-1">{article.title}</div>
-                    <div className="line-clamp-1 text-muted-foreground">
-                      {article.description}
+                  <div className="flex flex-row items-start justify-between">
+                    <div className="space-1 flex w-3/4 flex-col">
+                      <div className="line-clamp-1">{article.title}</div>
+                      <div className="line-clamp-1 text-muted-foreground">
+                        {article.description}
+                      </div>
+                    </div>
+                    <div className="text-muted-foreground">
+                      {dayjs(article.createdAt).format("D MMM YYYY")}
                     </div>
                   </div>
                 </CommandItem>
@@ -114,10 +120,15 @@ const SearchDialog = (props: Props) => {
                     window.open(article.link, "_blank", "noopener,noreferrer");
                   }}
                 >
-                  <div className="space-1 flex flex-col">
-                    <div className="line-clamp-1">{article.title}</div>
-                    <div className="line-clamp-1 text-muted-foreground">
-                      {article.description}
+                  <div className="flex flex-row items-start justify-between">
+                    <div className="space-1 flex w-3/4 flex-col">
+                      <div className="line-clamp-1">{article.title}</div>
+                      <div className="line-clamp-1 text-muted-foreground">
+                        {article.description}
+                      </div>
+                    </div>
+                    <div className="text-muted-foreground">
+                      {dayjs(article.createdAt).format("D MMM YYYY")}
                     </div>
                   </div>
                 </CommandItem>
