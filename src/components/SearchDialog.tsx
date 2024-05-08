@@ -110,6 +110,7 @@ const SearchDialog = (props: Props) => {
                 <CommandItem
                   key={article.id}
                   onSelect={() => {
+                    setSearchDialogOpen((open) => !open);
                     window.open(article.link, "_blank", "noopener,noreferrer");
                   }}
                 >
