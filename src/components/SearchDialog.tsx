@@ -90,7 +90,7 @@ const SearchDialog = (props: Props) => {
                     window.open(article.link, "_blank", "noopener,noreferrer");
                   }}
                 >
-                  <div className="flex flex-row items-start justify-between">
+                  <div className="flex w-full flex-row items-start justify-between">
                     <div className="space-1 flex w-3/4 flex-col">
                       <div className="line-clamp-1">{article.title}</div>
                       <div className="line-clamp-1 text-muted-foreground">
@@ -120,7 +120,7 @@ const SearchDialog = (props: Props) => {
                     window.open(article.link, "_blank", "noopener,noreferrer");
                   }}
                 >
-                  <div className="flex flex-row items-start justify-between">
+                  <div className="flex w-full flex-row items-start justify-between">
                     <div className="space-1 flex w-3/4 flex-col">
                       <div className="line-clamp-1">{article.title}</div>
                       <div className="line-clamp-1 text-muted-foreground">
