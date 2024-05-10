@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { parseAuthFromRedirectUrl } from "@/lib/auth";
 import { setAuthToken } from "@/configs/auth";
 import { useQuery } from "@tanstack/react-query";
-import { getAllArticles } from "@/api/articles";
+import { getAllArticles, getAllSaves } from "@/api/articles";
 import { Button } from "@/components/ui/button";
 import ArticlePagination from "@/components/ArticlePagination";
 import ArticleSkeleton from "@/components/ArticleSkeleton";
@@ -14,6 +14,8 @@ import toast from "react-hot-toast";
 import { useViewArticleMode } from "@/hooks/useArticleViewMode";
 import ArticlesList from "@/components/ArticlesList";
 import ArticleSkeletonList from "@/components/ArticleSkeletonList";
+import Folders from "@/components/Folders";
+import { Separator } from "@/components/ui/separator";
 // import { DataTable } from "@/components/articleTable/data-table";
 // import { ArticleColumns } from "@/components/articleTable/columns";
 
@@ -54,11 +56,13 @@ const Saves = () => {
     data: articles,
   } = useQuery({
     queryKey: ["get-all-articles", currPage],
-    queryFn: async () => getAllArticles(currPage),
+    // queryFn: async () => getAllArticles(currPage),
+    queryFn: async () => getAllSaves(currPage),
   });
+  console.log("🚀 ~ Saves ~ articles:", articles);
 
   // empty
-  if (!isLoading && articles?.total_records === 0) {
+  if (!isLoading && articles?.bookmarks.total_records === 0) {
     return (
       <div className="container mx-auto flex justify-center px-8 py-16">
         <div className="flex flex-col items-center justify-center gap-10">
@@ -87,12 +91,29 @@ const Saves = () => {
     <main className="mx-auto w-full">
       {/* article grid (gallery mode) */}
       {mode === "gallery" && (
-        <div className="mb-12 grid grid-cols-1 gap-4 px-8 md:grid-cols-2 lg:grid-cols-3">
-          {/* loading */}
-          {isLoading && <ArticleSkeleton numCards={6} />}
+        <div className="flex flex-col gap-4">
+          {/* folder */}
+          {articles?.folders?.data && articles?.folders?.data.length > 0 && (
+            <div className="my-1 flex flex-col gap-2 px-8">
+              <h4> Folders</h4>
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+                <Folders folders={articles.folders.data} />
+              </div>
+            </div>
+          )}
 
-          {/* show articles */}
-          {articles && <Articles articles={articles.data} />}
+          {/* articles */}
+          {articles?.bookmarks?.data && articles.bookmarks.data.length > 0 && (
+            <div className="mb-12 flex flex-col gap-2 px-8">
+              <h4> Saves</h4>
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+                {/* loading */}
+                {isLoading && <ArticleSkeleton numCards={6} />}
+                {/* show articles */}
+                {articles && <Articles articles={articles.bookmarks.data} />}
+              </div>
+            </div>
+          )}
         </div>
       )}
 
@@ -103,7 +124,7 @@ const Saves = () => {
           {isLoading && <ArticleSkeletonList numCards={5} />}
 
           {/* show articles */}
-          {articles && <ArticlesList articles={articles.data} />}
+          {articles && <ArticlesList articles={articles.bookmarks.data} />}
         </div>
       )}
 
@@ -113,7 +134,7 @@ const Saves = () => {
           currentPage={currPage}
           setPage={setCurrPage}
           recordsPerPage={9}
-          totalRecords={articles?.total_records || 0}
+          totalRecords={articles?.bookmarks.total_records || 0}
         />
       </div>
     </main>

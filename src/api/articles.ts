@@ -1,6 +1,7 @@
 import api from "@/configs/api";
-import { Article } from "../typings/article/Article";
+import { Article } from "../typings/article/type";
 import { ISearchArticle } from "@/typings/search/articles";
+import { Folder } from "@/typings/folder/type";
 
 export async function addArticle({ link }: { link: string }): Promise<{
   id: string;
@@ -22,7 +23,28 @@ export async function getAllArticles(
   limit = 9,
   query?: string,
 ): Promise<{ total_records: number; data: Article[] }> {
-  let url = `bookmark/?page=${page}&limit=${limit}`;
+  let url = `bookmark?page=${page}&limit=${limit}`;
+  if (query) {
+    url += `&tag=${query}`;
+  }
+  let result = await api.get(url);
+  return result.data;
+}
+
+export async function getAllSaves(
+  page = 1,
+  limit = 9,
+  query?: string,
+): Promise<{
+  folders: {
+    data: Folder[];
+  };
+  bookmarks: {
+    total_records: number;
+    data: Article[];
+  };
+}> {
+  let url = `saves/home?page=${page}&limit=${limit}`;
   if (query) {
     url += `&tag=${query}`;
   }
