@@ -32,6 +32,7 @@ export default function App({ children }: { children: ReactNode }) {
   const shouldDisplayArticlesSidebarMenu = useMemo(() => {
     return (
       location.pathname === "/saves" ||
+      location.pathname.includes("/saves/folder") ||
       location.pathname === "/archives" ||
       location.pathname === "/tags" ||
       location.pathname === "/tags/saves" ||
@@ -68,7 +69,7 @@ export default function App({ children }: { children: ReactNode }) {
           <div
             className={`${
               shouldDisplayArticlesSidebarMenu && "flex"
-            }  mx-auto max-w-7xl gap-6 sm:px-6 lg:px-8`}
+            }  mx-auto max-w-7xl gap-6 px-6 lg:px-8`}
           >
             <>
               {shouldDisplayArticlesSidebarMenu && <ArticleMenuBar />}

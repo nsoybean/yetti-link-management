@@ -31,11 +31,17 @@ export async function getAllArticles(
   return result.data;
 }
 
-export async function getAllSaves(
+export async function getAllSaves({
+  folderId,
   page = 1,
   limit = 9,
-  query?: string,
-): Promise<{
+  query,
+}: {
+  folderId: string | null;
+  page: number;
+  limit: number;
+  query?: string;
+}): Promise<{
   folders: {
     data: Folder[];
   };
@@ -44,10 +50,21 @@ export async function getAllSaves(
     data: Article[];
   };
 }> {
-  let url = `saves/home?page=${page}&limit=${limit}`;
+  console.log("🚀 ~ folderId:", folderId);
+  let url = "saves";
+
+  // if specific folder
+  if (folderId) {
+    url += `/folder/${folderId}`;
+  }
+
+  // else home
+  url = `${url}?page=${page}&limit=${limit}`;
+
   if (query) {
     url += `&tag=${query}`;
   }
+
   let result = await api.get(url);
   return result.data;
 }

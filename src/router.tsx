@@ -18,27 +18,27 @@ import TagSaves from "./pages/tag/Saves";
 // Router
 export const routes = {
   LandingPageRoute: {
-    to: "/",
+    to: ["/"],
     component: <LandingPage />,
   },
   LoginPageRoute: {
-    to: "/login",
+    to: ["/login"],
     component: <Login />,
   },
   SavesPageRoute: {
-    to: "/saves",
+    to: ["/saves", "/saves/folder/:folderId"],
     component: <Saves />,
   },
   ArchivePageRoute: {
-    to: "/archives",
+    to: ["/archives"],
     component: <Archives />,
   },
   TagPageRoute: {
-    to: "/tags",
+    to: ["/tags"],
     component: <Tag />,
   },
   TagSavesPageRoute: {
-    to: "/tags/saves",
+    to: ["/tags/saves"],
     component: <TagSaves />,
   },
   //   PricingPageRoute: {
@@ -47,11 +47,11 @@ export const routes = {
   //   },
 
   ProfilePage: {
-    to: "/account",
+    to: ["/account"],
     component: <AccountPage />,
   },
   NotFoundPage: {
-    to: "/*",
+    to: ["/*"],
     component: <NotFoundPage />,
   },
 } as const;
@@ -60,9 +60,15 @@ const router = (
   <BrowserRouter basename="/">
     <App>
       <Routes>
-        {Object.entries(routes).map(([routeKey, route]) => (
-          <Route key={routeKey} path={route.to} element={route.component} />
-        ))}
+        {Object.entries(routes).map(
+          ([routeKey, route]) =>
+            Array.isArray(route.to) &&
+            route.to.map((to) => (
+              <Route key={routeKey} path={to} element={route.component} />
+            )),
+
+          // <Route key={routeKey} path={route.to} element={route.component} />
+        )}
       </Routes>
     </App>
   </BrowserRouter>

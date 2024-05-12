@@ -16,12 +16,15 @@ import ArticlesList from "@/components/ArticlesList";
 import ArticleSkeletonList from "@/components/ArticleSkeletonList";
 import Folders from "@/components/Folders";
 import { Separator } from "@/components/ui/separator";
+import { useParams } from "react-router-dom";
 // import { DataTable } from "@/components/articleTable/data-table";
 // import { ArticleColumns } from "@/components/articleTable/columns";
 
 const Saves = () => {
   const [currPage, setCurrPage] = useState(1);
   const { mode } = useViewArticleMode();
+  // get param from url
+  const { folderId } = useParams();
 
   useEffect(() => {
     // temp: remove old storage items
@@ -55,16 +58,34 @@ const Saves = () => {
     error,
     data: articles,
   } = useQuery({
-    queryKey: ["get-all-articles", currPage],
-    // queryFn: async () => getAllArticles(currPage),
-    queryFn: async () => getAllSaves(currPage),
+    queryKey: ["get-all-articles", currPage, folderId],
+    // queryFn: async () => getAllArticles(currPage), // deprecated
+    queryFn: async () =>
+      getAllSaves({ folderId: folderId || null, page: currPage, limit: 9 }),
   });
-  console.log("🚀 ~ Saves ~ articles:", articles);
+
+  const handleScroll = () => {
+    const buffer = 25; // Adjust this value as needed. To account for desktop bookmark bar etc which is not included in window innerheight.
+    if (
+      window.innerHeight + document.documentElement.scrollTop + buffer <=
+        document.documentElement.offsetHeight ||
+      isLoading
+    ) {
+      return;
+    }
+    // fetchData();
+    console.log("fetching data...");
+  };
+
+  useEffect(() => {
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [isLoading]);
 
   // empty
   if (!isLoading && articles?.bookmarks.total_records === 0) {
     return (
-      <div className="container mx-auto flex justify-center px-8 py-16">
+      <div className="container mx-auto flex justify-center py-16">
         <div className="flex flex-col items-center justify-center gap-10">
           <img className="w-[180px] rounded-full md:w-[220px]" src={yetti} />
 
@@ -91,11 +112,22 @@ const Saves = () => {
     <main className="mx-auto w-full">
       {/* article grid (gallery mode) */}
       {mode === "gallery" && (
-        <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-5">
+          <div className="text-lg font-semibold"> Saves </div>
+          <Separator />
+          {/* is loading */}
+          {isLoading && (
+            <div className="mb-12 flex flex-col gap-2">
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+                <ArticleSkeleton numCards={6} />
+              </div>
+            </div>
+          )}
+
           {/* folder */}
           {articles?.folders?.data && articles?.folders?.data.length > 0 && (
-            <div className="my-1 flex flex-col gap-2 px-8">
-              <h4> Folders</h4>
+            <div className="my-1 flex flex-col gap-2">
+              {/* <h4> Folders</h4> */}
               <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
                 <Folders folders={articles.folders.data} />
               </div>
@@ -104,12 +136,9 @@ const Saves = () => {
 
           {/* articles */}
           {articles?.bookmarks?.data && articles.bookmarks.data.length > 0 && (
-            <div className="mb-12 flex flex-col gap-2 px-8">
-              <h4> Saves</h4>
+            <div className="mb-12 flex flex-col gap-2">
+              {/* <h4> Saves</h4> */}
               <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-                {/* loading */}
-                {isLoading && <ArticleSkeleton numCards={6} />}
-                {/* show articles */}
                 {articles && <Articles articles={articles.bookmarks.data} />}
               </div>
             </div>

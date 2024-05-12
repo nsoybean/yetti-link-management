@@ -7,7 +7,7 @@ import {
   CardHeader,
   CardTitle,
 } from "./ui/card";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, FolderIcon } from "lucide-react";
 import ArticleOptions from "./ArticleOptions";
 import ToolTipText from "./TooltipText";
 import { Button } from "./ui/button";
@@ -26,23 +26,17 @@ const Folders = (props: Props) => {
   const navigate = useNavigate();
   const { theme } = useTheme();
 
-  function generateColorBaseOnSeed(seed: string) {
-    const randomColorBase = theme === "light" ? "light" : "dark";
-    const color = randomColor({
-      luminosity: randomColorBase,
-      seed: seed,
-    });
-    return color;
-  }
-
   return (
     <>
       {props.folders.map((folder, index) => (
-        <Button variant={"outline"} asChild>
-          <Card
-            key={index}
-            className="flex h-10 flex-row items-center justify-center"
-          >
+        <Button
+          key={index}
+          variant={"outline"}
+          asChild
+          onClick={() => navigate(`/saves/folder/${folder.id}`)}
+        >
+          <Card className="flex h-10 flex-row items-center justify-center shadow-sm">
+            <FolderIcon className="mr-2 h-4 w-4" />
             {folder.name}
           </Card>
         </Button>
