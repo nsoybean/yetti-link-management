@@ -14,12 +14,28 @@ import toast from "react-hot-toast";
 import { useViewArticleMode } from "@/hooks/useArticleViewMode";
 import ArticlesList from "@/components/ArticlesList";
 import ArticleSkeletonList from "@/components/ArticleSkeletonList";
+import useAuth from "@/hooks/useAuth";
+import useLogout from "@/hooks/useLogout";
+import { storage } from "@/lib/storage";
 // import { DataTable } from "@/components/articleTable/data-table";
 // import { ArticleColumns } from "@/components/articleTable/columns";
 
 const Saves = () => {
   const [currPage, setCurrPage] = useState(1);
   const { mode } = useViewArticleMode();
+  const { data: user } = useAuth();
+  const { logout } = useLogout();
+
+  useEffect(() => {
+    // force user relogin after ID migration
+    if (user) {
+      const login_001 = storage.get("login001");
+      if (!login_001) {
+        storage.set("login001", "true");
+        logout();
+      }
+    }
+  }, [user]);
 
   useEffect(() => {
     // temp: remove old storage items
@@ -35,6 +51,7 @@ const Saves = () => {
 
       if (userAuth.accessToken) {
         setAuthToken(userAuth.accessToken);
+        storage.set("login001", "true");
         // clear local window url
         window.history.replaceState("", "", "/saves");
       } else {
