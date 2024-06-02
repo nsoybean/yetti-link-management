@@ -36,7 +36,7 @@ const Archives = () => {
 
           {/* text */}
           <div className="flex flex-col items-center justify-center gap-2">
-            <h1 className="text-md scroll-m-20">No archived articles</h1>
+            <h1 className="text-md scroll-m-20">No archived links</h1>
           </div>
         </div>
       </div>

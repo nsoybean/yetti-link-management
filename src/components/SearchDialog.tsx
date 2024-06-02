@@ -84,7 +84,7 @@ const SearchDialog = (props: Props) => {
             {availableArticles.map((article) => {
               return (
                 <CommandItem
-                  key={article.id}
+                  key={article._id}
                   onSelect={() => {
                     setSearchDialogOpen((open) => !open);
                     window.open(article.link, "_blank", "noopener,noreferrer");
@@ -114,7 +114,7 @@ const SearchDialog = (props: Props) => {
             {archiveArticles.map((article) => {
               return (
                 <CommandItem
-                  key={article.id}
+                  key={article._id}
                   onSelect={() => {
                     setSearchDialogOpen((open) => !open);
                     window.open(article.link, "_blank", "noopener,noreferrer");

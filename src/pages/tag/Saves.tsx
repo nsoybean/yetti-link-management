@@ -8,7 +8,6 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ArrowLeftIcon } from "lucide-react";
 import ToolTipText from "@/components/TooltipText";
-import router, { routes } from "@/router";
 import ArticleSkeletonList from "@/components/ArticleSkeletonList";
 import ArticlesList from "@/components/ArticlesList";
 import { useViewArticleMode } from "@/hooks/useArticleViewMode";

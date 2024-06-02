@@ -1,18 +1,18 @@
 import { Tag } from "../tag/Tag";
 
 export interface Article {
+  _id: string;
   link: string;
   description: string;
   state: string;
   note: string;
-  id: string;
   color: string;
   image: string;
   title: string;
   domain: string;
   updatedAt: Date;
   createdAt: Date;
-  tagIds: Tag[];
+  tags: Tag[];
 }
 
 export enum ArticleStateEnum {

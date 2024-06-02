@@ -1,10 +1,8 @@
 import ToolTipText from "@/components/TooltipText";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { Skeleton } from "@/components/ui/skeleton";
 import useAuth from "@/hooks/useAuth";
 import { ArrowLeftIcon } from "lucide-react";
-import React from "react";
 import { useNavigate } from "react-router-dom";
 
 type Props = {};
