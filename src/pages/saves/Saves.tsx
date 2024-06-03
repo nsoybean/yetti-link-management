@@ -27,17 +27,6 @@ const Saves = () => {
   const { logout } = useLogout();
 
   useEffect(() => {
-    // force user relogin after ID migration
-    if (user) {
-      const login_001 = storage.get("login001");
-      if (!login_001) {
-        storage.set("login001", "true");
-        logout();
-      }
-    }
-  }, [user]);
-
-  useEffect(() => {
     // temp: remove old storage items
     localStorage.removeItem("leaf:color-theme");
     localStorage.removeItem("leaf-ui-theme");
@@ -51,12 +40,21 @@ const Saves = () => {
 
       if (userAuth.accessToken) {
         setAuthToken(userAuth.accessToken);
+        // set login during first login
         storage.set("login001", "true");
         // clear local window url
         window.history.replaceState("", "", "/saves");
       } else {
         toast.error("Failed authentication");
       }
+    }
+
+    // force users with old session to log out
+    // wont affect users with new login as key is set above after login
+    const login_001 = storage.get("login001");
+    if (!login_001) {
+      storage.set("login001", "true");
+      logout();
     }
   }, []);
 
