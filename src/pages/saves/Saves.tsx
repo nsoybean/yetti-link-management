@@ -14,6 +14,9 @@ import toast from "react-hot-toast";
 import { useViewArticleMode } from "@/hooks/useArticleViewMode";
 import ArticlesList from "@/components/ArticlesList";
 import ArticleSkeletonList from "@/components/ArticleSkeletonList";
+import useAuth from "@/hooks/useAuth";
+import useLogout from "@/hooks/useLogout";
+import { storage } from "@/lib/storage";
 import Folders from "@/components/Folders";
 import { Separator } from "@/components/ui/separator";
 import { useParams } from "react-router-dom";
@@ -23,6 +26,9 @@ import { useParams } from "react-router-dom";
 const Saves = () => {
   const [currPage, setCurrPage] = useState(1);
   const { mode } = useViewArticleMode();
+  const { data: user } = useAuth();
+  const { logout } = useLogout();
+
   // get param from url
   const { folderId } = useParams();
 
@@ -40,11 +46,21 @@ const Saves = () => {
 
       if (userAuth.accessToken) {
         setAuthToken(userAuth.accessToken);
+        // set login during first login
+        storage.set("login001", "true");
         // clear local window url
         window.history.replaceState("", "", "/saves");
       } else {
         toast.error("Failed authentication");
       }
+    }
+
+    // force users with old session to log out
+    // wont affect users with new login as key is set above after login
+    const login_001 = storage.get("login001");
+    if (!login_001) {
+      storage.set("login001", "true");
+      logout();
     }
   }, []);
 

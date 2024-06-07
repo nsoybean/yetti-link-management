@@ -8,6 +8,7 @@ export interface User {
   hasPaid?: boolean;
   lastSignIn?: Date;
   lastActiveTimestamp?: number;
+  migrateIdLogin?: boolean;
 }
 
 export interface AuthUser {

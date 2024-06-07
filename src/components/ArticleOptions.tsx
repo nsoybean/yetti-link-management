@@ -79,12 +79,15 @@ const ArticleOptions = ({ article }: Props) => {
   } | null>(null);
 
   // copy of original tags
-  const originalTags = article?.tagIds.map((tag) => tag.name);
+  let originalTags: string[] = [];
+  if (article?.tags) {
+    originalTags = article?.tags.map((tag) => tag.name);
+  }
 
   // if user open add tags dialog, load current tags into state
   useEffect(() => {
-    if (article) {
-      setTagList(article?.tagIds.map((tag) => tag.name));
+    if (article && article?.tags) {
+      setTagList(article?.tags.map((tag) => tag.name));
     }
   }, [tagDialogOpen]);
 
@@ -140,13 +143,10 @@ const ArticleOptions = ({ article }: Props) => {
       toast.success("Link archived!");
 
       // invalidate query
-      if (article.state === "AVAILABLE") {
-        queryClient.invalidateQueries({ queryKey: ["get-all-articles"] });
-      } else {
-        queryClient.invalidateQueries({
-          queryKey: ["get-all-archived-articles"],
-        });
-      }
+      queryClient.invalidateQueries({ queryKey: ["get-all-articles"] });
+      queryClient.invalidateQueries({
+        queryKey: ["get-all-archived-articles"],
+      });
     },
     onError: (error) => {
       toast.dismiss(currToast);
@@ -166,11 +166,9 @@ const ArticleOptions = ({ article }: Props) => {
       alert(`Error`);
     },
     onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ["get-all-articles"] });
       queryClient.invalidateQueries({
         queryKey: ["get-all-archived-articles"],
-      });
-      queryClient.invalidateQueries({
-        queryKey: ["get-all-articles"],
       });
     },
   });
@@ -183,19 +181,17 @@ const ArticleOptions = ({ article }: Props) => {
       toast.success("Tags saved!");
 
       // invalidate query
+      queryClient.invalidateQueries({
+        queryKey: ["get-all-tags"],
+      });
+
       if (article.state === "AVAILABLE") {
         queryClient.invalidateQueries({
           queryKey: ["get-all-articles"],
         });
-        queryClient.invalidateQueries({
-          queryKey: ["get-all-tags"],
-        });
       } else {
         queryClient.invalidateQueries({
           queryKey: ["get-all-archived-articles"],
-        });
-        queryClient.invalidateQueries({
-          queryKey: ["get-all-tags"],
         });
       }
     },
@@ -247,7 +243,7 @@ const ArticleOptions = ({ article }: Props) => {
   async function menuItemSelect() {
     const toastId = toast.loading("Deleting...");
     setCurrToast(toastId);
-    deleteArticleById({ id: article.id });
+    deleteArticleById({ id: article._id });
   }
 
   async function toggleTagDialog() {
@@ -347,11 +343,11 @@ const ArticleOptions = ({ article }: Props) => {
                 if (article.state === "AVAILABLE") {
                   const toastId = toast.loading("Archiving...");
                   setCurrToast(toastId);
-                  archiveArticleById({ id: article.id });
+                  archiveArticleById({ id: article._id });
                 } else {
                   const toastId = toast.loading("Restoring...");
                   setCurrToast(toastId);
-                  unarchiveArticleById({ id: article.id });
+                  unarchiveArticleById({ id: article._id });
                 }
               }}
             >
@@ -378,7 +374,7 @@ const ArticleOptions = ({ article }: Props) => {
         setOpenDialog={setOpenDialog}
         cb={menuItemSelect}
         title="Are you sure?"
-        description="This action cannot be undone. This will delete the article."
+        description="This action cannot be undone. This will delete the link."
       />
 
       {/* add tags dialog */}
@@ -451,7 +447,7 @@ const ArticleOptions = ({ article }: Props) => {
                 }
                 disabled={!didTagsChange(originalTags, tagList)}
                 onClick={() => {
-                  tagArticleById({ id: article.id, tags: tagList });
+                  tagArticleById({ id: article._id, tags: tagList });
                 }}
               >
                 Save
@@ -494,7 +490,7 @@ const ArticleOptions = ({ article }: Props) => {
                 onClick={() => {
                   if (articleMetaData?.title) {
                     updateArticle({
-                      id: article.id,
+                      id: article._id,
                       title: articleMetaData?.title,
                     });
                   }

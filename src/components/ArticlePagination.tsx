@@ -2,14 +2,12 @@ import React from "react";
 import {
   Pagination,
   PaginationContent,
-  PaginationEllipsis,
   PaginationItem,
   PaginationLink,
   PaginationNext,
   PaginationPrevious,
 } from "./ui/pagination";
 import { getPaginationGenerator } from "@/lib/getPaginationGenerator";
-import { Button } from "./ui/button";
 
 type Props = {
   currentPage: number;

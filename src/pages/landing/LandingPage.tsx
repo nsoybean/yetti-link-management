@@ -1,4 +1,3 @@
-import { Hero } from "@/components/Hero";
 import { LandingPageNavbar } from "@/components/LandingPageNavbar";
 import { Button } from "@/components/ui/button";
 import useAuth from "@/hooks/useAuth";

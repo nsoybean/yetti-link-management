@@ -1,5 +1,5 @@
 export interface ISearchArticle {
-  id: string;
+  _id: string;
   title: string;
   link: string;
   description: string;

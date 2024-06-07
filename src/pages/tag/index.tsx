@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Input } from "@/components/ui/input";
 import { getAllTags } from "@/api/tags";
@@ -81,7 +81,7 @@ const Tag = () => {
               <Badge
                 className="mx-1 h-8 max-w-24 px-4 py-2 font-semibold hover:cursor-pointer"
                 variant={"default"}
-                key={tag.id}
+                key={tag._id}
                 onClick={() => navigate(`/tags/saves?tag=${tag.name}`)}
               >
                 <p className="overflow-hidden truncate font-semibold">
@@ -99,7 +99,7 @@ const Tag = () => {
               <Badge
                 className="mx-1 h-8 max-w-24 px-4 py-2 font-semibold hover:cursor-pointer"
                 variant={"default"}
-                key={tag.id}
+                key={tag._id}
                 onClick={() => navigate(`/tags/saves?tag=${tag.name}`)}
               >
                 <p className="overflow-hidden truncate font-semibold">

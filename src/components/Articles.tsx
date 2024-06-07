@@ -84,9 +84,9 @@ const Articles = (props: Props) => {
             </div>
           </CardHeader>
           {/* content */}
-          {article?.tagIds?.length > 0 && (
+          {article?.tags?.length > 0 && (
             <CardContent className="flex w-full flex-row flex-wrap items-center justify-start gap-2 px-3">
-              {article.tagIds.map((tag, index) => (
+              {article.tags.map((tag, index) => (
                 <Badge
                   className="max-w-24 hover:cursor-pointer"
                   variant={"secondary"}
