@@ -22,10 +22,15 @@ import { Folder } from "@/typings/folder/type";
 import AddNew from "@/components/AddNew";
 import { ROOT_FOLDER__VALUE, useFolder } from "@/hooks/FolderProvider";
 import { useParams } from "react-router-dom";
+import { ArticleStateEnum } from "@/typings/article/type";
 // import { DataTable } from "@/components/articleTable/data-table";
 // import { ArticleColumns } from "@/components/articleTable/columns";
 
-const Saves = () => {
+type Props = {
+  state?: ArticleStateEnum;
+};
+
+const Saves = ({ state: articleState = ArticleStateEnum.AVAILABLE }: Props) => {
   const [currPage, setCurrPage] = useState(1);
   const [isAddLinkDialogOpen, setIsAddLinkDialogOpen] = useState(false);
   const { mode } = useViewArticleMode();
@@ -121,12 +126,7 @@ const Saves = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, [isLoading]);
 
-  // empty
-  if (
-    !isLoading &&
-    articles?.bookmarks.total_records === 0 &&
-    articles?.folders.total_recrods === 1 // since api includes curr folder
-  ) {
+  function renderEmptyArticlesState() {
     return (
       <div className="container mx-auto flex justify-center py-16">
         <div className="flex flex-col items-center justify-center gap-10">
@@ -154,68 +154,90 @@ const Saves = () => {
   }
 
   return (
+    // main
     <main className="mx-auto w-full">
-      {/* article grid (gallery mode) */}
-      {mode === "gallery" && (
-        <div className="flex flex-col gap-3">
-          <div className="mt-2 flex flex-row items-center justify-between">
-            <div className="ml-2 text-lg font-semibold"> Saves </div>
-            <AddNew
-              trigger={
-                <Button variant="outline">
-                  <PlusIcon className="mr-2 h-4 w-4" />
-                  New
-                </Button>
-              }
-            />
-          </div>
+      <div className="flex flex-col gap-3">
+        {/* header */}
+        <div className="mt-2 flex flex-row items-center justify-between">
+          <div className="ml-2 text-lg font-semibold"> Saves </div>
+          <AddNew
+            trigger={
+              <Button variant="outline">
+                <PlusIcon className="mr-2 h-4 w-4" />
+                New
+              </Button>
+            }
+          />
+        </div>
 
-          <Separator />
+        {/* divider */}
+        <Separator />
 
-          {/* is loading */}
-          {isLoading && (
-            <div className="mb-12 flex flex-col gap-2">
-              <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-                <ArticleSkeleton numCards={6} />
+        {/* content (gallery mode) */}
+        {mode === "gallery" && (
+          <>
+            {/* is loading */}
+            {isLoading && (
+              <div className="mb-12 flex flex-col gap-2">
+                <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+                  <ArticleSkeleton numCards={6} />
+                </div>
               </div>
-            </div>
-          )}
+            )}
 
-          {/* folder */}
-          {filteredFolders.length > 0 && (
-            <div className="my-1 flex flex-col gap-2">
-              {/* <h4> Folders</h4> */}
-              <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+            {/* folder */}
+            {filteredFolders.length > 0 && (
+              <div className="my-1">
+                <div className="grid grid-cols-1 gap-2 md:grid-cols-2 lg:grid-cols-3">
+                  <Folders folders={filteredFolders} />
+                </div>
+              </div>
+            )}
+
+            {/* articles */}
+            {articles?.bookmarks?.data &&
+              articles.bookmarks.data.length > 0 && (
+                <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+                  <Articles articles={articles.bookmarks.data} />
+                </div>
+              )}
+
+            {/* articles (empty state) */}
+            {articles?.bookmarks?.data &&
+              articles.bookmarks.total_records === 0 &&
+              renderEmptyArticlesState()}
+          </>
+        )}
+
+        {/* content (list mode) */}
+        {mode === "list" && (
+          <div>
+            {/* is loading */}
+            {isLoading && <ArticleSkeletonList numCards={5} />}
+
+            {/* folder */}
+            {filteredFolders.length > 0 && (
+              <div className="my-1">
                 <Folders folders={filteredFolders} />
               </div>
-            </div>
-          )}
+            )}
 
-          {/* articles */}
-          {articles?.bookmarks?.data && articles.bookmarks.data.length > 0 && (
-            <div className="mb-12 flex flex-col gap-2">
-              {/* <h4> Saves</h4> */}
-              <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-                {articles && <Articles articles={articles.bookmarks.data} />}
-              </div>
-            </div>
-          )}
-        </div>
-      )}
+            {/* articles */}
+            {articles?.bookmarks?.data &&
+              articles.bookmarks.data.length > 0 && (
+                <ArticlesList articles={articles.bookmarks.data} />
+              )}
 
-      {/* article list (list mode) */}
-      {mode === "list" && (
-        <div className="mb-12 gap-4 px-8">
-          {/* loading */}
-          {isLoading && <ArticleSkeletonList numCards={5} />}
-
-          {/* show articles */}
-          {articles && <ArticlesList articles={articles.bookmarks.data} />}
-        </div>
-      )}
+            {/* articles (empty state) */}
+            {articles?.bookmarks?.data &&
+              articles.bookmarks.total_records === 0 &&
+              renderEmptyArticlesState()}
+          </div>
+        )}
+      </div>
 
       {/* pagination */}
-      <div className="bottom-0 mb-10">
+      <div className="bottom-0 mb-10 mt-12">
         <ArticlePagination
           currentPage={currPage}
           setPage={setCurrPage}

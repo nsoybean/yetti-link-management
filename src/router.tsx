@@ -3,11 +3,11 @@ import LandingPage from "./pages/landing/LandingPage";
 import App from "./App";
 import Login from "./pages/auth/Login";
 import Saves from "./pages/saves/Saves";
-import Archives from "./pages/saves/Archives";
 import NotFoundPage from "./pages/NotFoundPage";
 import AccountPage from "./pages/auth/AccountPage";
 import Tag from "./pages/tag";
 import TagSaves from "./pages/tag/Saves";
+import { ArticleStateEnum } from "./typings/article/type";
 
 // import PricingPage from "./pages/pricing/Pricing";
 // import App from "./App";
@@ -29,10 +29,11 @@ export const routes = {
     to: ["/saves", "/saves/folder/:folderId"],
     component: <Saves />,
   },
-  ArchivePageRoute: {
-    to: ["/archives"],
-    component: <Archives />,
-  },
+  // deprecated: migrated to use same component as Saves
+  // ArchivePageRoute: {
+  //   to: ["/archives"],
+  //   component: <Saves state={ArticleStateEnum.ARCHIVED} />,
+  // },
   TagPageRoute: {
     to: ["/tags"],
     component: <Tag />,

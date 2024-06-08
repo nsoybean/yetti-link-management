@@ -310,7 +310,8 @@ const ArticleOptions = ({ article }: Props) => {
             >
               <Pencil1Icon width={"18"} height={"18"} className="mr-2" /> Rename
             </DropdownMenuItem>
-            <DropdownMenuItem
+            {/* temp commented out archive feature */}
+            {/* <DropdownMenuItem
               onClick={() => {
                 if (article.state === "AVAILABLE") {
                   const toastId = toast.loading("Archiving...");
@@ -325,7 +326,7 @@ const ArticleOptions = ({ article }: Props) => {
             >
               <ArchiveIcon width={"18"} height={"18"} className="mr-2" />
               {article.state === "AVAILABLE" ? "Archive" : "Restore"}
-            </DropdownMenuItem>
+            </DropdownMenuItem> */}
 
             {/* temp commented out till implemented */}
             {/* <DropdownMenuItem>

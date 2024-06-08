@@ -18,6 +18,7 @@ import { useTheme } from "./theme-provider";
 import { routes } from "@/router";
 import { Folder } from "@/typings/folder/type";
 import FolderOptions from "./FolderOptions";
+import { useViewArticleMode } from "@/hooks/useArticleViewMode";
 
 type Props = {
   folders: Folder[];
@@ -26,12 +27,13 @@ type Props = {
 const Folders = (props: Props) => {
   const navigate = useNavigate();
   const { theme } = useTheme();
+  const { mode } = useViewArticleMode();
 
   return props.folders.map((folder, index) => (
     // folder card
     <div
       key={index}
-      className="h-15 flex flex-row items-center rounded-md border border-input bg-background px-4 py-2 shadow-sm hover:bg-accent hover:text-accent-foreground"
+      className={`h-15 ${mode === "list" && "my-2"} flex flex-row items-center rounded-md border border-input bg-background px-4 py-2 shadow-sm hover:bg-accent hover:text-accent-foreground`}
       onClick={() => {
         navigate(`/saves/folder/${folder._id}`);
       }}
