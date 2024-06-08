@@ -14,6 +14,12 @@ export const menuLinks: RouteProps[] = [
   { name: "Tags", href: "/tags", icon: TagIcon },
 ];
 
+// determine if curr path is at the given path
+const ifCurrPathStartsWith = ({ matchStr }: { matchStr: string }): boolean => {
+  const currPath = getUrlPath();
+  return currPath.startsWith(matchStr);
+};
+
 const ArticleMenuBar = (props: Props) => {
   const navigate = useNavigate();
 
@@ -24,7 +30,7 @@ const ArticleMenuBar = (props: Props) => {
           <MenubarMenu key={index}>
             <Button
               variant={"ghost"}
-              className={`flex w-full flex-row items-center justify-start rounded-md p-2 text-sm ${getUrlPath() === link.href && "bg-secondary"}`}
+              className={`flex w-full flex-row items-center justify-start rounded-md p-2 text-sm ${ifCurrPathStartsWith({ matchStr: link.href }) && "bg-secondary dark:bg-secondary"}`}
               onClick={() => navigate(link.href)}
             >
               {<link.icon className="mr-2 h-4 w-4" />}

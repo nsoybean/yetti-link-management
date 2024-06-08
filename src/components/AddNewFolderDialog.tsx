@@ -3,7 +3,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useMutation } from "@tanstack/react-query";
 import { useQueryClient } from "@tanstack/react-query";
-import { addArticle } from "@/api/articles";
 import toast from "react-hot-toast";
 import { ForwardIcon } from "lucide-react";
 import {
@@ -17,6 +16,7 @@ import {
   DialogClose,
 } from "./ui/dialog";
 import { AxiosError } from "axios";
+import { createFolder } from "@/api/folders";
 import { useFolder } from "@/hooks/FolderProvider";
 
 type Props = {
@@ -26,9 +26,8 @@ type Props = {
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
-export const SaveArticleInput = (props: Props) => {
-  const [url, setUrl] = useState("");
-  // const [isOpen, setIsOpen] = useState(false);
+export const AddNewFolderDialog = (props: Props) => {
+  const [folderName, setFolderName] = useState("");
   const [currToast, setCurrToast] = useState("");
   const queryClient = useQueryClient();
   const inputRef = useRef<HTMLInputElement>(null);
@@ -43,36 +42,35 @@ export const SaveArticleInput = (props: Props) => {
   }, []);
 
   const { mutate, status } = useMutation({
-    mutationFn: addArticle,
+    mutationFn: createFolder,
     onSuccess: (data) => {
-      setUrl("");
+      setFolderName("");
       props.setIsOpen(false);
       if (inputRef?.current) {
         inputRef.current.blur();
       }
       toast.dismiss(currToast);
-      toast.success("Link Added!");
+      toast.success("Folder created!");
     },
 
     onError: (error) => {
       let axiosError = error as AxiosError;
       toast.dismiss(currToast);
-      if (axiosError.response?.status === 422) {
-        toast.error(`Invalid link`);
-      } else {
-        toast.error(`Error!`);
-      }
-      setUrl("");
+      toast.error(`Error!`);
+      setFolderName("");
     },
     onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ["get-all-articles"] });
+      queryClient.invalidateQueries({
+        queryKey: ["get-all-articles"],
+      });
     },
   });
 
   const onKeyPress = async (event: KeyboardEvent) => {
+    console.log("clicky in new folder ");
     // open dialog
     if (props.onEventListener) {
-      if ((event.metaKey || event.ctrlKey) && event.key === "l") {
+      if ((event.metaKey || event.ctrlKey) && event.key === "n") {
         event.preventDefault();
         props.setIsOpen(true);
       }
@@ -82,7 +80,7 @@ export const SaveArticleInput = (props: Props) => {
     if (event.key === "Escape") {
       // remove focus and clear input
       if (inputRef.current) {
-        setUrl("");
+        setFolderName("");
         inputRef.current.blur();
       }
     }
@@ -90,22 +88,21 @@ export const SaveArticleInput = (props: Props) => {
     // Check if the 'enter key' key is pressed and the focus is on the input
     if (event.key === "Enter" && document.activeElement === inputRef.current) {
       if (inputRef.current) {
-        saveArticle(inputRef.current.value);
+        createFolderWithName({ name: inputRef.current.value });
       }
     }
   };
 
-  async function saveArticle(inputUrl: string) {
+  async function createFolderWithName({ name }: { name: string }) {
     if (!currFolderId) {
       toast.error("Current folder unknown");
       return;
     }
 
-    if (inputUrl.trim() !== "") {
-      const toastId = toast.loading("Saving...");
+    if (name.trim() !== "") {
+      const toastId = toast.loading("Creating...");
       setCurrToast(toastId);
-
-      mutate({ link: inputUrl.trim(), parentFolderId: currFolderId });
+      mutate({ parentFolderId: currFolderId, folderName: name.trim() });
     }
   }
 
@@ -114,17 +111,19 @@ export const SaveArticleInput = (props: Props) => {
       {props.trigger && <DialogTrigger asChild>{props.trigger}</DialogTrigger>}
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>New link</DialogTitle>
-          <DialogDescription>Enter the link you wish to save</DialogDescription>
+          <DialogTitle>New folder</DialogTitle>
+          <DialogDescription>
+            Creates a new folder in current directory
+          </DialogDescription>
         </DialogHeader>
         <div className="flex items-center space-x-2">
           <div className="grid flex-1 gap-2">
             <Input
-              placeholder="https://example.com"
+              placeholder="Reading list"
               ref={inputRef}
-              value={url}
+              value={folderName}
               id="link"
-              onChange={(e) => setUrl(e.target.value)}
+              onChange={(e) => setFolderName(e.target.value)}
             />
           </div>
           <Button
@@ -133,11 +132,11 @@ export const SaveArticleInput = (props: Props) => {
             className="px-3"
             onClick={() => {
               if (inputRef.current) {
-                saveArticle(inputRef.current.value);
+                createFolderWithName({ name: inputRef.current.value });
               }
             }}
           >
-            <span className="sr-only">Save</span>
+            <span className="sr-only">Create</span>
             <ForwardIcon className="h-4 w-4" />
           </Button>
         </div>

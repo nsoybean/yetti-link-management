@@ -17,6 +17,7 @@ import { useNavigate } from "react-router-dom";
 import { useTheme } from "./theme-provider";
 import { routes } from "@/router";
 import { Folder } from "@/typings/folder/type";
+import FolderOptions from "./FolderOptions";
 
 type Props = {
   folders: Folder[];
@@ -26,23 +27,32 @@ const Folders = (props: Props) => {
   const navigate = useNavigate();
   const { theme } = useTheme();
 
-  return (
-    <>
-      {props.folders.map((folder, index) => (
-        <Button
-          key={index}
-          variant={"outline"}
-          asChild
-          onClick={() => navigate(`/saves/folder/${folder.id}`)}
-        >
-          <Card className="flex h-10 flex-row items-center justify-center shadow-sm">
-            <FolderIcon className="mr-2 h-4 w-4" />
-            {folder.name}
-          </Card>
-        </Button>
-      ))}
-    </>
-  );
+  return props.folders.map((folder, index) => (
+    // folder card
+    <div
+      key={index}
+      className="h-15 flex flex-row items-center rounded-md border border-input bg-background px-4 py-2 shadow-sm hover:bg-accent hover:text-accent-foreground"
+      onClick={() => {
+        navigate(`/saves/folder/${folder._id}`);
+      }}
+    >
+      {/* icon and name */}
+      <div className="flex flex-grow flex-row items-center overflow-hidden">
+        <FolderIcon className="mr-3 h-5 w-5 shrink-0" />
+        <div className="truncate"> {folder.name} </div>
+      </div>
+
+      {/* options */}
+      <div
+        className="ml-2 flex items-center"
+        onClick={(e) => {
+          e.stopPropagation(); // Prevent triggering the folder click event
+        }}
+      >
+        <FolderOptions folder={folder} />
+      </div>
+    </div>
+  ));
 };
 
 export default Folders;

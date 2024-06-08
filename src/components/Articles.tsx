@@ -92,9 +92,11 @@ const Articles = (props: Props) => {
                   variant={"secondary"}
                   key={index}
                   onClick={() => {
+                    let tagSaveRoute: string =
+                      routes.TagSavesPageRoute.to[0] || "";
                     if (
                       // ignore if already in query by tag page
-                      routes.TagSavesPageRoute.to === window.location.pathname
+                      tagSaveRoute === window.location.pathname
                     ) {
                       return;
                     }

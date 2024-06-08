@@ -1,8 +1,7 @@
 export interface Folder {
+  _id: string;
   name: string;
   createdAt: Date;
   updatedAt: Date;
-  id: string;
   parentFolderId: string;
-  userId: string;
 }

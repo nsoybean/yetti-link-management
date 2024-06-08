@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { parseAuthFromRedirectUrl } from "@/lib/auth";
 import { setAuthToken } from "@/configs/auth";
 import { useQuery } from "@tanstack/react-query";
-import { getAllArticles, getAllSaves } from "@/api/articles";
+import { getAllArticles } from "@/api/articles";
 import { Button } from "@/components/ui/button";
 import ArticlePagination from "@/components/ArticlePagination";
 import ArticleSkeleton from "@/components/ArticleSkeleton";
@@ -14,23 +14,34 @@ import toast from "react-hot-toast";
 import { useViewArticleMode } from "@/hooks/useArticleViewMode";
 import ArticlesList from "@/components/ArticlesList";
 import ArticleSkeletonList from "@/components/ArticleSkeletonList";
-import useAuth from "@/hooks/useAuth";
 import useLogout from "@/hooks/useLogout";
 import { storage } from "@/lib/storage";
 import Folders from "@/components/Folders";
 import { Separator } from "@/components/ui/separator";
+import { Folder } from "@/typings/folder/type";
+import AddNew from "@/components/AddNew";
+import { ROOT_FOLDER__VALUE, useFolder } from "@/hooks/FolderProvider";
 import { useParams } from "react-router-dom";
 // import { DataTable } from "@/components/articleTable/data-table";
 // import { ArticleColumns } from "@/components/articleTable/columns";
 
 const Saves = () => {
   const [currPage, setCurrPage] = useState(1);
+  const [isAddLinkDialogOpen, setIsAddLinkDialogOpen] = useState(false);
   const { mode } = useViewArticleMode();
-  const { data: user } = useAuth();
   const { logout } = useLogout();
-
-  // get param from url
   const { folderId } = useParams();
+  const { setFolder } = useFolder();
+
+  // update folder id context
+  let currFolderId = folderId || ROOT_FOLDER__VALUE;
+  useEffect(() => {
+    if (folderId) {
+      setFolder(folderId);
+    } else {
+      setFolder(ROOT_FOLDER__VALUE);
+    }
+  }, [folderId]);
 
   useEffect(() => {
     // temp: remove old storage items
@@ -75,10 +86,21 @@ const Saves = () => {
     data: articles,
   } = useQuery({
     queryKey: ["get-all-articles", currPage, folderId],
-    // queryFn: async () => getAllArticles(currPage), // deprecated
     queryFn: async () =>
-      getAllSaves({ folderId: folderId || null, page: currPage, limit: 9 }),
+      getAllArticles({
+        folderId: currFolderId,
+        page: currPage,
+        limit: 9,
+      }),
   });
+
+  // filter away current folder from list, if any
+  let filteredFolders: Folder[] = [];
+  if (articles) {
+    filteredFolders = articles.folders.data.filter(
+      (folder) => folder._id !== currFolderId,
+    );
+  }
 
   const handleScroll = () => {
     const buffer = 25; // Adjust this value as needed. To account for desktop bookmark bar etc which is not included in window innerheight.
@@ -90,7 +112,8 @@ const Saves = () => {
       return;
     }
     // fetchData();
-    console.log("fetching data...");
+    // TODO @sb: implement infinite scroll
+    // console.log("fetching data...");
   };
 
   useEffect(() => {
@@ -99,7 +122,11 @@ const Saves = () => {
   }, [isLoading]);
 
   // empty
-  if (!isLoading && articles?.bookmarks.total_records === 0) {
+  if (
+    !isLoading &&
+    articles?.bookmarks.total_records === 0 &&
+    articles?.folders.total_recrods === 1 // since api includes curr folder
+  ) {
     return (
       <div className="container mx-auto flex justify-center py-16">
         <div className="flex flex-col items-center justify-center gap-10">
@@ -116,6 +143,8 @@ const Saves = () => {
                   <PlusIcon className="h-4 w-4" />
                 </Button>
               }
+              setIsOpen={setIsAddLinkDialogOpen}
+              isOpen={isAddLinkDialogOpen}
               onEventListener={false}
             />
           </div>
@@ -128,9 +157,21 @@ const Saves = () => {
     <main className="mx-auto w-full">
       {/* article grid (gallery mode) */}
       {mode === "gallery" && (
-        <div className="flex flex-col gap-5">
-          <div className="text-lg font-semibold"> Saves </div>
+        <div className="flex flex-col gap-3">
+          <div className="mt-2 flex flex-row items-center justify-between">
+            <div className="ml-2 text-lg font-semibold"> Saves </div>
+            <AddNew
+              trigger={
+                <Button variant="outline">
+                  <PlusIcon className="mr-2 h-4 w-4" />
+                  New
+                </Button>
+              }
+            />
+          </div>
+
           <Separator />
+
           {/* is loading */}
           {isLoading && (
             <div className="mb-12 flex flex-col gap-2">
@@ -141,11 +182,11 @@ const Saves = () => {
           )}
 
           {/* folder */}
-          {articles?.folders?.data && articles?.folders?.data.length > 0 && (
+          {filteredFolders.length > 0 && (
             <div className="my-1 flex flex-col gap-2">
               {/* <h4> Folders</h4> */}
               <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-                <Folders folders={articles.folders.data} />
+                <Folders folders={filteredFolders} />
               </div>
             </div>
           )}
