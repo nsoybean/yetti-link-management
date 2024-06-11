@@ -1,4 +1,4 @@
-import { Article } from "@/typings/article/Article";
+import { Article } from "@/typings/article/type";
 import { ColumnDef } from "@tanstack/react-table";
 import dayjs from "dayjs";
 

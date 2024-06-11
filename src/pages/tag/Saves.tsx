@@ -32,8 +32,14 @@ const TagSaves = () => {
     error,
     data: articles,
   } = useQuery({
-    queryKey: ["get-all-articles", searchQueryTag, currPage],
-    queryFn: async () => getAllArticles(currPage, 9, searchQueryTag),
+    queryKey: ["get-all-articles-by-tag", searchQueryTag, currPage],
+    queryFn: async () =>
+      getAllArticles({
+        folderId: null,
+        page: currPage,
+        limit: 9,
+        tag: searchQueryTag,
+      }),
   });
 
   return (
@@ -52,8 +58,8 @@ const TagSaves = () => {
         />
         <div className="text-2xl font-semibold">
           {searchQueryTag}
-          {articles && articles?.total_records > 0 && (
-            <span> {`(${articles.total_records})`} </span>
+          {articles && articles?.bookmarks.total_records > 0 && (
+            <span> {`(${articles.bookmarks.total_records})`} </span>
           )}
         </div>
       </div>
@@ -65,7 +71,7 @@ const TagSaves = () => {
           {isLoading && <ArticleSkeleton numCards={6} />}
 
           {/* show articles */}
-          {articles && <Articles articles={articles.data} />}
+          {articles && <Articles articles={articles.bookmarks.data} />}
         </div>
       )}
 
@@ -76,12 +82,12 @@ const TagSaves = () => {
           {isLoading && <ArticleSkeletonList numCards={5} />}
 
           {/* show articles */}
-          {articles && <ArticlesList articles={articles.data} />}
+          {articles && <ArticlesList articles={articles.bookmarks.data} />}
         </div>
       )}
 
       {/* if empty */}
-      {articles?.total_records === 0 && (
+      {articles?.bookmarks.total_records === 0 && (
         <div className="flex flex-col items-center justify-center gap-2">
           <h1 className="text-md scroll-m-20">Oops, no links found </h1>
           <Button onClick={() => navigate(-1)}>
@@ -97,7 +103,7 @@ const TagSaves = () => {
           currentPage={currPage}
           setPage={setCurrPage}
           recordsPerPage={9}
-          totalRecords={articles?.total_records || 0}
+          totalRecords={articles?.bookmarks.total_records || 0}
         />
       </div>
     </main>

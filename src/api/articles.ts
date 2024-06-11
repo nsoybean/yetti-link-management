@@ -1,8 +1,15 @@
 import api from "@/configs/api";
-import { Article } from "../typings/article/Article";
+import { Article } from "../typings/article/type";
 import { ISearchArticle } from "@/typings/search/articles";
+import { Folder, IParentFolderHierarchy } from "@/typings/folder/type";
 
-export async function addArticle({ link }: { link: string }): Promise<{
+export async function addArticle({
+  link,
+  parentFolderId,
+}: {
+  link: string;
+  parentFolderId: string;
+}): Promise<{
   id: string;
   link: string;
   domain: string;
@@ -13,20 +20,47 @@ export async function addArticle({ link }: { link: string }): Promise<{
   description: string;
   createdAt: Date;
 }> {
-  const result = await api.post(`bookmark/v3`, { link });
+  const result = await api.post(`bookmark/v3`, { link, parentFolderId });
   return result.data;
 }
 
-export async function getAllArticles(
+export async function getAllArticles({
+  folderId,
   page = 1,
   limit = 9,
-  query?: string,
-): Promise<{ total_records: number; data: Article[] }> {
-  let url = `bookmark/?page=${page}&limit=${limit}`;
-  if (query) {
-    url += `&tag=${query}`;
+  tag = null,
+}: {
+  folderId: string | null;
+  page: number;
+  limit: number;
+  tag?: string | null;
+}): Promise<{
+  folders: {
+    total_recrods: number;
+    data: Folder[];
+  };
+  bookmarks: {
+    total_records: number;
+    data: Article[];
+  };
+  parentFolderHierarchy: {
+    maxDepthLookupReached: boolean;
+    list: { _id: string; name: string }[];
+  };
+}> {
+  let baseUrl = `bookmark?page=${page}&limit=${limit}`;
+
+  // if specific folder
+  if (folderId) {
+    baseUrl += `&folderId=${folderId}`;
   }
-  let result = await api.get(url);
+
+  // if specific tag
+  if (tag) {
+    baseUrl += `&tag=${tag}`;
+  }
+
+  let result = await api.get(baseUrl);
   return result.data;
 }
 

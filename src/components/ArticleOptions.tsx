@@ -13,7 +13,7 @@ import {
   ArchiveIcon,
 } from "@radix-ui/react-icons";
 import { Button } from "./ui/button";
-import { DeleteIcon, PlusIcon, TagIcon } from "lucide-react";
+import { DeleteIcon, PlusIcon, TagIcon, TrashIcon } from "lucide-react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import {
   archiveArticle,
@@ -23,7 +23,7 @@ import {
   updateArticleMetaById,
 } from "@/api/articles";
 import toast from "react-hot-toast";
-import { Article } from "@/typings/article/Article";
+import { Article } from "@/typings/article/type";
 import { useEffect, useRef, useState } from "react";
 import ConfirmationDialog from "./Dialog";
 import {
@@ -90,27 +90,6 @@ const ArticleOptions = ({ article }: Props) => {
       setTagList(article?.tags.map((tag) => tag.name));
     }
   }, [tagDialogOpen]);
-
-  useEffect(() => {
-    document.addEventListener("keydown", onKeyPress);
-
-    return () => {
-      document.removeEventListener("keydown", onKeyPress);
-    };
-  }, []);
-
-  const onKeyPress = async (event: KeyboardEvent) => {
-    // Check if the 'enter key' key is pressed and the focus is on the input
-    // if (
-    //   event.key === "Enter" &&
-    //   document.activeElement === tagInputRef.current
-    // ) {
-    //   if (tagInputRef.current) {
-    //     event.preventDefault();
-    //     upsertTagValue(tagInputRef.current.value);
-    //   }
-    // }
-  };
 
   // delete article
   const { mutate: deleteArticleById } = useMutation({
@@ -297,13 +276,6 @@ const ArticleOptions = ({ article }: Props) => {
     setTagList(newTagList);
   }
 
-  function didTitleChange() {
-    if (!setArticleMetaData) {
-      return false;
-    }
-
-    // renameInputRef?.current?.value.trim() == article.title.trim()
-  }
   return (
     <>
       {/* setting modal to false, prevent drop down from remaining open */}
@@ -320,7 +292,7 @@ const ArticleOptions = ({ article }: Props) => {
               onSelect={(e) => e.preventDefault()}
               onClick={() => setOpenDialog(true)}
             >
-              <DeleteIcon width={"18"} height={"18"} className="mr-2" />
+              <TrashIcon width={"18"} height={"18"} className="mr-2" />
               Delete
               {/* <DropdownMenuShortcut>⌘ ⌫</DropdownMenuShortcut> */}
             </DropdownMenuItem>
@@ -338,7 +310,8 @@ const ArticleOptions = ({ article }: Props) => {
             >
               <Pencil1Icon width={"18"} height={"18"} className="mr-2" /> Rename
             </DropdownMenuItem>
-            <DropdownMenuItem
+            {/* temp commented out archive feature */}
+            {/* <DropdownMenuItem
               onClick={() => {
                 if (article.state === "AVAILABLE") {
                   const toastId = toast.loading("Archiving...");
@@ -353,7 +326,7 @@ const ArticleOptions = ({ article }: Props) => {
             >
               <ArchiveIcon width={"18"} height={"18"} className="mr-2" />
               {article.state === "AVAILABLE" ? "Archive" : "Restore"}
-            </DropdownMenuItem>
+            </DropdownMenuItem> */}
 
             {/* temp commented out till implemented */}
             {/* <DropdownMenuItem>
@@ -463,8 +436,6 @@ const ArticleOptions = ({ article }: Props) => {
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
             <DialogTitle>Rename Link</DialogTitle>
-            {/* <DialogDescription>
-            </DialogDescription> */}
           </DialogHeader>
 
           <div className="flex items-center space-x-2">

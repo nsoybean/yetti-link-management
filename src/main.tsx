@@ -17,6 +17,7 @@ import { Toaster } from "react-hot-toast";
 import router from "./router.tsx";
 import "./App.css";
 import { ViewArticleModeProvider } from "./hooks/useArticleViewMode.tsx";
+import FolderProvider from "./hooks/FolderProvider.tsx";
 
 startApp();
 async function startApp() {
@@ -39,8 +40,10 @@ async function render() {
             defaultMode="gallery"
             storageKey={VIEW_ARTICLE_MODE_PROVIDER_STORAGE_KEY}
           >
-            <Toaster />
-            {router}
+            <FolderProvider>
+              <Toaster />
+              {router}
+            </FolderProvider>
           </ViewArticleModeProvider>
         </ThemeProvider>
         <ReactQueryDevtools initialIsOpen={false} />

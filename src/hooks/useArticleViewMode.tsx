@@ -32,10 +32,6 @@ export function ViewArticleModeProvider({
     () => (localStorage.getItem(storageKey) as ViewArticleMode) || defaultMode,
   );
 
-  //   useEffect(() => {
-  //     //    do smth here if required
-  //   }, [theme]);
-
   const value = {
     mode,
     setMode: (mode: ViewArticleMode) => {

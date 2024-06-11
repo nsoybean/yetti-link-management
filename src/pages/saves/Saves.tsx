@@ -6,7 +6,12 @@ import { getAllArticles } from "@/api/articles";
 import { Button } from "@/components/ui/button";
 import ArticlePagination from "@/components/ArticlePagination";
 import ArticleSkeleton from "@/components/ArticleSkeleton";
-import { PlusIcon } from "@radix-ui/react-icons";
+import {
+  DotsHorizontalIcon,
+  DotsVerticalIcon,
+  Pencil1Icon,
+  PlusIcon,
+} from "@radix-ui/react-icons";
 import { SaveArticleInput } from "@/components/SaveArticleInput";
 import yetti from "/cuteCreativeYeti.jpeg";
 import Articles from "@/components/Articles";
@@ -14,17 +19,56 @@ import toast from "react-hot-toast";
 import { useViewArticleMode } from "@/hooks/useArticleViewMode";
 import ArticlesList from "@/components/ArticlesList";
 import ArticleSkeletonList from "@/components/ArticleSkeletonList";
-import useAuth from "@/hooks/useAuth";
 import useLogout from "@/hooks/useLogout";
 import { storage } from "@/lib/storage";
+import Folders from "@/components/Folders";
+import { Separator } from "@/components/ui/separator";
+import { Folder, IParentFolderHierarchy } from "@/typings/folder/type";
+import AddNew from "@/components/AddNew";
+import { ROOT_FOLDER__VALUE, useFolder } from "@/hooks/FolderProvider";
+import { useNavigate, useParams } from "react-router-dom";
+import { ArticleStateEnum } from "@/typings/article/type";
+import {
+  ChevronRight,
+  CircleEllipsisIcon,
+  FolderIcon,
+  LucideArrowRight,
+  ShieldEllipsis,
+  TrashIcon,
+} from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 // import { DataTable } from "@/components/articleTable/data-table";
 // import { ArticleColumns } from "@/components/articleTable/columns";
 
-const Saves = () => {
+type Props = {
+  state?: ArticleStateEnum;
+};
+
+const Saves = ({ state: articleState = ArticleStateEnum.AVAILABLE }: Props) => {
   const [currPage, setCurrPage] = useState(1);
+  const [isAddLinkDialogOpen, setIsAddLinkDialogOpen] = useState(false);
+  const [isFolderEllipseOpen, setIsFolderEllipseOpen] = useState(false);
   const { mode } = useViewArticleMode();
-  const { data: user } = useAuth();
   const { logout } = useLogout();
+  const { folderId } = useParams();
+  const { setFolder } = useFolder();
+  const navigate = useNavigate();
+
+  // update folder id context
+  let currFolderId = folderId || ROOT_FOLDER__VALUE;
+  useEffect(() => {
+    if (folderId) {
+      setFolder(folderId);
+    } else {
+      setFolder(ROOT_FOLDER__VALUE);
+    }
+  }, [folderId]);
 
   useEffect(() => {
     // temp: remove old storage items
@@ -68,14 +112,45 @@ const Saves = () => {
     error,
     data: articles,
   } = useQuery({
-    queryKey: ["get-all-articles", currPage],
-    queryFn: async () => getAllArticles(currPage),
+    queryKey: ["get-all-articles", currPage, folderId],
+    queryFn: async () =>
+      getAllArticles({
+        folderId: currFolderId,
+        page: currPage,
+        limit: 9,
+      }),
   });
 
-  // empty
-  if (!isLoading && articles?.total_records === 0) {
+  // filter away current folder from list, if any
+  let filteredFolders: Folder[] = [];
+  if (articles) {
+    filteredFolders = articles.folders.data.filter(
+      (folder) => folder._id !== currFolderId,
+    );
+  }
+
+  const handleScroll = () => {
+    const buffer = 25; // Adjust this value as needed. To account for desktop bookmark bar etc which is not included in window innerheight.
+    if (
+      window.innerHeight + document.documentElement.scrollTop + buffer <=
+        document.documentElement.offsetHeight ||
+      isLoading
+    ) {
+      return;
+    }
+    // fetchData();
+    // TODO @sb: implement infinite scroll
+    // console.log("fetching data...");
+  };
+
+  useEffect(() => {
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [isLoading]);
+
+  function renderEmptyArticlesState() {
     return (
-      <div className="container mx-auto flex justify-center px-8 py-16">
+      <div className="container mx-auto flex justify-center py-16">
         <div className="flex flex-col items-center justify-center gap-10">
           <img className="w-[180px] rounded-full md:w-[220px]" src={yetti} />
 
@@ -90,6 +165,8 @@ const Saves = () => {
                   <PlusIcon className="h-4 w-4" />
                 </Button>
               }
+              setIsOpen={setIsAddLinkDialogOpen}
+              isOpen={isAddLinkDialogOpen}
               onEventListener={false}
             />
           </div>
@@ -98,39 +175,303 @@ const Saves = () => {
     );
   }
 
+  /**
+   * navigates to folderId path if current path is not on folderId
+   * @param folderId
+   */
+  function navigateToFolder({ id }: { id: string }) {
+    if (!id) {
+      return;
+    }
+
+    if (folderId !== id) {
+      navigate(`/saves/folder/${id}`);
+    }
+  }
+
+  /**
+   * @returns folder breadcrumbs
+   * eg. saves > folder_1
+   * saves > folder_1 > folder_2
+   * saves > ... > folder_2  > folder_3. "..." shows max 4 levels of parent folder
+   */
+  function renderFolderHierarchy({
+    parentFolderHierarchy,
+  }: {
+    parentFolderHierarchy: {
+      maxDepthLookupReached: boolean;
+      list: {
+        _id: string;
+        name: string;
+      }[];
+    };
+  }) {
+    let reversedParentToChildFolder: {
+      _id: string;
+      name: string;
+    }[] = parentFolderHierarchy.list.map(
+      (item, idx) =>
+        parentFolderHierarchy.list[parentFolderHierarchy.list.length - 1 - idx],
+    );
+
+    // case 1. if less than 2 levels, render all
+    // saves > folder_1 > folder_2
+    if (reversedParentToChildFolder.length <= 2) {
+      return (
+        <div className="flex flex-row items-center gap-2">
+          <div
+            className="ml-2 text-xl font-semibold hover:cursor-pointer"
+            onClick={() => {
+              navigate("/saves");
+            }}
+          >
+            Saves
+          </div>
+          {reversedParentToChildFolder.map((folder, index) => {
+            return (
+              <div key={index} className="flex flex-row items-center">
+                <ChevronRight />
+                <span
+                  className="ml-2 text-xl font-semibold hover:cursor-pointer"
+                  onClick={() => {
+                    navigateToFolder({ id: folder._id });
+                  }}
+                >
+                  {folder.name}
+                </span>
+              </div>
+            );
+          })}
+        </div>
+      );
+    } else if (reversedParentToChildFolder.length > 2) {
+      // case 2: if more than 2 levels and max depth not reached, render dropdown with last 2
+      // ... > folder_2 > folder_3
+      let ellipseList = reversedParentToChildFolder.slice(0, -2); // first to third last element
+      let shownList = reversedParentToChildFolder.slice(-2); // last 2 element
+      return (
+        <div className="flex flex-row items-center gap-2">
+          <div className="ml-2 text-xl font-semibold">
+            <DropdownMenu modal={false}>
+              <DropdownMenuTrigger asChild>
+                <div className="rounded-full p-2 hover:cursor-pointer hover:bg-accent">
+                  <DotsHorizontalIcon height={18} width={18} />
+                </div>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="start" className="w-[200px]">
+                <DropdownMenuGroup>
+                  {/* fixed (/saves) */}
+                  <DropdownMenuItem
+                    className="gap-2"
+                    onSelect={(e) => e.preventDefault()}
+                    onClick={() => {
+                      navigate("/saves");
+                    }}
+                  >
+                    <FolderIcon width={18} height={18} />
+                    Saves
+                  </DropdownMenuItem>
+                  {/* if hit max depth */}
+                  {parentFolderHierarchy.maxDepthLookupReached && (
+                    <DropdownMenuItem
+                      disabled={true}
+                      className="gap-2"
+                      onSelect={(e) => e.preventDefault()}
+                    >
+                      <DotsVerticalIcon width={18} height={18} />
+                    </DropdownMenuItem>
+                  )}
+                  {/* case 3: if more than 2 levels and max depth reached, render collapse ellipse within dropdown */}
+                  {ellipseList.map((folder, index) => {
+                    return (
+                      <DropdownMenuItem
+                        key={index}
+                        className="gap-2"
+                        onSelect={(e) => e.preventDefault()}
+                        onClick={() => {
+                          navigateToFolder({ id: folder._id });
+                        }}
+                      >
+                        <FolderIcon width={18} height={18} />
+                        {folder.name}
+                      </DropdownMenuItem>
+                    );
+                  })}
+                </DropdownMenuGroup>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
+          {shownList.map((folder, index) => {
+            return (
+              <div key={index} className="flex flex-row items-center">
+                <ChevronRight />
+                <span
+                  className="ml-2 text-xl font-semibold hover:cursor-pointer"
+                  onClick={() => {
+                    navigateToFolder({ id: folder._id });
+                  }}
+                >
+                  {folder.name}
+                </span>
+              </div>
+            );
+          })}
+        </div>
+      );
+
+      // if max depth reached, parent folder hierarchy will only show X levels.
+      // any folders higher in the hierarchy will be hidden
+      return (
+        <div className="flex flex-row items-center gap-2">
+          <span className="text-sm">...</span>
+        </div>
+      );
+    }
+
+    // base
+    <div className="ml-2 text-xl font-semibold"> Saves </div>;
+  }
+
   return (
+    // main
     <main className="mx-auto w-full">
-      {/* article grid (gallery mode) */}
-      {mode === "gallery" && (
-        <div className="mb-12 grid grid-cols-1 gap-4 px-8 md:grid-cols-2 lg:grid-cols-3">
-          {/* loading */}
-          {isLoading && <ArticleSkeleton numCards={6} />}
-
-          {/* show articles */}
-          {articles && <Articles articles={articles.data} />}
+      <div className="flex flex-col gap-3">
+        {/* header */}
+        <div className="mt-2 flex flex-row items-center justify-between">
+          {articles?.parentFolderHierarchy ? (
+            renderFolderHierarchy({
+              parentFolderHierarchy: articles?.parentFolderHierarchy,
+            })
+          ) : (
+            // base, no hierarchy
+            <div className="ml-2 text-xl font-semibold"> Saves </div>
+          )}
+          <AddNew
+            trigger={
+              <Button variant="outline">
+                <PlusIcon className="mr-2 h-4 w-4" />
+                New
+              </Button>
+            }
+          />
         </div>
-      )}
 
-      {/* article list (list mode) */}
-      {mode === "list" && (
-        <div className="mb-12 gap-4 px-8">
-          {/* loading */}
-          {isLoading && <ArticleSkeletonList numCards={5} />}
+        {/* divider */}
+        <Separator />
 
-          {/* show articles */}
-          {articles && <ArticlesList articles={articles.data} />}
-        </div>
-      )}
+        {/* content (gallery mode) */}
+        {mode === "gallery" && (
+          <div className="">
+            {/* is loading */}
+            {isLoading && (
+              <div className="mb-12 flex flex-col gap-2">
+                <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+                  <ArticleSkeleton numCards={6} />
+                </div>
+              </div>
+            )}
+
+            {/* folder */}
+            {filteredFolders.length > 0 && (
+              <div className="mb-8 mt-1">
+                <h2 className="mb-1 ml-2"> Folders </h2>
+                <div className="grid grid-cols-1 gap-2 md:grid-cols-2 lg:grid-cols-3">
+                  <Folders folders={filteredFolders} />
+                </div>
+              </div>
+            )}
+
+            {/* articles */}
+            {articles?.bookmarks?.data &&
+              articles.bookmarks.data.length > 0 && (
+                <div className="">
+                  <h2 className="mb-1 ml-2"> Links </h2>
+                  <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+                    <Articles articles={articles.bookmarks.data} />
+                  </div>
+                </div>
+              )}
+
+            {/* articles (empty state) */}
+            {articles?.bookmarks?.data &&
+              articles.bookmarks.total_records === 0 &&
+              renderEmptyArticlesState()}
+          </div>
+        )}
+
+        {/* content (list mode) */}
+        {mode === "list" && (
+          <div className="">
+            {/* is loading */}
+            {isLoading && <ArticleSkeletonList numCards={5} />}
+
+            {/* folder */}
+            {filteredFolders.length > 0 && (
+              <div className="mb-8 mt-1">
+                <h2 className="ml-2 font-bold"> Folders </h2>
+                <Folders folders={filteredFolders} />
+              </div>
+            )}
+
+            {/* articles */}
+            {articles?.bookmarks?.data &&
+              articles.bookmarks.data.length > 0 && (
+                <div className="">
+                  <h2 className="ml-2 font-bold">Links </h2>
+                  <ArticlesList articles={articles.bookmarks.data} />
+                </div>
+              )}
+
+            {/* articles (empty state) */}
+            {articles?.bookmarks?.data &&
+              articles.bookmarks.total_records === 0 &&
+              renderEmptyArticlesState()}
+          </div>
+        )}
+      </div>
 
       {/* pagination */}
-      <div className="bottom-0 mb-10">
+      <div className="bottom-0 mb-10 mt-12">
         <ArticlePagination
           currentPage={currPage}
           setPage={setCurrPage}
           recordsPerPage={9}
-          totalRecords={articles?.total_records || 0}
+          totalRecords={articles?.bookmarks.total_records || 0}
         />
       </div>
+
+      {/* {isFolderEllipseOpen && (
+        <DropdownMenu modal={false}>
+          <DropdownMenuTrigger asChild>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-[35px] w-[35px] rounded-full hover:bg-slate-200"
+            >
+              <DotsVerticalIcon width={"16"} height={"16"} />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="start" className="w-[200px]">
+            <DropdownMenuGroup>
+              <DropdownMenuItem
+                className="text-red-600"
+                onSelect={(e) => e.preventDefault()}
+                onClick={() => setIsDeleteDialogOpen(true)}
+              >
+                <TrashIcon width={"18"} height={"18"} className="mr-2" />
+                Delete
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onSelect={(e) => e.preventDefault()}
+                onClick={() => toggleRenameDialog()}
+              >
+                <Pencil1Icon width={"18"} height={"18"} className="mr-2" />{" "}
+                Rename
+              </DropdownMenuItem>
+            </DropdownMenuGroup>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      )} */}
     </main>
   );
 };
