@@ -1,7 +1,7 @@
 import api from "@/configs/api";
 import { Article } from "../typings/article/type";
 import { ISearchArticle } from "@/typings/search/articles";
-import { Folder } from "@/typings/folder/type";
+import { Folder, IParentFolderHierarchy } from "@/typings/folder/type";
 
 export async function addArticle({
   link,
@@ -42,6 +42,10 @@ export async function getAllArticles({
   bookmarks: {
     total_records: number;
     data: Article[];
+  };
+  parentFolderHierarchy: {
+    maxDepthLookupReached: boolean;
+    list: { _id: string; name: string }[];
   };
 }> {
   let baseUrl = `bookmark?page=${page}&limit=${limit}`;

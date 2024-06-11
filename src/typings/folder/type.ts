@@ -5,3 +5,9 @@ export interface Folder {
   updatedAt: Date;
   parentFolderId: string;
 }
+
+export interface IParentFolderHierarchy {
+  _id: string;
+  name: string;
+  parentFolderId: IParentFolderHierarchy;
+}
