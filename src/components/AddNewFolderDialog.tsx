@@ -67,7 +67,6 @@ export const AddNewFolderDialog = (props: Props) => {
   });
 
   const onKeyPress = async (event: KeyboardEvent) => {
-    console.log("clicky in new folder ");
     // open dialog
     if (props.onEventListener) {
       if ((event.metaKey || event.ctrlKey) && event.key === "n") {
