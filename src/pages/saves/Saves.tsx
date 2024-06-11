@@ -214,7 +214,7 @@ const Saves = ({ state: articleState = ArticleStateEnum.AVAILABLE }: Props) => {
         parentFolderHierarchy.list[parentFolderHierarchy.list.length - 1 - idx],
     );
 
-    // case 1. if 2 levels
+    // case 1. if less than 2 levels, render all
     // saves > folder_1 > folder_2
     if (reversedParentToChildFolder.length <= 2) {
       return (
@@ -245,7 +245,7 @@ const Saves = ({ state: articleState = ArticleStateEnum.AVAILABLE }: Props) => {
         </div>
       );
     } else if (reversedParentToChildFolder.length > 2) {
-      // if more than 2 levels and max depth not reached
+      // case 2: if more than 2 levels and max depth not reached, render dropdown with last 2
       // ... > folder_2 > folder_3
       let ellipseList = reversedParentToChildFolder.slice(0, -2); // first to third last element
       let shownList = reversedParentToChildFolder.slice(-2); // last 2 element
@@ -281,7 +281,7 @@ const Saves = ({ state: articleState = ArticleStateEnum.AVAILABLE }: Props) => {
                       <DotsVerticalIcon width={18} height={18} />
                     </DropdownMenuItem>
                   )}
-
+                  {/* case 3: if more than 2 levels and max depth reached, render collapse ellipse within dropdown */}
                   {ellipseList.map((folder, index) => {
                     return (
                       <DropdownMenuItem
