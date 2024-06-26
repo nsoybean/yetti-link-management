@@ -220,7 +220,7 @@ const Saves = ({ state: articleState = ArticleStateEnum.AVAILABLE }: Props) => {
       return (
         <div className="flex flex-row items-center gap-2">
           <div
-            className="ml-2 text-xl font-semibold hover:cursor-pointer"
+            className="ml-2 rounded-md px-2 py-1 text-xl font-semibold hover:cursor-pointer hover:bg-accent"
             onClick={() => {
               navigate("/saves");
             }}
@@ -232,7 +232,7 @@ const Saves = ({ state: articleState = ArticleStateEnum.AVAILABLE }: Props) => {
               <div key={index} className="flex flex-row items-center">
                 <ChevronRight />
                 <span
-                  className="ml-2 text-xl font-semibold hover:cursor-pointer"
+                  className="ml-2 rounded-md px-2 py-1 text-xl font-semibold hover:cursor-pointer hover:bg-accent"
                   onClick={() => {
                     navigateToFolder({ id: folder._id });
                   }}
@@ -306,7 +306,7 @@ const Saves = ({ state: articleState = ArticleStateEnum.AVAILABLE }: Props) => {
               <div key={index} className="flex flex-row items-center">
                 <ChevronRight />
                 <span
-                  className="ml-2 text-xl font-semibold hover:cursor-pointer"
+                  className="ml-2 rounded-md px-2 py-1 text-xl font-semibold hover:cursor-pointer hover:bg-accent"
                   onClick={() => {
                     navigateToFolder({ id: folder._id });
                   }}

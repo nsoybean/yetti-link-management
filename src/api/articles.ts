@@ -36,7 +36,7 @@ export async function getAllArticles({
   tag?: string | null;
 }): Promise<{
   folders: {
-    total_recrods: number;
+    total_records: number;
     data: Folder[];
   };
   bookmarks: {

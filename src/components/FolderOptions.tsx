@@ -135,8 +135,6 @@ const FolderOptions = ({ folder }: Props) => {
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
             <DialogTitle>Rename Folder</DialogTitle>
-            {/* <DialogDescription>
-            </DialogDescription> */}
           </DialogHeader>
 
           <div className="flex items-center space-x-2">

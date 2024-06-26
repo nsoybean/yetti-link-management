@@ -10,11 +10,16 @@ import {
   CopyIcon,
   Cross2Icon,
   Pencil1Icon,
-  ArchiveIcon,
 } from "@radix-ui/react-icons";
 import { Button } from "./ui/button";
-import { DeleteIcon, PlusIcon, TagIcon, TrashIcon } from "lucide-react";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import {
+  FolderIcon,
+  FolderInputIcon,
+  PlusIcon,
+  TagIcon,
+  TrashIcon,
+} from "lucide-react";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   archiveArticle,
   deleteArticle,
@@ -40,6 +45,11 @@ import { Label } from "@radix-ui/react-dropdown-menu";
 import { Input } from "./ui/input";
 import { Badge } from "./ui/badge";
 import { AxiosError } from "axios";
+import { Separator } from "./ui/separator";
+import { getNestedFoldersById } from "@/api/folders";
+import { useFolder } from "@/hooks/FolderProvider";
+import { Skeleton } from "./ui/skeleton";
+import { Folder } from "@/typings/folder/type";
 
 type Props = {
   article: Article;
@@ -70,6 +80,8 @@ const ArticleOptions = ({ article }: Props) => {
   const [openDialog, setOpenDialog] = useState<boolean>(false);
   const [tagDialogOpen, setTagDialogOpen] = useState<boolean>(false);
   const [renameDialogOpen, setRenameDialogOpen] = useState<boolean>(false);
+  const [moveFilesDialogOpen, setMoveFilesDialogOpen] =
+    useState<boolean>(false);
   const [currToast, setCurrToast] = useState("");
   const [tagList, setTagList] = useState<string[]>([]);
   const queryClient = useQueryClient();
@@ -77,6 +89,12 @@ const ArticleOptions = ({ article }: Props) => {
   const [articleMetaData, setArticleMetaData] = useState<{
     title: string;
   } | null>(null);
+  const [moveFolderCurrId, setMoveFolderCurrId] = useState<string | null>(null);
+  const [isGetNestedFolderLoading, setIsGetgetNestedFolderLoading] =
+    useState(false);
+  const [nestedFolders, setNestedFolders] = useState<Folder[]>([]);
+
+  const { folder: currFolderId } = useFolder();
 
   // copy of original tags
   let originalTags: string[] = [];
@@ -91,6 +109,27 @@ const ArticleOptions = ({ article }: Props) => {
     }
   }, [tagDialogOpen]);
 
+  /**
+   * if move folder is set
+   */
+  useEffect(() => {
+    if (moveFolderCurrId) {
+      navigateMoveFolderDir(moveFolderCurrId);
+    }
+  }, [moveFolderCurrId]);
+
+  async function navigateMoveFolderDir(folderId: string) {
+    try {
+      setIsGetgetNestedFolderLoading(true);
+      const res = await getNestedFoldersById({ id: folderId });
+
+      setNestedFolders(res.folders.data);
+    } catch (error) {
+      toast.error("Failed to get folder data. Please try again.");
+    } finally {
+      setIsGetgetNestedFolderLoading(false);
+    }
+  }
   // delete article
   const { mutate: deleteArticleById } = useMutation({
     mutationFn: deleteArticle,
@@ -235,9 +274,10 @@ const ArticleOptions = ({ article }: Props) => {
 
   async function toggleRenameDialog() {
     setRenameDialogOpen((prev) => !prev);
-    // if (tagInputRef.current) {
-    //   tagInputRef.current.value = "";
-    // }
+  }
+
+  async function toggleMoveFilesDialog() {
+    setMoveFilesDialogOpen((prev) => !prev);
   }
 
   function upsertTagValue(tag: string) {
@@ -278,7 +318,7 @@ const ArticleOptions = ({ article }: Props) => {
 
   return (
     <>
-      {/* setting modal to false, prevent drop down from remaining open */}
+      {/* setting modal=false, prevent drop down from remaining open */}
       <DropdownMenu modal={false}>
         <DropdownMenuTrigger asChild>
           <Button variant="ghost" size="icon" className="h-full">
@@ -287,15 +327,6 @@ const ArticleOptions = ({ article }: Props) => {
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" className="w-[200px]">
           <DropdownMenuGroup>
-            <DropdownMenuItem
-              className="text-red-600"
-              onSelect={(e) => e.preventDefault()}
-              onClick={() => setOpenDialog(true)}
-            >
-              <TrashIcon width={"18"} height={"18"} className="mr-2" />
-              Delete
-              {/* <DropdownMenuShortcut>⌘ ⌫</DropdownMenuShortcut> */}
-            </DropdownMenuItem>
             <DropdownMenuItem onClick={() => copyTextToClipboard(article.link)}>
               <CopyIcon width={"18"} height={"18"} className="mr-2" /> Copy link
             </DropdownMenuItem>
@@ -304,11 +335,30 @@ const ArticleOptions = ({ article }: Props) => {
                 <TagIcon width={"18"} height={"18"} className="mr-2" /> Tag
               </DropdownMenuItem>
             )}
+
+            <DropdownMenuItem
+              onSelect={(e) => e.preventDefault()}
+              onClick={() => {
+                toggleMoveFilesDialog();
+                setMoveFolderCurrId(currFolderId);
+              }}
+            >
+              <FolderInputIcon width={"18"} height={"18"} className="mr-2" />
+              Move
+            </DropdownMenuItem>
             <DropdownMenuItem
               onSelect={(e) => e.preventDefault()}
               onClick={() => toggleRenameDialog()}
             >
               <Pencil1Icon width={"18"} height={"18"} className="mr-2" /> Rename
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              className="text-red-600"
+              onSelect={(e) => e.preventDefault()}
+              onClick={() => setOpenDialog(true)}
+            >
+              <TrashIcon width={"18"} height={"18"} className="mr-2" />
+              Delete
             </DropdownMenuItem>
             {/* temp commented out archive feature */}
             {/* <DropdownMenuItem
@@ -468,6 +518,69 @@ const ArticleOptions = ({ article }: Props) => {
                 }}
               >
                 Save
+              </Button>
+            </DialogClose>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* move files dialog */}
+      <Dialog onOpenChange={toggleMoveFilesDialog} open={moveFilesDialogOpen}>
+        <DialogContent className="sm:max-w-lg">
+          <DialogHeader>
+            <DialogTitle>Move item</DialogTitle>
+            <DialogDescription>Select a destination folder</DialogDescription>
+          </DialogHeader>
+          {/* folders list */}
+          <Separator />
+          <div className="flex w-full">
+            {/* loading */}
+            {isGetNestedFolderLoading && (
+              <div className="flex flex-col items-start gap-2">
+                <Skeleton className="h-4 w-[250px]" />
+                <Skeleton className="h-4 w-[200px]" />
+              </div>
+            )}
+
+            {/* show nested folders */}
+            {!isGetNestedFolderLoading &&
+              nestedFolders &&
+              nestedFolders.length > 0 && (
+                <div className="flex w-full flex-col items-start gap-2">
+                  {nestedFolders.map((folder) => {
+                    // skip current folder
+                    if (folder._id === moveFolderCurrId) {
+                      return;
+                    }
+
+                    return (
+                      <div
+                        key={folder._id}
+                        className="flex w-full items-center gap-2 rounded-md p-2 hover:bg-accent hover:text-accent-foreground"
+                        onClick={() => {
+                          console.log(folder._id);
+                          setMoveFolderCurrId(folder._id);
+                        }}
+                      >
+                        <FolderIcon width={18} height={18} />
+                        <p className="max-w-36 truncate">{folder.name}</p>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+          </div>
+          <DialogFooter className="sm:justify-end">
+            <DialogClose asChild>
+              <Button
+                type="button"
+                variant={"default"}
+                disabled={false}
+                onClick={() => {
+                  console.log("move");
+                }}
+              >
+                Move
               </Button>
             </DialogClose>
           </DialogFooter>
