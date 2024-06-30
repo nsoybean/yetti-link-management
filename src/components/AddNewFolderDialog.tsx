@@ -54,9 +54,9 @@ export const AddNewFolderDialog = (props: Props) => {
     },
 
     onError: (error) => {
-      let axiosError = error as AxiosError;
+      let axiosError = error as AxiosError<{ message: string }>;
       toast.dismiss(currToast);
-      toast.error(`Error!`);
+      toast.error(`Error! ${axiosError.response?.data.message}`);
       setFolderName("");
     },
     onSettled: () => {
