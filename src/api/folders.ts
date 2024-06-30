@@ -44,6 +44,10 @@ export async function getNestedFoldersById({
     total_records: number;
     data: Folder[];
   };
+  parentFolderHierarchy: {
+    maxDepthLookupReached: boolean;
+    list: { _id: string; name: string }[];
+  };
 }> {
   const result = await api.get(`folder/folders?id=${id}`);
   return result.data;

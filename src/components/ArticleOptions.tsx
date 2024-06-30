@@ -10,9 +10,11 @@ import {
   CopyIcon,
   Cross2Icon,
   Pencil1Icon,
+  DotsHorizontalIcon,
 } from "@radix-ui/react-icons";
 import { Button } from "./ui/button";
 import {
+  ChevronRight,
   FolderIcon,
   FolderInputIcon,
   PlusIcon,
@@ -23,6 +25,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   archiveArticle,
   deleteArticle,
+  moveBookmarksToFolder,
   tagArticle,
   unarchiveArticle,
   updateArticleMetaById,
@@ -93,6 +96,12 @@ const ArticleOptions = ({ article }: Props) => {
   const [isGetNestedFolderLoading, setIsGetgetNestedFolderLoading] =
     useState(false);
   const [nestedFolders, setNestedFolders] = useState<Folder[]>([]);
+  const [parentFoldersHierarchy, setParentFoldersHierarchy] = useState<{
+    maxDepthLookupReached: boolean;
+    list: { _id: string; name: string }[];
+  } | null>(null);
+
+  const [selectedBookmarks, setSelectedBookmarks] = useState<string[]>([]);
 
   const { folder: currFolderId } = useFolder();
 
@@ -123,7 +132,15 @@ const ArticleOptions = ({ article }: Props) => {
       setIsGetgetNestedFolderLoading(true);
       const res = await getNestedFoldersById({ id: folderId });
 
-      setNestedFolders(res.folders.data);
+      if (res.folders) {
+        setNestedFolders(res.folders.data);
+      }
+
+      if (res.parentFolderHierarchy) {
+        setParentFoldersHierarchy(res.parentFolderHierarchy);
+      } else if (folderId === "root") {
+        setParentFoldersHierarchy(null);
+      }
     } catch (error) {
       toast.error("Failed to get folder data. Please try again.");
     } finally {
@@ -144,6 +161,25 @@ const ArticleOptions = ({ article }: Props) => {
         queryClient.invalidateQueries({
           queryKey: ["get-all-archived-articles"],
         });
+      }
+    },
+    onError: (error) => {
+      toast.dismiss(currToast);
+      toast.error(`Error!`);
+    },
+    onSettled: () => {},
+  });
+
+  // move article
+  const { mutate: moveArticlesToFolder } = useMutation({
+    mutationFn: moveBookmarksToFolder,
+    onSuccess: (data) => {
+      toast.dismiss(currToast);
+      toast.success("Successfully moved!");
+
+      // invalidate query
+      if (article.state === "AVAILABLE") {
+        queryClient.invalidateQueries({ queryKey: ["get-all-articles"] });
       }
     },
     onError: (error) => {
@@ -278,6 +314,8 @@ const ArticleOptions = ({ article }: Props) => {
 
   async function toggleMoveFilesDialog() {
     setMoveFilesDialogOpen((prev) => !prev);
+    // reset
+    setMoveFolderCurrId(null);
   }
 
   function upsertTagValue(tag: string) {
@@ -316,6 +354,145 @@ const ArticleOptions = ({ article }: Props) => {
     setTagList(newTagList);
   }
 
+  function renderFolderHierarchyBreadCrumb({
+    parentFolderHierarchy,
+  }: {
+    parentFolderHierarchy: {
+      maxDepthLookupReached: boolean;
+      list: {
+        _id: string;
+        name: string;
+      }[];
+    };
+  }) {
+    let reversedParentToChildFolder: {
+      _id: string;
+      name: string;
+    }[] = parentFolderHierarchy.list.map(
+      (item, idx) =>
+        parentFolderHierarchy.list[parentFolderHierarchy.list.length - 1 - idx],
+    );
+
+    // is loading
+    if (isGetNestedFolderLoading) {
+      return (
+        <div className="flex flex-col items-start gap-2">
+          <Skeleton className="h-4 w-[200px]" />
+        </div>
+      );
+    }
+
+    // case 1. if less than 2 levels, render all
+    // saves > folder_1 > folder_2
+    if (reversedParentToChildFolder.length <= 2) {
+      return (
+        <div className="flex flex-row items-center gap-2">
+          <div
+            className={`rounded-md px-2 py-1 text-sm font-medium ${moveFolderCurrId !== "root" && "opacity-50 hover:cursor-pointer hover:underline"}`}
+            onClick={() => {
+              setMoveFolderCurrId("root"); // root
+            }}
+          >
+            Saves
+          </div>
+          {reversedParentToChildFolder.map((folder, index) => {
+            return (
+              <div key={index} className="flex flex-row items-center">
+                <ChevronRight />
+                <span
+                  className={`rounded-md px-2 py-1 text-sm font-medium ${moveFolderCurrId !== folder._id && "opacity-50 hover:cursor-pointer hover:underline"}`}
+                  onClick={() => {
+                    setMoveFolderCurrId(folder._id);
+                  }}
+                >
+                  {folder.name}
+                </span>
+              </div>
+            );
+          })}
+        </div>
+      );
+    } else if (reversedParentToChildFolder.length > 2) {
+      // case 2: if more than 2 levels and max depth not reached, render dropdown with last 2
+      // ... > folder_2 > folder_3
+      let ellipseList = reversedParentToChildFolder.slice(0, -2); // first to third last element
+      let shownList = reversedParentToChildFolder.slice(-2); // last 2 element
+      return (
+        <div className="flex flex-row items-center gap-2">
+          <div className="text-sm font-medium">
+            <DropdownMenu modal={false}>
+              <DropdownMenuTrigger asChild>
+                <div className="rounded-full p-2 hover:cursor-pointer hover:bg-accent">
+                  <DotsHorizontalIcon height={18} width={18} />
+                </div>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="start" className="w-[200px]">
+                <DropdownMenuGroup>
+                  {/* fixed (/saves) */}
+                  <DropdownMenuItem
+                    className="gap-2"
+                    onSelect={(e) => e.preventDefault()}
+                    onClick={() => {
+                      setMoveFolderCurrId("root");
+                    }}
+                  >
+                    <FolderIcon width={18} height={18} />
+                    Saves
+                  </DropdownMenuItem>
+                  {/* if hit max depth */}
+                  {parentFolderHierarchy.maxDepthLookupReached && (
+                    <DropdownMenuItem
+                      disabled={true}
+                      className="gap-2"
+                      onSelect={(e) => e.preventDefault()}
+                    >
+                      <DotsVerticalIcon width={18} height={18} />
+                    </DropdownMenuItem>
+                  )}
+
+                  {/* case 3: if more than 2 levels and max depth reached, render collapse ellipse within dropdown */}
+                  {ellipseList.map((folder, index) => {
+                    return (
+                      <DropdownMenuItem
+                        key={index}
+                        className="gap-2"
+                        onSelect={(e) => e.preventDefault()}
+                        onClick={() => {
+                          setMoveFolderCurrId(folder._id);
+                        }}
+                      >
+                        <FolderIcon width={18} height={18} />
+                        {folder.name}
+                      </DropdownMenuItem>
+                    );
+                  })}
+                </DropdownMenuGroup>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
+          {shownList.map((folder, index) => {
+            return (
+              <div key={index} className="flex flex-row items-center">
+                <ChevronRight />
+                <span
+                  className={`rounded-md px-2 py-1 text-sm font-medium ${moveFolderCurrId !== folder._id && "opacity-50 hover:cursor-pointer hover:underline"}`}
+                  onClick={() => {
+                    setMoveFolderCurrId(folder._id);
+                  }}
+                >
+                  {folder.name}
+                </span>
+              </div>
+            );
+          })}
+        </div>
+      );
+    }
+
+    // base
+    <div className="ml-2 text-sm font-medium"> Saves </div>;
+  }
+
   return (
     <>
       {/* setting modal=false, prevent drop down from remaining open */}
@@ -340,6 +517,9 @@ const ArticleOptions = ({ article }: Props) => {
               onSelect={(e) => e.preventDefault()}
               onClick={() => {
                 toggleMoveFilesDialog();
+
+                // update useState array
+                setSelectedBookmarks((prev) => [...prev, ...[article._id]]);
                 setMoveFolderCurrId(currFolderId);
               }}
             >
@@ -531,9 +711,13 @@ const ArticleOptions = ({ article }: Props) => {
             <DialogTitle>Move item</DialogTitle>
             <DialogDescription>Select a destination folder</DialogDescription>
           </DialogHeader>
+
           {/* folders list */}
-          <Separator />
-          <div className="flex w-full">
+          {/* <Separator /> */}
+          <div className="border-t border-gray-300"></div>
+
+          {/* main */}
+          <div className="flex h-28 w-full flex-col overflow-y-auto">
             {/* loading */}
             {isGetNestedFolderLoading && (
               <div className="flex flex-col items-start gap-2">
@@ -548,7 +732,7 @@ const ArticleOptions = ({ article }: Props) => {
               nestedFolders.length > 0 && (
                 <div className="flex w-full flex-col items-start gap-2">
                   {nestedFolders.map((folder) => {
-                    // skip current folder
+                    // hide current folder
                     if (folder._id === moveFolderCurrId) {
                       return;
                     }
@@ -556,9 +740,8 @@ const ArticleOptions = ({ article }: Props) => {
                     return (
                       <div
                         key={folder._id}
-                        className="flex w-full items-center gap-2 rounded-md p-2 hover:bg-accent hover:text-accent-foreground"
+                        className="flex w-full items-center gap-2 rounded-md px-2 py-1 hover:bg-accent hover:text-accent-foreground"
                         onClick={() => {
-                          console.log(folder._id);
                           setMoveFolderCurrId(folder._id);
                         }}
                       >
@@ -569,20 +752,53 @@ const ArticleOptions = ({ article }: Props) => {
                   })}
                 </div>
               )}
+
+            {/* empty message */}
+            {!isGetNestedFolderLoading &&
+              (nestedFolders.length === 0 ||
+                (nestedFolders?.length === 1 &&
+                  nestedFolders[0]?._id === moveFolderCurrId)) && (
+                <div className="opacity-50">No folders available.</div>
+              )}
           </div>
+
+          {/* folder hierarchy breadcrumb */}
+          {parentFoldersHierarchy &&
+            renderFolderHierarchyBreadCrumb({
+              parentFolderHierarchy: parentFoldersHierarchy,
+            })}
+
           <DialogFooter className="sm:justify-end">
-            <DialogClose asChild>
-              <Button
-                type="button"
-                variant={"default"}
-                disabled={false}
-                onClick={() => {
-                  console.log("move");
-                }}
-              >
-                Move
+            <DialogClose asChild onChange={() => console.log("changing")}>
+              <Button type="button" variant={"ghost"}>
+                Cancel
               </Button>
             </DialogClose>
+            <Button
+              type="button"
+              variant={"default"}
+              isLoading={isGetNestedFolderLoading}
+              disabled={
+                currFolderId === moveFolderCurrId || isGetNestedFolderLoading
+                  ? true
+                  : false
+              }
+              onClick={() => {
+                if (!moveFolderCurrId) {
+                  return;
+                } else {
+                  const toastId = toast.loading("Moving links...");
+                  setCurrToast(toastId);
+                  moveArticlesToFolder({
+                    bookmarkIds: selectedBookmarks,
+                    folderId: moveFolderCurrId,
+                  });
+                  toggleMoveFilesDialog();
+                }
+              }}
+            >
+              Move here
+            </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
