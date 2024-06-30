@@ -44,7 +44,6 @@
     "cmdk": "^1.0.0",
     "dayjs": "^1.11.10",
     "fast-fuzzy": "^1.12.0",
-    "is-mobile": "^4.0.0",
     "lucide-react": "^0.344.0",
     "mitt": "^3.0.1",
     "randomcolor": "^0.6.2",
