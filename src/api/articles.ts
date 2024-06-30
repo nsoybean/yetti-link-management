@@ -36,7 +36,7 @@ export async function getAllArticles({
   tag?: string | null;
 }): Promise<{
   folders: {
-    total_recrods: number;
+    total_records: number;
     data: Folder[];
   };
   bookmarks: {
@@ -148,5 +148,18 @@ export async function search({
   term: string;
 }): Promise<ISearchArticle[]> {
   const result = await api.get(`bookmark/search?query=${term}`);
+  return result.data;
+}
+
+export async function moveBookmarksToFolder({
+  bookmarkIds,
+  folderId,
+}: {
+  bookmarkIds: string[];
+  folderId: string;
+}): Promise<{
+  id: string;
+}> {
+  const result = await api.patch(`bookmark/move`, { bookmarkIds, folderId });
   return result.data;
 }

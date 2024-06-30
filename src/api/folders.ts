@@ -1,4 +1,5 @@
 import api from "@/configs/api";
+import { Folder } from "@/typings/folder/type";
 
 export async function createFolder({
   parentFolderId,
@@ -31,5 +32,23 @@ export async function deleteFolderById({ id }: { id: string }): Promise<{
   id: string;
 }> {
   const result = await api.delete(`folder/${id}`);
+  return result.data;
+}
+
+export async function getNestedFoldersById({
+  id,
+}: {
+  id: "root" | string;
+}): Promise<{
+  folders: {
+    total_records: number;
+    data: Folder[];
+  };
+  parentFolderHierarchy: {
+    maxDepthLookupReached: boolean;
+    list: { _id: string; name: string }[];
+  };
+}> {
+  const result = await api.get(`folder/folders?id=${id}`);
   return result.data;
 }

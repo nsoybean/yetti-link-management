@@ -118,7 +118,7 @@ export const AddNewFolderDialog = (props: Props) => {
         <div className="flex items-center space-x-2">
           <div className="grid flex-1 gap-2">
             <Input
-              placeholder="Reading list"
+              placeholder="Folder name"
               ref={inputRef}
               value={folderName}
               id="link"
