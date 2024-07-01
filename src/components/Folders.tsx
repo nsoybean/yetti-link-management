@@ -20,10 +20,6 @@ function DroppableWrapper({
     id,
   });
 
-  useEffect(() => {
-    console.log(`🚀 ${id} isOver: ${isOver}`);
-  }, [isOver]);
-
   // Clone each child and add the dynamic classname
   const childrenWithClassName = Children.map(children, (child) => {
     // Ensure the child is a valid element before cloning
@@ -45,7 +41,6 @@ type Props = {
 
 const Folders = (props: Props) => {
   const navigate = useNavigate();
-  const { theme } = useTheme();
   const { mode } = useViewArticleMode();
 
   return props.folders.map((folder, index) => (

@@ -61,9 +61,8 @@ const Saves = ({ state: articleState = ArticleStateEnum.AVAILABLE }: Props) => {
   const { logout } = useLogout();
   const { folderId } = useParams();
   const { setFolder } = useFolder();
+  const [dropParentFolder, setDropParentFolder] = useState<string | null>(null);
   const navigate = useNavigate();
-
-  const [isDropped, setIsDropped] = useState(false);
 
   // update folder id context
   let currFolderId = folderId || ROOT_FOLDER__VALUE;
@@ -106,6 +105,12 @@ const Saves = ({ state: articleState = ArticleStateEnum.AVAILABLE }: Props) => {
       logout();
     }
   }, []);
+
+  useEffect(() => {
+    if (dropParentFolder) {
+      console.log("🚀 dropParentFolder:", dropParentFolder);
+    }
+  }, [dropParentFolder]);
 
   // scroll to top of page every page change
   useEffect(() => {
@@ -181,10 +186,18 @@ const Saves = ({ state: articleState = ArticleStateEnum.AVAILABLE }: Props) => {
   }
 
   function handleDragEnd(event: DragEndEvent) {
-    if (event.over) {
-      console.log("🚀 dragging id:", event.over.id);
-      setIsDropped(true);
+    const { over } = event;
+
+    if (!over) {
+      return null;
     }
+
+    // move link into folder
+    // TODO @sb: enable move folder too
+
+    const linkId = event.active.id;
+    // const targetFolderId =
+    setDropParentFolder(event.over ? (event.over.id as string) : null);
   }
 
   return (
@@ -264,7 +277,7 @@ const Saves = ({ state: articleState = ArticleStateEnum.AVAILABLE }: Props) => {
               {/* folder */}
               {filteredFolders.length > 0 && (
                 <div className="mb-8 mt-1">
-                  <h2 className="ml-2 font-bold"> Folders </h2>
+                  <h2 className="ml-2"> Folders </h2>
                   <Folders folders={filteredFolders} />
                 </div>
               )}
@@ -273,7 +286,7 @@ const Saves = ({ state: articleState = ArticleStateEnum.AVAILABLE }: Props) => {
               {articles?.bookmarks?.data &&
                 articles.bookmarks.data.length > 0 && (
                   <div className="">
-                    <h2 className="ml-2 font-bold">Links </h2>
+                    <h2 className="ml-2">Links </h2>
                     <ArticlesList articles={articles.bookmarks.data} />
                   </div>
                 )}
