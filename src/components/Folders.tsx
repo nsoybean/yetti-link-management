@@ -1,22 +1,20 @@
 import { FolderIcon } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { Folder } from "@/typings/folder/type";
+import { Folder as IFolder } from "@/typings/folder/type";
 import FolderOptions from "./FolderOptions";
 import { useViewArticleMode } from "@/hooks/useArticleViewMode";
 import { DroppableWrapper } from "./DroppableWrapper";
 
 type Props = {
-  folders: Folder[];
+  folder: IFolder;
 };
 
-const Folders = (props: Props) => {
+export const Folder = ({ folder }: Props) => {
   const navigate = useNavigate();
   const { mode } = useViewArticleMode();
 
-  return props.folders.map((folder, index) => (
-    // folder card
+  return (
     <DroppableWrapper
-      key={index}
       id={`${folder._id}`}
       children={
         <div
@@ -43,7 +41,5 @@ const Folders = (props: Props) => {
         </div>
       }
     />
-  ));
+  );
 };
-
-export default Folders;

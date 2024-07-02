@@ -12,11 +12,9 @@ import ArticleOptions from "./ArticleOptions";
 import ToolTipText from "./TooltipText";
 import { Button } from "./ui/button";
 import { Badge } from "./ui/badge";
-import randomColor from "randomcolor";
 import { useNavigate } from "react-router-dom";
 import { useTheme } from "./theme-provider";
 import { routes } from "@/router";
-import { useState } from "react";
 import { useDraggable } from "@dnd-kit/core";
 import { generateColorBaseOnSeed } from "@/lib/utils";
 
@@ -24,7 +22,7 @@ type Props = {
   article: IArticle;
 };
 
-const Article = ({ article }: Props) => {
+export const Article = ({ article }: Props) => {
   const navigate = useNavigate();
   const { theme } = useTheme();
 
@@ -140,5 +138,3 @@ const Article = ({ article }: Props) => {
     </Card>
   );
 };
-
-export default Article;

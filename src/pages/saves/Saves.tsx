@@ -11,35 +11,20 @@ import { SaveArticleInput } from "@/components/SaveArticleInput";
 import yetti from "/cuteCreativeYeti.jpeg";
 import toast from "react-hot-toast";
 import { useViewArticleMode } from "@/hooks/useArticleViewMode";
-import ArticlesList from "@/components/ArticlesList";
 import ArticleSkeletonList from "@/components/ArticleSkeletonList";
 import useLogout from "@/hooks/useLogout";
 import { storage } from "@/lib/storage";
-import Folders from "@/components/Folders";
 import { Separator } from "@/components/ui/separator";
-import { Folder, IParentFolderHierarchy } from "@/typings/folder/type";
+import { Folder as IFolder } from "@/typings/folder/type";
 import AddNew from "@/components/AddNew";
 import { ROOT_FOLDER__VALUE, useFolder } from "@/hooks/FolderProvider";
 import { useNavigate, useParams } from "react-router-dom";
 import { ArticleStateEnum } from "@/typings/article/type";
-import {
-  ChevronRight,
-  CircleEllipsisIcon,
-  FolderIcon,
-  LucideArrowRight,
-  ShieldEllipsis,
-  TrashIcon,
-} from "lucide-react";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuGroup,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import FolderHierarchyBreadCrumb from "@/components/FolderHierarchyBreadCrumb";
 import { DndContext, DragEndEvent } from "@dnd-kit/core";
-import Article from "@/components/Article";
+import { Article } from "@/components/Article";
+import { Folder } from "@/components/Folders";
+import { ArticleList } from "@/components/ArticleList";
 
 // import { DataTable } from "@/components/articleTable/data-table";
 // import { ArticleColumns } from "@/components/articleTable/columns";
@@ -56,7 +41,6 @@ const Saves = ({ state: articleState = ArticleStateEnum.AVAILABLE }: Props) => {
   const { logout } = useLogout();
   const { folderId } = useParams();
   const { setFolder } = useFolder();
-  const [dropParentFolder, setDropParentFolder] = useState<string | null>(null);
   const [currToast, setCurrToast] = useState("");
   const navigate = useNavigate();
   const queryClient = useQueryClient();
@@ -103,12 +87,6 @@ const Saves = ({ state: articleState = ArticleStateEnum.AVAILABLE }: Props) => {
     }
   }, []);
 
-  useEffect(() => {
-    if (dropParentFolder) {
-      console.log("🚀 dropParentFolder:", dropParentFolder);
-    }
-  }, [dropParentFolder]);
-
   // scroll to top of page every page change
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -146,7 +124,7 @@ const Saves = ({ state: articleState = ArticleStateEnum.AVAILABLE }: Props) => {
   });
 
   // filter away current folder from list, if any
-  let filteredFolders: Folder[] = [];
+  let filteredFolders: IFolder[] = [];
   if (articles) {
     filteredFolders = articles.folders.data.filter(
       (folder) => folder._id !== currFolderId,
@@ -262,7 +240,9 @@ const Saves = ({ state: articleState = ArticleStateEnum.AVAILABLE }: Props) => {
                 <div className="mb-8 mt-1">
                   <h2 className="mb-1 ml-2"> Folders </h2>
                   <div className="grid grid-cols-1 gap-2 md:grid-cols-2 lg:grid-cols-3">
-                    <Folders folders={filteredFolders} />
+                    {filteredFolders.map((folder, index) => {
+                      return <Folder key={index} folder={folder} />;
+                    })}
                   </div>
                 </div>
               )}
@@ -297,7 +277,10 @@ const Saves = ({ state: articleState = ArticleStateEnum.AVAILABLE }: Props) => {
               {filteredFolders.length > 0 && (
                 <div className="mb-8 mt-1">
                   <h2 className="ml-2"> Folders </h2>
-                  <Folders folders={filteredFolders} />
+
+                  {filteredFolders.map((folder, index) => {
+                    return <Folder key={index} folder={folder} />;
+                  })}
                 </div>
               )}
 
@@ -306,7 +289,13 @@ const Saves = ({ state: articleState = ArticleStateEnum.AVAILABLE }: Props) => {
                 articles.bookmarks.data.length > 0 && (
                   <div className="">
                     <h2 className="ml-2">Links </h2>
-                    <ArticlesList articles={articles.bookmarks.data} />
+                    {articles && articles.bookmarks.data && (
+                      <div className="flex flex-col gap-3">
+                        {articles.bookmarks.data.map((article, index) => {
+                          return <ArticleList key={index} article={article} />;
+                        })}
+                      </div>
+                    )}
                   </div>
                 )}
 

@@ -1,5 +1,5 @@
 import api from "@/configs/api";
-import { Folder } from "@/typings/folder/type";
+import { Folder as IFolder } from "@/typings/folder/type";
 
 export async function createFolder({
   parentFolderId,
@@ -42,7 +42,7 @@ export async function getNestedFoldersById({
 }): Promise<{
   folders: {
     total_records: number;
-    data: Folder[];
+    data: IFolder[];
   };
   parentFolderHierarchy: {
     maxDepthLookupReached: boolean;

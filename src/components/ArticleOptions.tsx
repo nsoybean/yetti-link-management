@@ -54,7 +54,7 @@ import { Separator } from "./ui/separator";
 import { getNestedFoldersById } from "@/api/folders";
 import { useFolder } from "@/hooks/FolderProvider";
 import { Skeleton } from "./ui/skeleton";
-import { Folder } from "@/typings/folder/type";
+import { Folder as IFolder } from "@/typings/folder/type";
 
 type Props = {
   article: Article;
@@ -98,7 +98,7 @@ const ArticleOptions = ({ article }: Props) => {
   const [moveFolderCurrId, setMoveFolderCurrId] = useState<string | null>(null);
   const [isGetNestedFolderLoading, setIsGetgetNestedFolderLoading] =
     useState(false);
-  const [nestedFolders, setNestedFolders] = useState<Folder[]>([]);
+  const [nestedFolders, setNestedFolders] = useState<IFolder[]>([]);
   const [parentFoldersHierarchy, setParentFoldersHierarchy] = useState<{
     maxDepthLookupReached: boolean;
     list: { _id: string; name: string }[];

@@ -1,7 +1,10 @@
 import api from "@/configs/api";
 import { Article } from "../typings/article/type";
 import { ISearchArticle } from "@/typings/search/articles";
-import { Folder, IParentFolderHierarchy } from "@/typings/folder/type";
+import {
+  Folder as IFolder,
+  IParentFolderHierarchy,
+} from "@/typings/folder/type";
 
 export async function addArticle({
   link,
@@ -37,7 +40,7 @@ export async function getAllArticles({
 }): Promise<{
   folders: {
     total_records: number;
-    data: Folder[];
+    data: IFolder[];
   };
   bookmarks: {
     total_records: number;

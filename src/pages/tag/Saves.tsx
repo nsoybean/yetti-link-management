@@ -8,9 +8,9 @@ import { Button } from "@/components/ui/button";
 import { ArrowLeftIcon } from "lucide-react";
 import ToolTipText from "@/components/TooltipText";
 import ArticleSkeletonList from "@/components/ArticleSkeletonList";
-import ArticlesList from "@/components/ArticlesList";
 import { useViewArticleMode } from "@/hooks/useArticleViewMode";
-import Article from "@/components/Article";
+import { Article } from "@/components/Article";
+import { ArticleList } from "@/components/ArticleList";
 
 const TagSaves = () => {
   const [currPage, setCurrPage] = useState(1);
@@ -86,7 +86,13 @@ const TagSaves = () => {
           {isLoading && <ArticleSkeletonList numCards={5} />}
 
           {/* show articles */}
-          {articles && <ArticlesList articles={articles.bookmarks.data} />}
+          {articles && articles.bookmarks.data && (
+            <div className="flex flex-col gap-3">
+              {articles.bookmarks.data.map((article, index) => {
+                return <ArticleList key={index} article={article} />;
+              })}
+            </div>
+          )}
         </div>
       )}
 
