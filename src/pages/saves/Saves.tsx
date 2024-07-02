@@ -1,20 +1,14 @@
 import { useEffect, useState } from "react";
 import { parseAuthFromRedirectUrl } from "@/lib/auth";
 import { setAuthToken } from "@/configs/auth";
-import { useQuery } from "@tanstack/react-query";
-import { getAllArticles } from "@/api/articles";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { getAllArticles, moveBookmarksToFolder } from "@/api/articles";
 import { Button } from "@/components/ui/button";
 import ArticlePagination from "@/components/ArticlePagination";
 import ArticleSkeleton from "@/components/ArticleSkeleton";
-import {
-  DotsHorizontalIcon,
-  DotsVerticalIcon,
-  Pencil1Icon,
-  PlusIcon,
-} from "@radix-ui/react-icons";
+import { PlusIcon } from "@radix-ui/react-icons";
 import { SaveArticleInput } from "@/components/SaveArticleInput";
 import yetti from "/cuteCreativeYeti.jpeg";
-import Articles from "@/components/Articles";
 import toast from "react-hot-toast";
 import { useViewArticleMode } from "@/hooks/useArticleViewMode";
 import ArticlesList from "@/components/ArticlesList";
@@ -45,6 +39,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import FolderHierarchyBreadCrumb from "@/components/FolderHierarchyBreadCrumb";
 import { DndContext, DragEndEvent } from "@dnd-kit/core";
+import Article from "@/components/Article";
 
 // import { DataTable } from "@/components/articleTable/data-table";
 // import { ArticleColumns } from "@/components/articleTable/columns";
@@ -62,7 +57,9 @@ const Saves = ({ state: articleState = ArticleStateEnum.AVAILABLE }: Props) => {
   const { folderId } = useParams();
   const { setFolder } = useFolder();
   const [dropParentFolder, setDropParentFolder] = useState<string | null>(null);
+  const [currToast, setCurrToast] = useState("");
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
   // update folder id context
   let currFolderId = folderId || ROOT_FOLDER__VALUE;
@@ -116,6 +113,23 @@ const Saves = ({ state: articleState = ArticleStateEnum.AVAILABLE }: Props) => {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [currPage]);
+
+  // move article
+  const { mutate: moveArticlesToFolder } = useMutation({
+    mutationFn: moveBookmarksToFolder,
+    onSuccess: (data) => {
+      toast.dismiss(currToast);
+      toast.success("Successfully moved!");
+
+      // invalidate query
+      queryClient.invalidateQueries({ queryKey: ["get-all-articles"] });
+    },
+    onError: (error) => {
+      toast.dismiss(currToast);
+      toast.error(`Error!`);
+    },
+    onSettled: () => {},
+  });
 
   const {
     isLoading,
@@ -194,10 +208,13 @@ const Saves = ({ state: articleState = ArticleStateEnum.AVAILABLE }: Props) => {
 
     // move link into folder
     // TODO @sb: enable move folder too
-
-    const linkId = event.active.id;
-    // const targetFolderId =
-    setDropParentFolder(event.over ? (event.over.id as string) : null);
+    const toastId = toast.loading("Moving...");
+    setCurrToast(toastId);
+    const bookmarkId = event.active.id as string;
+    moveArticlesToFolder({
+      bookmarkIds: [bookmarkId],
+      folderId: over.id as string,
+    });
   }
 
   return (
@@ -256,7 +273,9 @@ const Saves = ({ state: articleState = ArticleStateEnum.AVAILABLE }: Props) => {
                   <div className="">
                     <h2 className="mb-1 ml-2"> Links </h2>
                     <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-                      <Articles articles={articles.bookmarks.data} />
+                      {articles.bookmarks.data.map((article, index) => {
+                        return <Article key={index} article={article} />;
+                      })}
                     </div>
                   </div>
                 )}

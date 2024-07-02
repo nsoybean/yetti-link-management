@@ -594,7 +594,7 @@ const ArticleOptions = ({ article }: Props) => {
           <DialogHeader>
             <DialogTitle>Add Tags</DialogTitle>
             <DialogDescription>
-              They help you to find your articles more easily
+              They help you to find your articles easily
             </DialogDescription>
           </DialogHeader>
 
@@ -794,7 +794,7 @@ const ArticleOptions = ({ article }: Props) => {
                 if (!moveFolderCurrId) {
                   return;
                 } else {
-                  const toastId = toast.loading("Moving links...");
+                  const toastId = toast.loading("Moving...");
                   setCurrToast(toastId);
                   moveArticlesToFolder({
                     bookmarkIds: selectedBookmarks,
