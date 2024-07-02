@@ -40,7 +40,7 @@ export const Article = ({ article }: Props) => {
     <Card
       ref={setNodeRef}
       style={style}
-      className="flex touch-none flex-col justify-between"
+      className="flex touch-manipulation flex-col justify-between"
     >
       {/* header */}
       <CardHeader className="items-start p-3">
@@ -53,7 +53,7 @@ export const Article = ({ article }: Props) => {
         <GripVertical
           {...attributes}
           {...listeners}
-          className="h-auto cursor-grab py-1 text-secondary-foreground/50"
+          className="h-auto cursor-grab touch-none py-1 text-secondary-foreground/50"
         />
         {/* if img exist */}
         {article.image ? (

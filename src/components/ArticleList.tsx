@@ -32,13 +32,13 @@ export const ArticleList = ({ article }: Props) => {
     <Card
       ref={setNodeRef}
       style={style}
-      className="flex touch-none flex-col shadow-md"
+      className="flex touch-manipulation flex-col shadow-md"
     >
       <div className="flex flex-row gap-2 p-3">
         <GripVertical
           {...attributes}
           {...listeners}
-          className="h-auto cursor-grab py-1 text-secondary-foreground/50"
+          className="h-auto cursor-grab touch-none py-1 text-secondary-foreground/50"
         />
 
         {/* header */}
