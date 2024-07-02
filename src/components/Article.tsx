@@ -40,7 +40,7 @@ export const Article = ({ article }: Props) => {
     <Card
       ref={setNodeRef}
       style={style}
-      className="flex flex-col justify-between"
+      className="flex touch-none flex-col justify-between"
     >
       {/* header */}
       <CardHeader className="items-start p-3">
