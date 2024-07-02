@@ -1,49 +1,31 @@
 import { useEffect, useState } from "react";
 import { parseAuthFromRedirectUrl } from "@/lib/auth";
 import { setAuthToken } from "@/configs/auth";
-import { useQuery } from "@tanstack/react-query";
-import { getAllArticles } from "@/api/articles";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { getAllArticles, moveBookmarksToFolder } from "@/api/articles";
 import { Button } from "@/components/ui/button";
 import ArticlePagination from "@/components/ArticlePagination";
 import ArticleSkeleton from "@/components/ArticleSkeleton";
-import {
-  DotsHorizontalIcon,
-  DotsVerticalIcon,
-  Pencil1Icon,
-  PlusIcon,
-} from "@radix-ui/react-icons";
+import { PlusIcon } from "@radix-ui/react-icons";
 import { SaveArticleInput } from "@/components/SaveArticleInput";
 import yetti from "/cuteCreativeYeti.jpeg";
-import Articles from "@/components/Articles";
 import toast from "react-hot-toast";
 import { useViewArticleMode } from "@/hooks/useArticleViewMode";
-import ArticlesList from "@/components/ArticlesList";
 import ArticleSkeletonList from "@/components/ArticleSkeletonList";
 import useLogout from "@/hooks/useLogout";
 import { storage } from "@/lib/storage";
-import Folders from "@/components/Folders";
 import { Separator } from "@/components/ui/separator";
-import { Folder, IParentFolderHierarchy } from "@/typings/folder/type";
+import { Folder as IFolder } from "@/typings/folder/type";
 import AddNew from "@/components/AddNew";
 import { ROOT_FOLDER__VALUE, useFolder } from "@/hooks/FolderProvider";
 import { useNavigate, useParams } from "react-router-dom";
 import { ArticleStateEnum } from "@/typings/article/type";
-import {
-  ChevronRight,
-  CircleEllipsisIcon,
-  FolderIcon,
-  LucideArrowRight,
-  ShieldEllipsis,
-  TrashIcon,
-} from "lucide-react";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuGroup,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import FolderHierarchyBreadCrumb from "@/components/FolderHierarchyBreadCrumb";
+import { DndContext, DragEndEvent } from "@dnd-kit/core";
+import { Article } from "@/components/Article";
+import { Folder } from "@/components/Folders";
+import { ArticleList } from "@/components/ArticleList";
+
 // import { DataTable } from "@/components/articleTable/data-table";
 // import { ArticleColumns } from "@/components/articleTable/columns";
 
@@ -59,7 +41,9 @@ const Saves = ({ state: articleState = ArticleStateEnum.AVAILABLE }: Props) => {
   const { logout } = useLogout();
   const { folderId } = useParams();
   const { setFolder } = useFolder();
+  const [currToast, setCurrToast] = useState("");
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
   // update folder id context
   let currFolderId = folderId || ROOT_FOLDER__VALUE;
@@ -108,6 +92,23 @@ const Saves = ({ state: articleState = ArticleStateEnum.AVAILABLE }: Props) => {
     window.scrollTo(0, 0);
   }, [currPage]);
 
+  // move article
+  const { mutate: moveArticlesToFolder } = useMutation({
+    mutationFn: moveBookmarksToFolder,
+    onSuccess: (data) => {
+      toast.dismiss(currToast);
+      toast.success("Successfully moved!");
+
+      // invalidate query
+      queryClient.invalidateQueries({ queryKey: ["get-all-articles"] });
+    },
+    onError: (error) => {
+      toast.dismiss(currToast);
+      toast.error(`Error!`);
+    },
+    onSettled: () => {},
+  });
+
   const {
     isLoading,
     error,
@@ -123,7 +124,7 @@ const Saves = ({ state: articleState = ArticleStateEnum.AVAILABLE }: Props) => {
   });
 
   // filter away current folder from list, if any
-  let filteredFolders: Folder[] = [];
+  let filteredFolders: IFolder[] = [];
   if (articles) {
     filteredFolders = articles.folders.data.filter(
       (folder) => folder._id !== currFolderId,
@@ -176,115 +177,147 @@ const Saves = ({ state: articleState = ArticleStateEnum.AVAILABLE }: Props) => {
     );
   }
 
+  function handleDragEnd(event: DragEndEvent) {
+    const { over } = event;
+
+    if (!over) {
+      return null;
+    }
+
+    // move link into folder
+    // TODO @sb: enable move folder too
+    const toastId = toast.loading("Moving...");
+    setCurrToast(toastId);
+    const bookmarkId = event.active.id as string;
+    moveArticlesToFolder({
+      bookmarkIds: [bookmarkId],
+      folderId: over.id as string,
+    });
+  }
+
   return (
     // main
-    <main className="mx-auto w-full">
-      <div className="flex flex-col gap-3">
-        {/* header */}
-        <div className="mt-2 flex flex-row items-center justify-between">
-          {articles?.parentFolderHierarchy ? (
-            <FolderHierarchyBreadCrumb
-              parentFolderHierarchy={articles?.parentFolderHierarchy}
+    <DndContext onDragEnd={handleDragEnd}>
+      <main className="mx-auto w-full">
+        <div className="flex flex-col gap-3">
+          {/* header */}
+          <div className="mt-2 flex flex-row items-center justify-between">
+            {articles?.parentFolderHierarchy ? (
+              <FolderHierarchyBreadCrumb
+                parentFolderHierarchy={articles?.parentFolderHierarchy}
+              />
+            ) : (
+              // base, no hierarchy
+              <div className="ml-2 text-xl font-semibold"> Saves </div>
+            )}
+            <AddNew
+              trigger={
+                <Button variant="outline">
+                  <PlusIcon className="mr-2 h-4 w-4" />
+                  New
+                </Button>
+              }
             />
-          ) : (
-            // base, no hierarchy
-            <div className="ml-2 text-xl font-semibold"> Saves </div>
-          )}
-          <AddNew
-            trigger={
-              <Button variant="outline">
-                <PlusIcon className="mr-2 h-4 w-4" />
-                New
-              </Button>
-            }
-          />
-        </div>
+          </div>
 
-        {/* divider */}
-        <Separator />
+          {/* divider */}
+          <Separator />
 
-        {/* content (gallery mode) */}
-        {mode === "gallery" && (
-          <div className="">
-            {/* is loading */}
-            {isLoading && (
-              <div className="mb-12 flex flex-col gap-2">
-                <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-                  <ArticleSkeleton numCards={6} />
-                </div>
-              </div>
-            )}
-
-            {/* folder */}
-            {filteredFolders.length > 0 && (
-              <div className="mb-8 mt-1">
-                <h2 className="mb-1 ml-2"> Folders </h2>
-                <div className="grid grid-cols-1 gap-2 md:grid-cols-2 lg:grid-cols-3">
-                  <Folders folders={filteredFolders} />
-                </div>
-              </div>
-            )}
-
-            {/* articles */}
-            {articles?.bookmarks?.data &&
-              articles.bookmarks.data.length > 0 && (
-                <div className="">
-                  <h2 className="mb-1 ml-2"> Links </h2>
+          {/* content (gallery mode) */}
+          {mode === "gallery" && (
+            <div className="">
+              {/* is loading */}
+              {isLoading && (
+                <div className="mb-12 flex flex-col gap-2">
                   <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-                    <Articles articles={articles.bookmarks.data} />
+                    <ArticleSkeleton numCards={6} />
                   </div>
                 </div>
               )}
 
-            {/* articles (empty state) */}
-            {articles?.bookmarks?.data &&
-              articles.bookmarks.total_records === 0 &&
-              renderEmptyArticlesState()}
-          </div>
-        )}
-
-        {/* content (list mode) */}
-        {mode === "list" && (
-          <div className="">
-            {/* is loading */}
-            {isLoading && <ArticleSkeletonList numCards={5} />}
-
-            {/* folder */}
-            {filteredFolders.length > 0 && (
-              <div className="mb-8 mt-1">
-                <h2 className="ml-2 font-bold"> Folders </h2>
-                <Folders folders={filteredFolders} />
-              </div>
-            )}
-
-            {/* articles */}
-            {articles?.bookmarks?.data &&
-              articles.bookmarks.data.length > 0 && (
-                <div className="">
-                  <h2 className="ml-2 font-bold">Links </h2>
-                  <ArticlesList articles={articles.bookmarks.data} />
+              {/* folder */}
+              {filteredFolders.length > 0 && (
+                <div className="mb-8 mt-1">
+                  <h2 className="mb-1 ml-2"> Folders </h2>
+                  <div className="grid grid-cols-1 gap-2 md:grid-cols-2 lg:grid-cols-3">
+                    {filteredFolders.map((folder, index) => {
+                      return <Folder key={index} folder={folder} />;
+                    })}
+                  </div>
                 </div>
               )}
 
-            {/* articles (empty state) */}
-            {articles?.bookmarks?.data &&
-              articles.bookmarks.total_records === 0 &&
-              renderEmptyArticlesState()}
-          </div>
-        )}
-      </div>
+              {/* articles */}
+              {articles?.bookmarks?.data &&
+                articles.bookmarks.data.length > 0 && (
+                  <div className="">
+                    <h2 className="mb-1 ml-2"> Links </h2>
+                    <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+                      {articles.bookmarks.data.map((article, index) => {
+                        return <Article key={index} article={article} />;
+                      })}
+                    </div>
+                  </div>
+                )}
 
-      {/* pagination */}
-      <div className="bottom-0 mb-10 mt-12">
-        <ArticlePagination
-          currentPage={currPage}
-          setPage={setCurrPage}
-          recordsPerPage={9}
-          totalRecords={articles?.bookmarks.total_records || 0}
-        />
-      </div>
+              {/* articles (empty state) */}
+              {articles?.bookmarks?.data &&
+                articles.bookmarks.total_records === 0 &&
+                renderEmptyArticlesState()}
+            </div>
+          )}
 
-      {/* {isFolderEllipseOpen && (
+          {/* content (list mode) */}
+          {mode === "list" && (
+            <div className="">
+              {/* is loading */}
+              {isLoading && <ArticleSkeletonList numCards={5} />}
+
+              {/* folder */}
+              {filteredFolders.length > 0 && (
+                <div className="mb-8 mt-1">
+                  <h2 className="ml-2"> Folders </h2>
+
+                  {filteredFolders.map((folder, index) => {
+                    return <Folder key={index} folder={folder} />;
+                  })}
+                </div>
+              )}
+
+              {/* articles */}
+              {articles?.bookmarks?.data &&
+                articles.bookmarks.data.length > 0 && (
+                  <div className="">
+                    <h2 className="ml-2">Links </h2>
+                    {articles && articles.bookmarks.data && (
+                      <div className="flex flex-col gap-3">
+                        {articles.bookmarks.data.map((article, index) => {
+                          return <ArticleList key={index} article={article} />;
+                        })}
+                      </div>
+                    )}
+                  </div>
+                )}
+
+              {/* articles (empty state) */}
+              {articles?.bookmarks?.data &&
+                articles.bookmarks.total_records === 0 &&
+                renderEmptyArticlesState()}
+            </div>
+          )}
+        </div>
+
+        {/* pagination */}
+        <div className="bottom-0 mb-10 mt-12">
+          <ArticlePagination
+            currentPage={currPage}
+            setPage={setCurrPage}
+            recordsPerPage={9}
+            totalRecords={articles?.bookmarks.total_records || 0}
+          />
+        </div>
+
+        {/* {isFolderEllipseOpen && (
         <DropdownMenu modal={false}>
           <DropdownMenuTrigger asChild>
             <Button
@@ -316,7 +349,8 @@ const Saves = ({ state: articleState = ArticleStateEnum.AVAILABLE }: Props) => {
           </DropdownMenuContent>
         </DropdownMenu>
       )} */}
-    </main>
+      </main>
+    </DndContext>
   );
 };
 

@@ -3,14 +3,14 @@ import { useQuery } from "@tanstack/react-query";
 import { getAllArticles } from "@/api/articles";
 import ArticlePagination from "@/components/ArticlePagination";
 import ArticleSkeleton from "@/components/ArticleSkeleton";
-import Articles from "@/components/Articles";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ArrowLeftIcon } from "lucide-react";
 import ToolTipText from "@/components/TooltipText";
 import ArticleSkeletonList from "@/components/ArticleSkeletonList";
-import ArticlesList from "@/components/ArticlesList";
 import { useViewArticleMode } from "@/hooks/useArticleViewMode";
+import { Article } from "@/components/Article";
+import { ArticleList } from "@/components/ArticleList";
 
 const TagSaves = () => {
   const [currPage, setCurrPage] = useState(1);
@@ -71,7 +71,11 @@ const TagSaves = () => {
           {isLoading && <ArticleSkeleton numCards={6} />}
 
           {/* show articles */}
-          {articles && <Articles articles={articles.bookmarks.data} />}
+          {articles &&
+            articles.bookmarks.data &&
+            articles.bookmarks.data.map((article) => {
+              return <Article key={article._id} article={article} />;
+            })}
         </div>
       )}
 
@@ -82,7 +86,13 @@ const TagSaves = () => {
           {isLoading && <ArticleSkeletonList numCards={5} />}
 
           {/* show articles */}
-          {articles && <ArticlesList articles={articles.bookmarks.data} />}
+          {articles && articles.bookmarks.data && (
+            <div className="flex flex-col gap-3">
+              {articles.bookmarks.data.map((article, index) => {
+                return <ArticleList key={index} article={article} />;
+              })}
+            </div>
+          )}
         </div>
       )}
 

@@ -10,18 +10,20 @@ import {
   CopyIcon,
   Cross2Icon,
   Pencil1Icon,
+  ArchiveIcon,
   DotsHorizontalIcon,
 } from "@radix-ui/react-icons";
 import { Button } from "./ui/button";
 import {
   ChevronRight,
+  DeleteIcon,
   FolderIcon,
   FolderInputIcon,
   PlusIcon,
   TagIcon,
   TrashIcon,
 } from "lucide-react";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import {
   archiveArticle,
   deleteArticle,
@@ -52,7 +54,7 @@ import { Separator } from "./ui/separator";
 import { getNestedFoldersById } from "@/api/folders";
 import { useFolder } from "@/hooks/FolderProvider";
 import { Skeleton } from "./ui/skeleton";
-import { Folder } from "@/typings/folder/type";
+import { Folder as IFolder } from "@/typings/folder/type";
 
 type Props = {
   article: Article;
@@ -83,8 +85,6 @@ const ArticleOptions = ({ article }: Props) => {
   const [openDialog, setOpenDialog] = useState<boolean>(false);
   const [tagDialogOpen, setTagDialogOpen] = useState<boolean>(false);
   const [renameDialogOpen, setRenameDialogOpen] = useState<boolean>(false);
-  const [moveFilesDialogOpen, setMoveFilesDialogOpen] =
-    useState<boolean>(false);
   const [currToast, setCurrToast] = useState("");
   const [tagList, setTagList] = useState<string[]>([]);
   const queryClient = useQueryClient();
@@ -92,10 +92,13 @@ const ArticleOptions = ({ article }: Props) => {
   const [articleMetaData, setArticleMetaData] = useState<{
     title: string;
   } | null>(null);
+  const [moveFilesDialogOpen, setMoveFilesDialogOpen] =
+    useState<boolean>(false);
+
   const [moveFolderCurrId, setMoveFolderCurrId] = useState<string | null>(null);
   const [isGetNestedFolderLoading, setIsGetgetNestedFolderLoading] =
     useState(false);
-  const [nestedFolders, setNestedFolders] = useState<Folder[]>([]);
+  const [nestedFolders, setNestedFolders] = useState<IFolder[]>([]);
   const [parentFoldersHierarchy, setParentFoldersHierarchy] = useState<{
     maxDepthLookupReached: boolean;
     list: { _id: string; name: string }[];
@@ -147,6 +150,7 @@ const ArticleOptions = ({ article }: Props) => {
       setIsGetgetNestedFolderLoading(false);
     }
   }
+
   // delete article
   const { mutate: deleteArticleById } = useMutation({
     mutationFn: deleteArticle,
@@ -495,12 +499,15 @@ const ArticleOptions = ({ article }: Props) => {
 
   return (
     <>
-      {/* setting modal=false, prevent drop down from remaining open */}
+      {/* setting modal to false, prevent drop down from remaining open */}
       <DropdownMenu modal={false}>
         <DropdownMenuTrigger asChild>
           <Button variant="ghost" size="icon" className="h-full">
             <DotsVerticalIcon width={"18"} height={"18"} />
           </Button>
+          {/* <Button variant="outline" className="">
+            <span>Options</span>
+          </Button> */}
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" className="w-[200px]">
           <DropdownMenuGroup>
@@ -512,7 +519,6 @@ const ArticleOptions = ({ article }: Props) => {
                 <TagIcon width={"18"} height={"18"} className="mr-2" /> Tag
               </DropdownMenuItem>
             )}
-
             <DropdownMenuItem
               onSelect={(e) => e.preventDefault()}
               onClick={() => {
@@ -539,6 +545,7 @@ const ArticleOptions = ({ article }: Props) => {
             >
               <TrashIcon width={"18"} height={"18"} className="mr-2" />
               Delete
+              {/* <DropdownMenuShortcut>⌘ ⌫</DropdownMenuShortcut> */}
             </DropdownMenuItem>
             {/* temp commented out archive feature */}
             {/* <DropdownMenuItem
@@ -587,7 +594,7 @@ const ArticleOptions = ({ article }: Props) => {
           <DialogHeader>
             <DialogTitle>Add Tags</DialogTitle>
             <DialogDescription>
-              They help you to find your articles more easily
+              They help you to find your articles easily
             </DialogDescription>
           </DialogHeader>
 
@@ -787,7 +794,7 @@ const ArticleOptions = ({ article }: Props) => {
                 if (!moveFolderCurrId) {
                   return;
                 } else {
-                  const toastId = toast.loading("Moving links...");
+                  const toastId = toast.loading("Moving...");
                   setCurrToast(toastId);
                   moveArticlesToFolder({
                     bookmarkIds: selectedBookmarks,

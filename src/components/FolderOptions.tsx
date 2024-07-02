@@ -23,12 +23,12 @@ import {
 } from "./ui/dialog";
 import { Label } from "@radix-ui/react-dropdown-menu";
 import { Input } from "./ui/input";
-import { Folder } from "@/typings/folder/type";
+import { Folder as IFolder } from "@/typings/folder/type";
 import { deleteFolderById, updateFolderMetaById } from "@/api/folders";
 import { AxiosError } from "axios";
 
 type Props = {
-  folder: Folder;
+  folder: IFolder;
 };
 
 const FolderOptions = ({ folder }: Props) => {
