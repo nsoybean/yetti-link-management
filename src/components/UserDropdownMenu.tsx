@@ -19,7 +19,7 @@ import { useViewArticleMode } from "@/hooks/useArticleViewMode";
 import ToolTipText from "./TooltipText";
 import { getFallbackName } from "@/lib/auth";
 
-export function UserDropdownMenu({ user }: { user: User }) {
+export function UserDropdownMenu({ user }: { user?: User }) {
   const queryClient = useQueryClient();
   const { setTheme, theme } = useTheme();
   const navigate = useNavigate();
@@ -69,19 +69,23 @@ export function UserDropdownMenu({ user }: { user: User }) {
           </div>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <DropdownMenuGroup className="py-1">
-          <DropdownMenuItem onClick={() => navigate("/account")}>
-            Account Settings
-            {/* <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut> */}
-          </DropdownMenuItem>
-          {/* <DropdownMenuItem>
+        {user && (
+          <>
+            <DropdownMenuGroup className="py-1">
+              <DropdownMenuItem onClick={() => navigate("/account")}>
+                Account Settings
+                {/* <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut> */}
+              </DropdownMenuItem>
+              {/* <DropdownMenuItem>
             Billing
             </DropdownMenuItem>
             <DropdownMenuItem>
             Settings
           </DropdownMenuItem> */}
-        </DropdownMenuGroup>
-        <DropdownMenuSeparator />
+            </DropdownMenuGroup>
+            <DropdownMenuSeparator />
+          </>
+        )}
 
         {/* teams */}
         {/* <DropdownMenuGroup className="py-1">

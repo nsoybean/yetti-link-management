@@ -108,7 +108,7 @@ export const AppNavbar = () => {
           {/* actions */}
           <div className="flex items-center justify-center gap-3">
             {/* user */}
-            {user && <UserDropdownMenu user={user} />}
+            <UserDropdownMenu user={user} />
           </div>
         </NavigationMenuList>
       </NavigationMenu>
