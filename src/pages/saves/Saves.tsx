@@ -17,6 +17,7 @@ import { storage } from "@/lib/storage";
 import { Separator } from "@/components/ui/separator";
 import { Folder as IFolder } from "@/typings/folder/type";
 import AddNew from "@/components/AddNew";
+import AddNewEntityDialog from "@/components/AddNewEntityDialog";
 import { ROOT_FOLDER__VALUE, useFolder } from "@/hooks/FolderProvider";
 import { useNavigate, useParams } from "react-router-dom";
 import { ArticleStateEnum } from "@/typings/article/type";
@@ -44,6 +45,8 @@ const Saves = ({ state: articleState = ArticleStateEnum.AVAILABLE }: Props) => {
   const [currToast, setCurrToast] = useState("");
   const navigate = useNavigate();
   const queryClient = useQueryClient();
+  const [isAddNewEntityDialogOpen, setIsAddNewEntityDialogOpen] =
+    useState(false);
 
   // update folder id context
   let currFolderId = folderId || ROOT_FOLDER__VALUE;
@@ -160,7 +163,7 @@ const Saves = ({ state: articleState = ArticleStateEnum.AVAILABLE }: Props) => {
           <div className="flex flex-col items-center justify-center gap-4">
             <h1 className="text-md scroll-m-20">Start by adding a link!</h1>
 
-            <SaveArticleInput
+            {/* <SaveArticleInput
               trigger={
                 <Button>
                   <span>Add Link</span>
@@ -170,6 +173,17 @@ const Saves = ({ state: articleState = ArticleStateEnum.AVAILABLE }: Props) => {
               setIsOpen={setIsAddLinkDialogOpen}
               isOpen={isAddLinkDialogOpen}
               onEventListener={false}
+            /> */}
+
+            <AddNewEntityDialog
+              trigger={
+                <Button>
+                  <span>Add Link</span>
+                  <PlusIcon className="h-4 w-4" />
+                </Button>
+              }
+              setIsOpen={setIsAddLinkDialogOpen}
+              isOpen={isAddLinkDialogOpen}
             />
           </div>
         </div>
@@ -210,13 +224,15 @@ const Saves = ({ state: articleState = ArticleStateEnum.AVAILABLE }: Props) => {
               // base, no hierarchy
               <div className="ml-2 text-xl font-semibold"> Saves </div>
             )}
-            <AddNew
+            <AddNewEntityDialog
               trigger={
                 <Button variant="outline">
                   <PlusIcon className="mr-2 h-4 w-4" />
                   New
                 </Button>
               }
+              setIsOpen={setIsAddNewEntityDialogOpen}
+              isOpen={isAddNewEntityDialogOpen}
             />
           </div>
 
