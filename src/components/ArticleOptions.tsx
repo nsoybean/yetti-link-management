@@ -358,6 +358,12 @@ const ArticleOptions = ({ article }: Props) => {
     setTagList(newTagList);
   }
 
+  const handleButtonClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.stopPropagation();
+    console.log("🚀 ~ handleButtonClick ~ handleButtonClick:");
+    // Handle button click logic
+  };
+
   function renderFolderHierarchyBreadCrumb({
     parentFolderHierarchy,
   }: {
@@ -501,7 +507,13 @@ const ArticleOptions = ({ article }: Props) => {
     <>
       {/* setting modal to false, prevent drop down from remaining open */}
       <DropdownMenu modal={false}>
-        <DropdownMenuTrigger asChild>
+        <DropdownMenuTrigger
+          asChild
+          onClick={(e) => {
+            console.log("options clicked");
+            e.stopPropagation();
+          }}
+        >
           <Button variant="ghost" size="icon" className="h-full">
             <DotsVerticalIcon width={"18"} height={"18"} />
           </Button>

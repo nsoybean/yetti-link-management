@@ -17,14 +17,23 @@ import { useTheme } from "./theme-provider";
 import { routes } from "@/router";
 import { useDraggable } from "@dnd-kit/core";
 import { generateColorBaseOnSeed } from "@/lib/utils";
+import { useEffect, useRef, useState } from "react";
 
 type Props = {
   article: IArticle;
 };
 
 export const Article = ({ article }: Props) => {
+  const [isMultiSelect, setIsMultiSelect] = useState(false);
   const navigate = useNavigate();
+  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const { theme } = useTheme();
+
+  useEffect(() => {
+    if (isMultiSelect) {
+      console.log("multi select mode on");
+    }
+  }, [isMultiSelect]);
 
   const { attributes, listeners, setNodeRef, transform } = useDraggable({
     id: article._id,
@@ -36,11 +45,48 @@ export const Article = ({ article }: Props) => {
       }
     : undefined;
 
+  function handleCardClick() {
+    setIsMultiSelect(true);
+    if (!isMultiSelect) {
+      // Handle normal card click
+    } else {
+      // Handle multi-select logic
+    }
+  }
+
+  const handleTouchStart = () => {
+    timerRef.current = setTimeout(() => {
+      setIsMultiSelect(true);
+    }, 500);
+  };
+
+  // cancel the timer to prevent entering multi-select mode
+  const handleTouchEnd = () => {
+    if (timerRef.current) {
+      clearTimeout(timerRef.current);
+      console.log("🚀 ~ handleTouchEnd ~ handleTouchEnd");
+    }
+  };
+
+  // cancel the timer to prevent entering multi-select mode
+  const handleTouchMove = () => {
+    if (timerRef.current) {
+      clearTimeout(timerRef.current);
+      console.log("🚀 ~ handleTouchMove ~ handleTouchMove:");
+    }
+  };
+
   return (
     <Card
       ref={setNodeRef}
       style={style}
       className="flex touch-manipulation flex-col justify-between"
+      // mouse click
+      onClick={handleCardClick}
+      // touch
+      onTouchStart={handleTouchStart}
+      onTouchEnd={handleTouchEnd}
+      onTouchMove={handleTouchMove}
     >
       {/* header */}
       <CardHeader className="items-start p-3">
