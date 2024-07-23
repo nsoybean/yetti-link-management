@@ -38,7 +38,6 @@ const AddNewEntityDialog = (props: Props) => {
   const { folder: currFolderId } = useFolder();
 
   useEffect(() => {
-    console.log("🚀 ~ useEffect ~ selectedEntity:", selectedEntity);
     document.addEventListener("keydown", onKeyPress);
 
     return () => {
