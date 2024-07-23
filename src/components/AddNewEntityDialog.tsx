@@ -107,16 +107,15 @@ const AddNewEntityDialog = (props: Props) => {
 
     // Check if the 'enter key' key is pressed and the focus is on the input
     if (event.key === "Enter" && document.activeElement === inputRef.current) {
-      console.log("🚀 ~ onKeyPress ~ selectedEntity:", selectedEntity);
-      // if (inputRef.current) {
-      //   if (selectedEntity === "link") {
-      //     saveArticle(inputRef.current.value);
-      //   } else if (selectedEntity === "folder") {
-      //     createFolderWithName({ name: inputRef.current.value });
-      //   } else {
-      //     toast.error("Oops. Not sure what you want to create.");
-      //   }
-      // }
+      if (inputRef.current) {
+        if (selectedEntity === "link") {
+          saveArticle(inputRef.current.value);
+        } else if (selectedEntity === "folder") {
+          createFolderWithName({ name: inputRef.current.value });
+        } else {
+          toast.error("Oops. Not sure what you want to create.");
+        }
+      }
     }
   };
 
