@@ -54,7 +54,7 @@ const AddNewEntityDialog = (props: Props) => {
       }
       toast.dismiss(currToast);
       toast.success("Link Added!");
-      setEntityInput("");
+      reset();
     },
 
     onError: (error) => {
@@ -65,7 +65,7 @@ const AddNewEntityDialog = (props: Props) => {
       } else {
         toast.error(`Error!`);
       }
-      setEntityInput("");
+      reset();
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ["get-all-articles"] });
@@ -81,14 +81,14 @@ const AddNewEntityDialog = (props: Props) => {
       }
       toast.dismiss(currToast);
       toast.success("Folder created!");
-      setEntityInput("");
+      reset();
     },
 
     onError: (error) => {
       let axiosError = error as AxiosError<{ message: string }>;
       toast.dismiss(currToast);
       toast.error(`Error! ${axiosError.response?.data.message}`);
-      setEntityInput("");
+      reset();
     },
     onSettled: () => {
       queryClient.invalidateQueries({
@@ -102,7 +102,7 @@ const AddNewEntityDialog = (props: Props) => {
     if (event.key === "Escape") {
       // remove focus and clear input
       if (inputRef.current) {
-        setEntityInput("");
+        reset();
         inputRef.current.blur();
       }
     }
@@ -153,11 +153,14 @@ const AddNewEntityDialog = (props: Props) => {
       props.setIsOpen(true);
     } else {
       props.setIsOpen(false);
-      setEntityInput("");
-      setSelectedEntity(null);
+      reset();
     }
   }
 
+  function reset() {
+    setEntityInput("");
+    setSelectedEntity(null);
+  }
   return (
     <Dialog onOpenChange={onOpenChange} open={props.isOpen}>
       <DialogTrigger asChild>{props.trigger}</DialogTrigger>
@@ -202,9 +205,7 @@ const AddNewEntityDialog = (props: Props) => {
                 <ArrowLeft
                   className="mr-3 h-6 w-6"
                   onClick={() => {
-                    // reset
-                    setEntityInput("");
-                    setSelectedEntity(null);
+                    reset();
                   }}
                 />
                 New link
@@ -257,9 +258,7 @@ const AddNewEntityDialog = (props: Props) => {
                 <ArrowLeft
                   className="mr-3 h-6 w-6"
                   onClick={() => {
-                    // reset
-                    setEntityInput("");
-                    setSelectedEntity(null);
+                    reset();
                   }}
                 />
                 New folder
