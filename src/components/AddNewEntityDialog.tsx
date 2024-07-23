@@ -54,6 +54,7 @@ const AddNewEntityDialog = (props: Props) => {
       }
       toast.dismiss(currToast);
       toast.success("Link Added!");
+      setEntityInput("");
     },
 
     onError: (error) => {
@@ -80,6 +81,7 @@ const AddNewEntityDialog = (props: Props) => {
       }
       toast.dismiss(currToast);
       toast.success("Folder created!");
+      setEntityInput("");
     },
 
     onError: (error) => {
