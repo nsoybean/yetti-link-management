@@ -199,12 +199,16 @@ const AddNewEntityDialog = (props: Props) => {
 
           {/* when adding new link */}
           {selectedEntity === "link" && (
-            <>
-              <DialogHeader>
+            <div className="flex flex-col justify-around">
+              <DialogHeader className="flex flex-col items-start">
                 <DialogTitle className="flex flex-row items-center justify-start">
                   <ArrowLeft
                     className="mr-3 h-6 w-6"
-                    onClick={() => setSelectedEntity(null)}
+                    onClick={() => {
+                      // reset
+                      setEntityInput("");
+                      setSelectedEntity(null);
+                    }}
                   />
                   New link
                 </DialogTitle>
@@ -245,17 +249,21 @@ const AddNewEntityDialog = (props: Props) => {
                   </Button>
                 </DialogClose>
               </DialogFooter>
-            </>
+            </div>
           )}
 
           {/* when adding new folder */}
           {selectedEntity === "folder" && (
-            <>
-              <DialogHeader>
+            <div className="flex flex-col justify-around">
+              <DialogHeader className="flex flex-col items-start">
                 <DialogTitle className="flex flex-row items-center justify-start">
                   <ArrowLeft
                     className="mr-3 h-6 w-6"
-                    onClick={() => setSelectedEntity(null)}
+                    onClick={() => {
+                      // reset
+                      setEntityInput("");
+                      setSelectedEntity(null);
+                    }}
                   />
                   New folder
                 </DialogTitle>
@@ -295,7 +303,7 @@ const AddNewEntityDialog = (props: Props) => {
                   </Button>
                 </DialogClose>
               </DialogFooter>
-            </>
+            </div>
           )}
         </DialogContent>
       </Dialog>
