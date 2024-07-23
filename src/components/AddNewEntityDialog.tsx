@@ -38,12 +38,13 @@ const AddNewEntityDialog = (props: Props) => {
   const { folder: currFolderId } = useFolder();
 
   useEffect(() => {
+    console.log("🚀 ~ useEffect ~ selectedEntity:", selectedEntity);
     document.addEventListener("keydown", onKeyPress);
 
     return () => {
       document.removeEventListener("keydown", onKeyPress);
     };
-  }, []);
+  }, [selectedEntity]);
 
   const { mutate: mutateLink, status: mutateLinkStatus } = useMutation({
     mutationFn: addArticle,
@@ -107,15 +108,16 @@ const AddNewEntityDialog = (props: Props) => {
 
     // Check if the 'enter key' key is pressed and the focus is on the input
     if (event.key === "Enter" && document.activeElement === inputRef.current) {
-      if (inputRef.current) {
-        if (selectedEntity === "link") {
-          saveArticle(inputRef.current.value);
-        } else if (selectedEntity === "folder") {
-          createFolderWithName({ name: inputRef.current.value });
-        } else {
-          toast.error("Oops. Not sure what you want to create.");
-        }
-      }
+      console.log("🚀 ~ onKeyPress ~ selectedEntity:", selectedEntity);
+      // if (inputRef.current) {
+      //   if (selectedEntity === "link") {
+      //     saveArticle(inputRef.current.value);
+      //   } else if (selectedEntity === "folder") {
+      //     createFolderWithName({ name: inputRef.current.value });
+      //   } else {
+      //     toast.error("Oops. Not sure what you want to create.");
+      //   }
+      // }
     }
   };
 
@@ -157,157 +159,151 @@ const AddNewEntityDialog = (props: Props) => {
   }
 
   return (
-    <>
-      <Dialog onOpenChange={onOpenChange} open={props.isOpen}>
-        <DialogTrigger asChild>{props.trigger}</DialogTrigger>
-        {/* create new page */}
-        <DialogContent className="h-64 sm:w-[425px]">
-          {!selectedEntity && (
-            <>
-              <DialogHeader>
-                <DialogTitle>Add new</DialogTitle>
-              </DialogHeader>
-              <div className="flex flex-col items-center justify-center gap-2">
-                {/* add link */}
-                <div
-                  className="flex w-4/5 flex-row items-center gap-2 rounded-md bg-primary-foreground p-3 hover:bg-muted"
-                  onClick={(e) => {
-                    setSelectedEntity("link");
-                  }}
-                >
-                  <div className="mr-2 flex flex-row items-center justify-center rounded-md bg-blue-100 p-3 dark:bg-blue-800">
-                    <Link2Icon className="h-6 w-6" />
-                  </div>
-                  <span>Web link</span>
+    <Dialog onOpenChange={onOpenChange} open={props.isOpen}>
+      <DialogTrigger asChild>{props.trigger}</DialogTrigger>
+      {/* create new page */}
+      <DialogContent className="h-64 sm:w-[425px]">
+        {!selectedEntity && (
+          <>
+            <DialogHeader>
+              <DialogTitle>Add new</DialogTitle>
+            </DialogHeader>
+            <div className="flex flex-col items-center justify-center gap-2">
+              {/* add link */}
+              <div
+                className="flex w-4/5 flex-row items-center gap-2 rounded-md bg-primary-foreground p-3 hover:bg-muted"
+                onClick={(e) => setSelectedEntity("link")}
+              >
+                <div className="mr-2 flex flex-row items-center justify-center rounded-md bg-blue-100 p-3 dark:bg-blue-800">
+                  <Link2Icon className="h-6 w-6" />
                 </div>
-
-                {/* add folder */}
-                <div
-                  className="flex w-4/5 flex-row items-center justify-start gap-2 rounded-md bg-primary-foreground p-3 hover:bg-muted"
-                  onClick={(e) => {
-                    setSelectedEntity("folder");
-                  }}
-                >
-                  <div className="mr-2 flex flex-row items-center justify-center rounded-md bg-purple-100 p-3 dark:bg-purple-800">
-                    <FolderPlusIcon className="h-6 w-6" />
-                  </div>
-                  <span> Folder</span>
-                </div>
+                <span>Web link</span>
               </div>
-            </>
-          )}
 
-          {/* when adding new link */}
-          {selectedEntity === "link" && (
-            <div className="flex flex-col justify-around">
-              <DialogHeader className="flex flex-col items-start">
-                <DialogTitle className="flex flex-row items-center justify-start">
-                  <ArrowLeft
-                    className="mr-3 h-6 w-6"
-                    onClick={() => {
-                      // reset
-                      setEntityInput("");
-                      setSelectedEntity(null);
-                    }}
-                  />
-                  New link
-                </DialogTitle>
-
-                <DialogDescription>
-                  Enter the link you wish to save
-                </DialogDescription>
-              </DialogHeader>
-              <div className="flex items-center space-x-2">
-                <div className="grid flex-1 gap-2">
-                  <Input
-                    autoFocus
-                    placeholder="https://example.com"
-                    ref={inputRef}
-                    value={entityInput}
-                    id="link"
-                    onChange={(e) => setEntityInput(e.target.value)}
-                  />
+              {/* add folder */}
+              <div
+                className="flex w-4/5 flex-row items-center justify-start gap-2 rounded-md bg-primary-foreground p-3 hover:bg-muted"
+                onClick={(e) => setSelectedEntity("folder")}
+              >
+                <div className="mr-2 flex flex-row items-center justify-center rounded-md bg-purple-100 p-3 dark:bg-purple-800">
+                  <FolderPlusIcon className="h-6 w-6" />
                 </div>
-                <Button
-                  type="submit"
-                  size="sm"
-                  className="px-3"
-                  onClick={() => {
-                    if (inputRef.current) {
-                      saveArticle(inputRef.current.value);
-                    }
-                  }}
-                >
-                  <span className="sr-only">Save</span>
-                  <ForwardIcon className="h-4 w-4" />
-                </Button>
+                <span> Folder</span>
               </div>
-              <DialogFooter className="sm:justify-start">
-                <DialogClose asChild>
-                  <Button type="button" variant="secondary">
-                    Close
-                  </Button>
-                </DialogClose>
-              </DialogFooter>
             </div>
-          )}
+          </>
+        )}
 
-          {/* when adding new folder */}
-          {selectedEntity === "folder" && (
-            <div className="flex flex-col justify-around">
-              <DialogHeader className="flex flex-col items-start">
-                <DialogTitle className="flex flex-row items-center justify-start">
-                  <ArrowLeft
-                    className="mr-3 h-6 w-6"
-                    onClick={() => {
-                      // reset
-                      setEntityInput("");
-                      setSelectedEntity(null);
-                    }}
-                  />
-                  New folder
-                </DialogTitle>
-                <DialogDescription>
-                  Creates a new folder in current directory
-                </DialogDescription>
-              </DialogHeader>
-              <div className="flex items-center space-x-2">
-                <div className="grid flex-1 gap-2">
-                  <Input
-                    autoFocus
-                    placeholder="Folder name"
-                    ref={inputRef}
-                    value={entityInput}
-                    id="link"
-                    onChange={(e) => setEntityInput(e.target.value)}
-                  />
-                </div>
-                <Button
-                  type="submit"
-                  size="sm"
-                  className="px-3"
+        {/* when adding new link */}
+        {selectedEntity === "link" && (
+          <div className="flex flex-col justify-around">
+            <DialogHeader className="flex flex-col items-start">
+              <DialogTitle className="flex flex-row items-center justify-start">
+                <ArrowLeft
+                  className="mr-3 h-6 w-6"
                   onClick={() => {
-                    if (inputRef.current) {
-                      createFolderWithName({ name: inputRef.current.value });
-                    }
+                    // reset
+                    setEntityInput("");
+                    setSelectedEntity(null);
                   }}
-                >
-                  <span className="sr-only">Save</span>
-                  <ForwardIcon className="h-4 w-4" />
-                </Button>
+                />
+                New link
+              </DialogTitle>
+
+              <DialogDescription>
+                Enter the link you wish to save
+              </DialogDescription>
+            </DialogHeader>
+            <div className="flex items-center space-x-2">
+              <div className="grid flex-1 gap-2">
+                <Input
+                  autoFocus
+                  placeholder="https://example.com"
+                  ref={inputRef}
+                  value={entityInput}
+                  id="link"
+                  onChange={(e) => setEntityInput(e.target.value)}
+                />
               </div>
-              <DialogFooter className="sm:justify-start">
-                <DialogClose asChild>
-                  <Button type="button" variant="secondary">
-                    Close
-                  </Button>
-                </DialogClose>
-              </DialogFooter>
+              <Button
+                type="submit"
+                size="sm"
+                className="px-3"
+                onClick={() => {
+                  if (inputRef.current) {
+                    saveArticle(inputRef.current.value);
+                  }
+                }}
+              >
+                <span className="sr-only">Save</span>
+                <ForwardIcon className="h-4 w-4" />
+              </Button>
             </div>
-          )}
-        </DialogContent>
-      </Dialog>
-    </>
+            <DialogFooter className="sm:justify-start">
+              <DialogClose asChild>
+                <Button type="button" variant="secondary">
+                  Close
+                </Button>
+              </DialogClose>
+            </DialogFooter>
+          </div>
+        )}
+
+        {/* when adding new folder */}
+        {selectedEntity === "folder" && (
+          <div className="flex flex-col justify-around">
+            <DialogHeader className="flex flex-col items-start">
+              <DialogTitle className="flex flex-row items-center justify-start">
+                <ArrowLeft
+                  className="mr-3 h-6 w-6"
+                  onClick={() => {
+                    // reset
+                    setEntityInput("");
+                    setSelectedEntity(null);
+                  }}
+                />
+                New folder
+              </DialogTitle>
+              <DialogDescription>
+                Creates a new folder in current directory
+              </DialogDescription>
+            </DialogHeader>
+            <div className="flex items-center space-x-2">
+              <div className="grid flex-1 gap-2">
+                <Input
+                  autoFocus
+                  placeholder="Folder name"
+                  ref={inputRef}
+                  value={entityInput}
+                  id="link"
+                  onChange={(e) => setEntityInput(e.target.value)}
+                />
+              </div>
+              <Button
+                type="submit"
+                size="sm"
+                className="px-3"
+                onClick={() => {
+                  if (inputRef.current) {
+                    createFolderWithName({ name: inputRef.current.value });
+                  }
+                }}
+              >
+                <span className="sr-only">Save</span>
+                <ForwardIcon className="h-4 w-4" />
+              </Button>
+            </div>
+            <DialogFooter className="sm:justify-start">
+              <DialogClose asChild>
+                <Button type="button" variant="secondary">
+                  Close
+                </Button>
+              </DialogClose>
+            </DialogFooter>
+          </div>
+        )}
+      </DialogContent>
+    </Dialog>
   );
 };
 
