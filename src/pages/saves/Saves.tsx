@@ -26,9 +26,7 @@ import { DndContext, DragEndEvent } from "@dnd-kit/core";
 import { Article } from "@/components/Article";
 import { Folder } from "@/components/Folders";
 import { ArticleList } from "@/components/ArticleList";
-
-// import { DataTable } from "@/components/articleTable/data-table";
-// import { ArticleColumns } from "@/components/articleTable/columns";
+import useAuth from "@/hooks/useAuth";
 
 type Props = {
   state?: ArticleStateEnum;
@@ -47,6 +45,7 @@ const Saves = ({ state: articleState = ArticleStateEnum.AVAILABLE }: Props) => {
   const queryClient = useQueryClient();
   const [isAddNewEntityDialogOpen, setIsAddNewEntityDialogOpen] =
     useState(false);
+  const { data: user, isLoading: isUserDataLoading } = useAuth();
 
   // update folder id context
   let currFolderId = folderId || ROOT_FOLDER__VALUE;
@@ -211,129 +210,135 @@ const Saves = ({ state: articleState = ArticleStateEnum.AVAILABLE }: Props) => {
 
   return (
     // main
-    <DndContext onDragEnd={handleDragEnd}>
-      <main className="mx-auto w-full">
-        <div className="flex flex-col gap-3">
-          {/* header */}
-          <div className="mt-2 flex flex-row items-center justify-between">
-            {articles?.parentFolderHierarchy ? (
-              <FolderHierarchyBreadCrumb
-                parentFolderHierarchy={articles?.parentFolderHierarchy}
-              />
-            ) : (
-              // base, no hierarchy
-              <div className="ml-2 text-xl font-semibold"> Saves </div>
-            )}
-            <AddNewEntityDialog
-              trigger={
-                <Button variant="outline">
-                  <PlusIcon className="mr-2 h-4 w-4" />
-                  New
-                </Button>
-              }
-              setIsOpen={setIsAddNewEntityDialogOpen}
-              isOpen={isAddNewEntityDialogOpen}
-            />
-          </div>
+    <>
+      {isUserDataLoading && <></>}
 
-          {/* divider */}
-          <Separator />
-
-          {/* content (gallery mode) */}
-          {mode === "gallery" && (
-            <div className="">
-              {/* is loading */}
-              {isLoading && (
-                <div className="mb-12 flex flex-col gap-2">
-                  <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-                    <ArticleSkeleton numCards={6} />
-                  </div>
-                </div>
-              )}
-
-              {/* folder */}
-              {filteredFolders.length > 0 && (
-                <div className="mb-8 mt-1">
-                  <h2 className="mb-1 ml-2"> Folders </h2>
-                  <div className="grid grid-cols-1 gap-2 md:grid-cols-2 lg:grid-cols-3">
-                    {filteredFolders.map((folder, index) => {
-                      return <Folder key={index} folder={folder} />;
-                    })}
-                  </div>
-                </div>
-              )}
-
-              {/* articles */}
-              {articles?.bookmarks?.data &&
-                articles.bookmarks.data.length > 0 && (
-                  <div className="">
-                    <h2 className="mb-1 ml-2"> Links </h2>
-                    <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-                      {articles.bookmarks.data.map((article, index) => {
-                        return <Article key={index} article={article} />;
-                      })}
-                    </div>
-                  </div>
+      {!isUserDataLoading && user && (
+        <DndContext onDragEnd={handleDragEnd}>
+          <main className="mx-auto w-full">
+            <div className="flex flex-col gap-3">
+              {/* header */}
+              <div className="mt-2 flex flex-row items-center justify-between">
+                {articles?.parentFolderHierarchy ? (
+                  <FolderHierarchyBreadCrumb
+                    parentFolderHierarchy={articles?.parentFolderHierarchy}
+                  />
+                ) : (
+                  // base, no hierarchy
+                  <div className="ml-2 text-xl font-semibold"> Saves </div>
                 )}
+                <AddNewEntityDialog
+                  trigger={
+                    <Button variant="outline">
+                      <PlusIcon className="mr-2 h-4 w-4" />
+                      New
+                    </Button>
+                  }
+                  setIsOpen={setIsAddNewEntityDialogOpen}
+                  isOpen={isAddNewEntityDialogOpen}
+                />
+              </div>
 
-              {/* articles (empty state) */}
-              {articles?.bookmarks?.data &&
-                articles.bookmarks.total_records === 0 &&
-                renderEmptyArticlesState()}
-            </div>
-          )}
+              {/* divider */}
+              <Separator />
 
-          {/* content (list mode) */}
-          {mode === "list" && (
-            <div className="">
-              {/* is loading */}
-              {isLoading && <ArticleSkeletonList numCards={5} />}
+              {/* content (gallery mode) */}
+              {mode === "gallery" && (
+                <div className="">
+                  {/* is loading */}
+                  {isLoading && (
+                    <div className="mb-12 flex flex-col gap-2">
+                      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+                        <ArticleSkeleton numCards={6} />
+                      </div>
+                    </div>
+                  )}
 
-              {/* folder */}
-              {filteredFolders.length > 0 && (
-                <div className="mb-8 mt-1">
-                  <h2 className="ml-2"> Folders </h2>
-
-                  {filteredFolders.map((folder, index) => {
-                    return <Folder key={index} folder={folder} />;
-                  })}
-                </div>
-              )}
-
-              {/* articles */}
-              {articles?.bookmarks?.data &&
-                articles.bookmarks.data.length > 0 && (
-                  <div className="">
-                    <h2 className="ml-2">Links </h2>
-                    {articles && articles.bookmarks.data && (
-                      <div className="flex flex-col gap-3">
-                        {articles.bookmarks.data.map((article, index) => {
-                          return <ArticleList key={index} article={article} />;
+                  {/* folder */}
+                  {filteredFolders.length > 0 && (
+                    <div className="mb-8 mt-1">
+                      <h2 className="mb-1 ml-2"> Folders </h2>
+                      <div className="grid grid-cols-1 gap-2 md:grid-cols-2 lg:grid-cols-3">
+                        {filteredFolders.map((folder, index) => {
+                          return <Folder key={index} folder={folder} />;
                         })}
                       </div>
+                    </div>
+                  )}
+
+                  {/* articles */}
+                  {articles?.bookmarks?.data &&
+                    articles.bookmarks.data.length > 0 && (
+                      <div className="">
+                        <h2 className="mb-1 ml-2"> Links </h2>
+                        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+                          {articles.bookmarks.data.map((article, index) => {
+                            return <Article key={index} article={article} />;
+                          })}
+                        </div>
+                      </div>
                     )}
-                  </div>
-                )}
 
-              {/* articles (empty state) */}
-              {articles?.bookmarks?.data &&
-                articles.bookmarks.total_records === 0 &&
-                renderEmptyArticlesState()}
+                  {/* articles (empty state) */}
+                  {articles?.bookmarks?.data &&
+                    articles.bookmarks.total_records === 0 &&
+                    renderEmptyArticlesState()}
+                </div>
+              )}
+
+              {/* content (list mode) */}
+              {mode === "list" && (
+                <div className="">
+                  {/* is loading */}
+                  {isLoading && <ArticleSkeletonList numCards={5} />}
+
+                  {/* folder */}
+                  {filteredFolders.length > 0 && (
+                    <div className="mb-8 mt-1">
+                      <h2 className="ml-2"> Folders </h2>
+
+                      {filteredFolders.map((folder, index) => {
+                        return <Folder key={index} folder={folder} />;
+                      })}
+                    </div>
+                  )}
+
+                  {/* articles */}
+                  {articles?.bookmarks?.data &&
+                    articles.bookmarks.data.length > 0 && (
+                      <div className="">
+                        <h2 className="ml-2">Links </h2>
+                        {articles && articles.bookmarks.data && (
+                          <div className="flex flex-col gap-3">
+                            {articles.bookmarks.data.map((article, index) => {
+                              return (
+                                <ArticleList key={index} article={article} />
+                              );
+                            })}
+                          </div>
+                        )}
+                      </div>
+                    )}
+
+                  {/* articles (empty state) */}
+                  {articles?.bookmarks?.data &&
+                    articles.bookmarks.total_records === 0 &&
+                    renderEmptyArticlesState()}
+                </div>
+              )}
             </div>
-          )}
-        </div>
 
-        {/* pagination */}
-        <div className="bottom-0 mb-10 mt-12">
-          <ArticlePagination
-            currentPage={currPage}
-            setPage={setCurrPage}
-            recordsPerPage={9}
-            totalRecords={articles?.bookmarks.total_records || 0}
-          />
-        </div>
+            {/* pagination */}
+            <div className="bottom-0 mb-10 mt-12">
+              <ArticlePagination
+                currentPage={currPage}
+                setPage={setCurrPage}
+                recordsPerPage={9}
+                totalRecords={articles?.bookmarks.total_records || 0}
+              />
+            </div>
 
-        {/* {isFolderEllipseOpen && (
+            {/* {isFolderEllipseOpen && (
         <DropdownMenu modal={false}>
           <DropdownMenuTrigger asChild>
             <Button
@@ -365,8 +370,10 @@ const Saves = ({ state: articleState = ArticleStateEnum.AVAILABLE }: Props) => {
           </DropdownMenuContent>
         </DropdownMenu>
       )} */}
-      </main>
-    </DndContext>
+          </main>
+        </DndContext>
+      )}
+    </>
   );
 };
 

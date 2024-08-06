@@ -4,11 +4,17 @@ import useAuth from "@/hooks/useAuth";
 import yettiIcon from "/cuteCreativeYeti.jpeg";
 import { Link2Icon } from "@radix-ui/react-icons";
 import { NotebookTextIcon, TagIcon } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 type Props = {};
 
 const LandingPage = (props: Props) => {
-  const { data: user } = useAuth();
+  const navigate = useNavigate();
+
+  async function login() {
+    navigate("/saves");
+  }
+
   return (
     <div>
       <LandingPageNavbar />
@@ -30,7 +36,7 @@ const LandingPage = (props: Props) => {
         </div>
         <div className="flex flex-col gap-2">
           <Button>
-            <a href={user ? "/saves" : "/login"}>Get started ➔</a>
+            <a onClick={() => login()}>Get started ➔</a>
           </Button>
           <p className="text-sm text-muted-foreground">
             No credit card required. Instant set up.
@@ -142,7 +148,7 @@ const LandingPage = (props: Props) => {
               </h5>
               <div className="mb-3 flex flex-col justify-center gap-x-2 gap-y-3 md:flex-row">
                 <Button>
-                  <a href={user ? "/saves" : "/login"}>Get started ➔</a>
+                  <a onClick={() => login()}>Get started ➔</a>
                 </Button>
               </div>
             </div>

@@ -36,20 +36,18 @@ const YettiIcon = () => (
 );
 
 export const LandingPageNavbar = () => {
-  const { data: user } = useAuth();
-
   return (
     <header className="sticky top-0 z-40 w-full border-b-[1px] bg-white dark:border-b-slate-700  dark:bg-background">
       <NavigationMenu className="mx-auto">
         <NavigationMenuList className="container flex h-14 w-screen flex-row justify-between px-4">
           {/* app icon */}
           <NavigationMenuItem className="align-center flex flex-row justify-start font-bold">
-            <a href={user ? "/saves" : "/"} className="ml-2 hidden sm:flex">
+            <div className="ml-2 hidden sm:flex">
               <LogoIcon />
               <span className="ml-2 flex pt-[2px] text-xl font-bold">
                 Yetti
               </span>
-            </a>
+            </div>
           </NavigationMenuItem>
 
           {/* actions */}
