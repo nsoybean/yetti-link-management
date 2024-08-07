@@ -5,14 +5,33 @@ import yettiIcon from "/cuteCreativeYeti.jpeg";
 import { Link2Icon } from "@radix-ui/react-icons";
 import { NotebookTextIcon, TagIcon } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { getMe } from "@/api/getMe";
+import { User } from "@/typings/user/User";
 
 type Props = {};
 
 const LandingPage = (props: Props) => {
+  const [user, setUser] = useState<User | null>(null);
   const navigate = useNavigate();
 
+  useEffect(() => {
+    checkAuth();
+  }, []);
+
   async function login() {
-    navigate("/saves");
+    if (user) {
+      navigate("/saves");
+    } else {
+      navigate("/login");
+    }
+  }
+
+  async function checkAuth() {
+    try {
+      const user = await getMe();
+      setUser(user);
+    } catch (error) {}
   }
 
   return (

@@ -211,7 +211,15 @@ const Saves = ({ state: articleState = ArticleStateEnum.AVAILABLE }: Props) => {
   return (
     // main
     <>
-      {isUserDataLoading && <></>}
+      {isUserDataLoading && (
+        <main className="mx-auto w-full">
+          <div className="mb-12 flex flex-col gap-2">
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+              <ArticleSkeleton numCards={6} />
+            </div>
+          </div>
+        </main>
+      )}
 
       {!isUserDataLoading && user && (
         <DndContext onDragEnd={handleDragEnd}>
@@ -295,7 +303,7 @@ const Saves = ({ state: articleState = ArticleStateEnum.AVAILABLE }: Props) => {
                   {/* folder */}
                   {filteredFolders.length > 0 && (
                     <div className="mb-8 mt-1">
-                      <h2 className="ml-2"> Folders </h2>
+                      <h2 className="mb-1 ml-2"> Folders </h2>
 
                       {filteredFolders.map((folder, index) => {
                         return <Folder key={index} folder={folder} />;
@@ -307,7 +315,7 @@ const Saves = ({ state: articleState = ArticleStateEnum.AVAILABLE }: Props) => {
                   {articles?.bookmarks?.data &&
                     articles.bookmarks.data.length > 0 && (
                       <div className="">
-                        <h2 className="ml-2">Links </h2>
+                        <h2 className="mb-1 ml-2">Links </h2>
                         {articles && articles.bookmarks.data && (
                           <div className="flex flex-col gap-3">
                             {articles.bookmarks.data.map((article, index) => {

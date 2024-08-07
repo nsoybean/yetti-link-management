@@ -113,70 +113,70 @@ export function UserDropdownMenu({ user }: { user?: User }) {
         <DropdownMenuItem>Support</DropdownMenuItem>
         <DropdownMenuItem disabled>API</DropdownMenuItem>
       <DropdownMenuSeparator /> */}
-        <DropdownMenuGroup className="py-1">
-          <DropdownMenuItem onClick={() => logUserOut()}>
-            Log out
-            {/* <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut> */}
-          </DropdownMenuItem>
-        </DropdownMenuGroup>
+
+        {/* mode */}
+        <DropdownMenuItem
+          className="flex w-full justify-between gap-2"
+          onSelect={(e) => e.preventDefault()}
+        >
+          Dark Mode
+          <Switch
+            className="mr-2"
+            checked={theme === "dark"}
+            onCheckedChange={toggleTheme}
+          />
+        </DropdownMenuItem>
 
         <DropdownMenuSeparator />
 
         {/* mode */}
-        <DropdownMenuGroup className="py-1">
-          <DropdownMenuItem
-            className="flex w-full justify-between gap-2"
-            onSelect={(e) => e.preventDefault()}
-          >
-            Dark Mode
-            <Switch
-              className="mr-2"
-              checked={theme === "dark"}
-              onCheckedChange={toggleTheme}
+        <DropdownMenuItem
+          className="flex w-full justify-between gap-2"
+          onSelect={(e) => e.preventDefault()}
+        >
+          <span> View</span>
+
+          <div className="mr-2 flex flex-row items-center justify-center gap-2 py-1">
+            <ToolTipText
+              child={
+                <div
+                  className={`p-[3px] hover:cursor-pointer ${mode === "gallery" && "rounded-sm border-2 border-input bg-background shadow-sm"}`}
+                >
+                  <LayoutDashboardIcon
+                    width={"20"}
+                    height={"20"}
+                    onClick={() => setMode("gallery")}
+                  />
+                </div>
+              }
+              text={"Gallery view"}
             />
-          </DropdownMenuItem>
-        </DropdownMenuGroup>
 
-        {/* mode */}
+            {/* list icon */}
+            <ToolTipText
+              child={
+                <div
+                  className={`p-[3px] hover:cursor-pointer ${mode === "list" && "rounded-sm border-2 border-input bg-background shadow-sm"}`}
+                >
+                  <ListIcon
+                    width={"20"}
+                    height={"20"}
+                    onClick={() => setMode("list")}
+                  />
+                </div>
+              }
+              text={"List view"}
+            />
+          </div>
+        </DropdownMenuItem>
+
+        <DropdownMenuSeparator />
+
+        {/* logout */}
         <DropdownMenuGroup className="py-1">
-          <DropdownMenuItem
-            className="flex w-full justify-between gap-2"
-            onSelect={(e) => e.preventDefault()}
-          >
-            <span> View</span>
-
-            <div className="mr-2 flex flex-row items-center justify-center gap-2 py-1">
-              <ToolTipText
-                child={
-                  <div
-                    className={`p-[3px] hover:cursor-pointer ${mode === "gallery" && "rounded-sm border-2 border-input bg-background shadow-sm"}`}
-                  >
-                    <LayoutDashboardIcon
-                      width={"20"}
-                      height={"20"}
-                      onClick={() => setMode("gallery")}
-                    />
-                  </div>
-                }
-                text={"Gallery view"}
-              />
-
-              {/* list icon */}
-              <ToolTipText
-                child={
-                  <div
-                    className={`p-[3px] hover:cursor-pointer ${mode === "list" && "rounded-sm border-2 border-input bg-background shadow-sm"}`}
-                  >
-                    <ListIcon
-                      width={"20"}
-                      height={"20"}
-                      onClick={() => setMode("list")}
-                    />
-                  </div>
-                }
-                text={"List view"}
-              />
-            </div>
+          <DropdownMenuItem onClick={() => logUserOut()}>
+            Log out
+            {/* <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut> */}
           </DropdownMenuItem>
         </DropdownMenuGroup>
       </DropdownMenuContent>
