@@ -1,5 +1,5 @@
 # [Yetti](yettisave.co)
-<img src="./src/Assets/LandingPagePreview.svg">
+<img src="./LandingPagePreview.svg">
 
 Elevate your bookmarking game! <br>
 Effortlessly organize, tag, and enrich your saved articles.
