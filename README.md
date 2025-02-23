@@ -15,7 +15,7 @@ Effortlessly organize, tag, and enrich your saved articles.
 
 ## Features
 * Save public web pages/ articles
-* Add custom notes to your saved articles via a what you see is what you get (WYSIWYG) editor
+* Add custom notes to your saved articles via rich text editor
 * Archive articles after reading
 
 ## Development
